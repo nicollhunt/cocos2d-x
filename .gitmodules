@@ -7,3 +7,6 @@
 [submodule "samples/Javascript/Shared"]
 	path = samples/Javascript/Shared
 	url = https://github.com/minggo/cocos2d-js-tests.git
+[submodule "fistofawesome"]
+	path = fistofawesome
+	url = /Users/nicky/Dropbox/Development/git/fistofawesome.git
