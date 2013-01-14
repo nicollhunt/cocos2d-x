@@ -906,9 +906,15 @@ CCArray* CCBReader::getAnimationManagersForNodes() {
  Static functions
  ************************************************************************/
 
+static float gfResolutionScale = 1.f;
+void CCBReader::setResolutionScale(float fScale)
+{
+    gfResolutionScale = fScale;
+}
+
 float CCBReader::getResolutionScale()
 {
-    return 1;
+    return gfResolutionScale;
 }
 
 NS_CC_EXT_END;

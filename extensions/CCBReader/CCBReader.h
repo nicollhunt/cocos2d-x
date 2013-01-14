@@ -259,6 +259,7 @@ public:
     void addDocumentCallbackName(std::string name);
     void addDocumentCallbackNode(CCNode *node);
     
+    static void setResolutionScale(float fScale);
     static float getResolutionScale();
     
     CCNode* readFileWithCleanUp(bool bCleanUp, CCDictionary* am);

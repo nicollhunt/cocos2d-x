@@ -131,6 +131,12 @@ touch_dispatcher/CCTouchDispatcher.cpp \
 touch_dispatcher/CCTouchHandler.cpp \
 touch_dispatcher/CCTouch.cpp
 
+ifeq ($(ANDROID_SUB_TARGET), ouya)
+	LOCAL_SRC_FILES += platform/ouya/CCOuyaController.cpp \
+	platform/ouya/jni/Java_com_levire_ouyabind_Controller.cpp \
+endif
+endif
+
 LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH) \
                     $(LOCAL_PATH)/include \
                     $(LOCAL_PATH)/kazmath/include \

@@ -246,7 +246,7 @@ int CCLuaEngine::executeString(const char *codes)
 
     if (nRet != 0)
     {
-        CCLOG("[LUA ERROR] %s", lua_tostring(m_state, -1));
+        CCLog("[LUA ERROR] %s", lua_tostring(m_state, -1));
         lua_pop(m_state, 1);
         return nRet;
     }
@@ -263,7 +263,7 @@ int CCLuaEngine::executeScriptFile(const char* filename)
 
     if (nRet != 0)
     {
-        CCLOG("[LUA ERROR] %s", lua_tostring(m_state, -1));
+        CCLog("[LUA ERROR] %s", lua_tostring(m_state, -1));
         lua_pop(m_state, 1);
         return nRet;
     }

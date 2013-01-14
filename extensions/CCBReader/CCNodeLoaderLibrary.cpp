@@ -64,7 +64,10 @@ void CCNodeLoaderLibrary::unregisterCCNodeLoader(const char * pClassName) {
 
 CCNodeLoader * CCNodeLoaderLibrary::getCCNodeLoader(const char* pClassName) {
     CCNodeLoaderMap::iterator ccNodeLoadersIterator = this->mCCNodeLoaders.find(pClassName);
-    assert(ccNodeLoadersIterator != this->mCCNodeLoaders.end());
+//    assert(ccNodeLoadersIterator != this->mCCNodeLoaders.end());
+    // NDH - Return NULL instead of asserting
+    if (ccNodeLoadersIterator == this->mCCNodeLoaders.end())
+        return NULL;
     return ccNodeLoadersIterator->second;
 }
 
