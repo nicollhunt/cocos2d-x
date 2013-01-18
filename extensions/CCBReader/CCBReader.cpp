@@ -619,7 +619,8 @@ CCNode * CCBReader::readNodeGraph(CCNode * pParent) {
         embeddedNode->setScale(ccbFileNode->getScale());
         embeddedNode->setTag(ccbFileNode->getTag());
         embeddedNode->setVisible(true);
-        embeddedNode->ignoreAnchorPointForPosition(ccbFileNode->isIgnoreAnchorPointForPosition());
+        // NDH - ignoreAnchorPointForPosition is only editible in embeddedNode
+        //embeddedNode->ignoreAnchorPointForPosition(ccbFileNode->isIgnoreAnchorPointForPosition());
         
         mActionManager->moveAnimationsFromNode(ccbFileNode, embeddedNode);
 
