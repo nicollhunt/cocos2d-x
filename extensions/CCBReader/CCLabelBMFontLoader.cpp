@@ -9,6 +9,7 @@ NS_CC_EXT_BEGIN
 #define PROPERTY_BLENDFUNC "blendFunc"
 #define PROPERTY_FNTFILE "fntFile"
 #define PROPERTY_STRING "string"
+#define PROPERTY_ALIGNMENT "alignment"
 
 void CCLabelBMFontLoader::onHandlePropTypeColor3(CCNode * pNode, CCNode * pParent, const char * pPropertyName, ccColor3B pCCColor3B, CCBReader * pCCBReader) {
     if(strcmp(pPropertyName, PROPERTY_COLOR) == 0) {
@@ -47,6 +48,15 @@ void CCLabelBMFontLoader::onHandlePropTypeText(CCNode * pNode, CCNode * pParent,
         ((CCLabelBMFont *)pNode)->setString(pText);
     } else {
         CCNodeLoader::onHandlePropTypeText(pNode, pParent, pPropertyName, pText, pCCBReader);
+    }
+}
+
+void CCLabelBMFontLoader::onHandlePropTypeIntegerLabeled(CCNode * pNode, CCNode * pParent, const char* pPropertyName, int pIntegerLabeled, CCBReader * pCCBReader)
+{
+    if(strcmp(pPropertyName, PROPERTY_ALIGNMENT) == 0) {
+        ((CCLabelBMFont *)pNode)->setAlignment((CCTextAlignment)pIntegerLabeled);
+    } else {
+        CCNodeLoader::onHandlePropTypeIntegerLabeled(pNode, pParent, pPropertyName, pIntegerLabeled, pCCBReader);
     }
 }
 
