@@ -91,7 +91,7 @@ public:
     bool init();
 
     /** initializes a CCMenu with a NSArray of CCMenuItem objects */
-    bool initWithArray(CCArray* pArrayOfItems);
+    virtual bool initWithArray(CCArray* pArrayOfItems);
 
     /** align items vertically */
     void alignItemsVertically();

@@ -71,13 +71,11 @@ extern "C" {
     #define KEYCODE_BACK 0x04
     #define KEYCODE_MENU 0x52
 
-    jboolean Java_org_cocos2dx_lib_Cocos2dxRenderer_nativeKeyDown(JNIEnv * env, jobject thiz, jint keyCode)
-    {
+    jboolean Java_org_cocos2dx_lib_Cocos2dxRenderer_nativeKeyDown(JNIEnv * env, jobject thiz, jint keyCode) {
         CCDirector* pDirector = CCDirector::sharedDirector();
         
         CCLOG("Keycode input: %d",keyCode);
-        switch (keyCode)
-        {
+        switch (keyCode) {
             case KEYCODE_BACK:
                   if (pDirector->getKeypadDispatcher()->dispatchKeypadMSG(kTypeBackClicked))
                     return JNI_TRUE;

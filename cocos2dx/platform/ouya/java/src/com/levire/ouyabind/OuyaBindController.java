@@ -54,9 +54,13 @@ public class OuyaBindController
 	{
 		boolean handled = OuyaController.onGenericMotionEvent(event);
 		OuyaController controller = OuyaController.getControllerByDeviceId(event.getDeviceId());
-		
-		OuyaBindController.onNativeLeftStickMotionEvent(event.getDeviceId(), controller.getAxisValue(OuyaController.AXIS_LS_X), controller.getAxisValue(OuyaController.AXIS_LS_Y));
-		OuyaBindController.onNativeRightStickMotionEvent(event.getDeviceId(), controller.getAxisValue(OuyaController.AXIS_RS_X), controller.getAxisValue(OuyaController.AXIS_RS_Y));
+				
+		//Log.d("OUYA Controller", "onGenericMotionEvent "+ event.getDeviceId());
+		if (controller != null)
+		{
+			OuyaBindController.onNativeLeftStickMotionEvent(event.getDeviceId(), controller.getAxisValue(OuyaController.AXIS_LS_X), controller.getAxisValue(OuyaController.AXIS_LS_Y));
+			OuyaBindController.onNativeRightStickMotionEvent(event.getDeviceId(), controller.getAxisValue(OuyaController.AXIS_RS_X), controller.getAxisValue(OuyaController.AXIS_RS_Y));
+		}
 		return handled;
 	}
 }

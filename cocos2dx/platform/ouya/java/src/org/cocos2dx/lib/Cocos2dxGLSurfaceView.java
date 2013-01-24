@@ -57,6 +57,8 @@ public class Cocos2dxGLSurfaceView extends GLSurfaceView {
 
 	private Cocos2dxRenderer mCocos2dxRenderer;
 	private Cocos2dxEditText mCocos2dxEditText;
+	
+	private boolean mGenericMotionHack;
 
 	// ===========================================================
 	// Constructors
@@ -68,6 +70,8 @@ public class Cocos2dxGLSurfaceView extends GLSurfaceView {
 		this.setEGLContextClientVersion(2);
 
 		this.initView();
+		
+		mGenericMotionHack = true;
 	}
 
 	public Cocos2dxGLSurfaceView(final Context context, final AttributeSet attrs) {
@@ -281,6 +285,12 @@ public class Cocos2dxGLSurfaceView extends GLSurfaceView {
 	@Override
 	public boolean onGenericMotionEvent(final MotionEvent event)
 	{
+		if (mGenericMotionHack)
+		{
+			Log.d(Cocos2dxGLSurfaceView.TAG, "OnGenericMotion");
+			mGenericMotionHack = false;
+		}
+
 		super.onGenericMotionEvent(event);
 		return OuyaBindController.onGenericMotionEvent(event);
 	}
@@ -298,6 +308,8 @@ public class Cocos2dxGLSurfaceView extends GLSurfaceView {
 
 	@Override
 	public boolean onKeyDown(final int pKeyCode, final KeyEvent pKeyEvent) {
+//		Log.d(Cocos2dxGLSurfaceView.TAG, "onKeyDown "+pKeyCode);
+
 		OuyaBindController.onKeyDown(pKeyCode, pKeyEvent);
 		switch (pKeyCode) {
 			case KeyEvent.KEYCODE_BACK:

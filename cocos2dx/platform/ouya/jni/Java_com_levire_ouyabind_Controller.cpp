@@ -93,7 +93,7 @@ extern "C"
         return false;
     }
     
-    float getAxisValue(OuyaControllerAxis controllerAxis, jobject ouyaControllerGlobalRef)
+    float getOuyaAxisValue(OuyaControllerAxis controllerAxis, jobject ouyaControllerGlobalRef)
     {
         JniMethodInfo methodInfo;
         
@@ -104,15 +104,15 @@ extern "C"
         
         if (isMethodAvailable)
         {
-            float axisValue = methodInfo.env->CallBooleanMethod(ouyaControllerGlobalRef,
-                                                                   methodInfo.methodID,
-                                                                   controllerAxis);
+            float axisValue = methodInfo.env->CallFloatMethod(ouyaControllerGlobalRef,
+                                                              methodInfo.methodID,
+                                                              controllerAxis);
             methodInfo.env->DeleteLocalRef(methodInfo.classID);
             return axisValue;
         }
         else
         {
-            CCLOG("Error Method: getAxisValue not available");
+            CCLOG("Error Method: getOuyaAxisValue not available");
         }
         return 0.0f;
     }
@@ -130,6 +130,7 @@ extern "C"
     
     JNIEXPORT void JNICALL Java_com_levire_ouyabind_OuyaBindController_onNativeLeftStickMotionEvent(JNIEnv* env, jobject thiz, jint deviceId, jfloat axisXValue, jfloat axisYValue)
     {
+    	//CCLog("Java_com_levire_ouyabind_OuyaBindController_onNativeLeftStickMotionEvent");
         CCOuyaController::onLeftStickMotion(axisXValue, axisYValue,deviceId);
     }
     
