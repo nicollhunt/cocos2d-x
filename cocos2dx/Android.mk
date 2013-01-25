@@ -78,19 +78,6 @@ platform/CCSAXParser.cpp \
 platform/CCThread.cpp \
 platform/platform.cpp \
 platform/CCEGLViewProtocol.cpp \
-platform/android/CCEGLView.cpp \
-platform/android/CCAccelerometer.cpp \
-platform/android/CCApplication.cpp \
-platform/android/CCCommon.cpp \
-platform/android/CCFileUtils.cpp \
-platform/android/CCImage.cpp \
-platform/android/jni/Java_org_cocos2dx_lib_Cocos2dxBitmap.cpp \
-platform/android/jni/Java_org_cocos2dx_lib_Cocos2dxHelper.cpp \
-platform/android/jni/Java_org_cocos2dx_lib_Cocos2dxRenderer.cpp \
-platform/android/jni/Java_org_cocos2dx_lib_Cocos2dxAccelerometer.cpp \
-platform/android/jni/JniHelper.cpp \
-platform/android/jni/IMEJni.cpp \
-platform/android/jni/TouchesJni.cpp \
 script_support/CCScriptSupport.cpp \
 shaders/ccShaders.cpp \
 shaders/CCGLProgram.cpp \
@@ -131,26 +118,59 @@ touch_dispatcher/CCTouchDispatcher.cpp \
 touch_dispatcher/CCTouchHandler.cpp \
 touch_dispatcher/CCTouch.cpp
 
+# build ouya-specific versions if required
 ifeq ($(ANDROID_SUB_TARGET), ouya)
-	LOCAL_SRC_FILES += platform/ouya/CCOuyaController.cpp \
-	platform/ouya/jni/Java_com_levire_ouyabind_Controller.cpp \
-endif
+LOCAL_SRC_FILES += \
+platform/ouya/CCEGLView.cpp \
+platform/ouya/CCAccelerometer.cpp \
+platform/ouya/CCApplication.cpp \
+platform/ouya/CCCommon.cpp \
+platform/ouya/CCFileUtils.cpp \
+platform/ouya/CCImage.cpp \
+platform/ouya/CCOuyaController.cpp \
+platform/ouya/jni/Java_org_cocos2dx_lib_Cocos2dxBitmap.cpp \
+platform/ouya/jni/Java_org_cocos2dx_lib_Cocos2dxHelper.cpp \
+platform/ouya/jni/Java_org_cocos2dx_lib_Cocos2dxRenderer.cpp \
+platform/ouya/jni/Java_org_cocos2dx_lib_Cocos2dxAccelerometer.cpp \
+platform/ouya/jni/JniHelper.cpp \
+platform/ouya/jni/IMEJni.cpp \
+platform/ouya/jni/TouchesJni.cpp \
+platform/ouya/jni/Java_com_levire_ouyabind_Controller.cpp
+else
+LOCAL_SRC_FILES += \
+platform/android/CCEGLView.cpp \
+platform/android/CCAccelerometer.cpp \
+platform/android/CCApplication.cpp \
+platform/android/CCCommon.cpp \
+platform/android/CCFileUtils.cpp \
+platform/android/CCImage.cpp \
+platform/android/jni/Java_org_cocos2dx_lib_Cocos2dxBitmap.cpp \
+platform/android/jni/Java_org_cocos2dx_lib_Cocos2dxHelper.cpp \
+platform/android/jni/Java_org_cocos2dx_lib_Cocos2dxRenderer.cpp \
+platform/android/jni/Java_org_cocos2dx_lib_Cocos2dxAccelerometer.cpp \
+platform/android/jni/JniHelper.cpp \
+platform/android/jni/IMEJni.cpp \
+platform/android/jni/TouchesJni.cpp
 endif
 
 LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH) \
                     $(LOCAL_PATH)/include \
-                    $(LOCAL_PATH)/kazmath/include \
-                    $(LOCAL_PATH)/platform/android
+                    $(LOCAL_PATH)/kazmath/include
+
+# use different include directories if building for ouya
+ifeq ($(ANDROID_SUB_TARGET), ouya)
+LOCAL_EXPORT_C_INCLUDES += $(LOCAL_PATH)/platform/ouya
+else
+LOCAL_EXPORT_C_INCLUDES += $(LOCAL_PATH)/platform/android
+endif
 
 
 LOCAL_EXPORT_LDLIBS := -llog\
                        -lz \
                        -lGLESv2
 
-LOCAL_C_INCLUDES := $(LOCAL_PATH) \
-                    $(LOCAL_PATH)/include \
-                    $(LOCAL_PATH)/kazmath/include \
-                    $(LOCAL_PATH)/platform/android
+LOCAL_C_INCLUDES := $(LOCAL_EXPORT_C_INCLUDES)                   
+                    
 
 LOCAL_LDLIBS := -lGLESv2 \
                 -lEGL \
@@ -165,6 +185,11 @@ LOCAL_WHOLE_STATIC_LIBRARIES += cocos_libtiff_static
 # define the macro to compile through support/zip_support/ioapi.c                
 LOCAL_CFLAGS := -Wno-psabi -DUSE_FILE32API
 LOCAL_EXPORT_CFLAGS := -Wno-psabi -DUSE_FILE32API
+
+# add preprocessor define if building for ouya
+ifeq ($(ANDROID_SUB_TARGET), ouya)
+LOCAL_CFLAGS += -DOUYA=1
+endif
 
 include $(BUILD_STATIC_LIBRARY)
 

@@ -62,6 +62,10 @@ LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH) \
                            $(LOCAL_PATH)/GUI/CCScrollView \
                            $(LOCAL_PATH)/network
                     
+ifeq ($(ANDROID_SUB_TARGET), ouya)
+LOCAL_CFLAGS += -DOUYA=1
+endif
+
 include $(BUILD_STATIC_LIBRARY)
 
 $(call import-module,cocos2dx)

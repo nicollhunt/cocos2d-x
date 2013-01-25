@@ -131,6 +131,16 @@ bool CCOuyaController::registered(IOuyaControllerListener* listener)
 	return false;
 }
 
+int CCOuyaController::getDeviceId()
+{
+	return getOuyaControllerDeviceId(this->jniLinkToOuyaController);
+}
+
+int CCOuyaController::getPlayerNum()
+{
+	return getOuyaControllerPlayerNum(this->jniLinkToOuyaController);
+}
+
 bool CCOuyaController::isButtonPressed(OuyaControllerButton button)
 {
 	return isOuyaButtonPressed(button, this->jniLinkToOuyaController);

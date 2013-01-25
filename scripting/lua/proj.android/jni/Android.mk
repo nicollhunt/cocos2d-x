@@ -57,9 +57,15 @@ LOCAL_C_INCLUDES := $(LOCAL_PATH)/ \
                     $(LOCAL_PATH)/../../../../cocos2dx \
                     $(LOCAL_PATH)/../../../../cocos2dx/include \
                     $(LOCAL_PATH)/../../../../cocos2dx/platform \
-                    $(LOCAL_PATH)/../../../../cocos2dx/platform/android \
                     $(LOCAL_PATH)/../../../../cocos2dx/kazmath/include \
                     $(LOCAL_PATH)/../../../../CocosDenshion/include
+
+ifeq ($(ANDROID_SUB_TARGET), ouya)
+LOCAL_C_INCLUDES += $(LOCAL_PATH)/../../../../cocos2dx/platform/ouya
+LOCAL_CFLAGS += -DOUYA=1
+else
+LOCAL_C_INCLUDES += $(LOCAL_PATH)/../../../../cocos2dx/platform/android
+endif
                     
 LOCAL_CFLAGS += -Wno-psabi
 LOCAL_EXPORT_CFLAGS += -Wno-psabi

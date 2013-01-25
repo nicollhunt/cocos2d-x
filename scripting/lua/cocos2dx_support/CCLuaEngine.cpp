@@ -36,7 +36,7 @@ extern "C" {
 #include "cocoa/CCArray.h"
 #include "CCScheduler.h"
 
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID || CC_TARGET_PLATFORM == CC_PLATFORM_OUYA)
 #include "Cocos2dxLuaLoader.h"
 #endif
 
@@ -209,7 +209,7 @@ bool CCLuaEngine::init(void)
     luaL_openlibs(m_state);
     tolua_Cocos2d_open(m_state);
     toluafix_open(m_state);
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID || CC_TARGET_PLATFORM == CC_PLATFORM_OUYA)
     addLuaLoader(loader_Android);
 #endif
     return true;

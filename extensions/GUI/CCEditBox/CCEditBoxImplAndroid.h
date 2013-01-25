@@ -28,7 +28,7 @@
 
 #include "cocos2d.h"
 
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID || CC_TARGET_PLATFORM == CC_PLATFORM_OUYA)
 
 #include "ExtensionMacros.h"
 #include "CCEditBoxImpl.h"

@@ -39,7 +39,7 @@ extern "C"
 		}
         else
         {
-            CCLOG("Error Method: getControllerByPlayer not available");
+            CCLOG("Error: Method 'tv.ouya.console.api.OuyaController.getControllerByPlayer' not available.");
         }
         return NULL;
 	}
@@ -64,12 +64,12 @@ extern "C"
 		}
         else
         {
-            CCLOG("Error Method: getControllerByDeviceId not available");
+            CCLOG("Error: Method 'tv.ouya.console.api.OuyaController.getControllerByDeviceId' not available.");
         }
         return NULL;
     }
     
-    bool isOuyaButtonPressed(OuyaControllerButton button, jobject ouyaControllerGlobalRef)
+    bool isOuyaButtonPressed(OuyaControllerButton button, jobject ouyaControllerJNI)
     {
         JniMethodInfo methodInfo;
         
@@ -80,7 +80,7 @@ extern "C"
         
         if (isMethodAvailable)
         {
-            bool buttonPressed = methodInfo.env->CallBooleanMethod(ouyaControllerGlobalRef,
+            bool buttonPressed = methodInfo.env->CallBooleanMethod(ouyaControllerJNI,
                                                                   methodInfo.methodID,
                                                                   button);
             methodInfo.env->DeleteLocalRef(methodInfo.classID);
@@ -88,12 +88,12 @@ extern "C"
         }
         else
         {
-            CCLOG("Error Method: getButton not available");
+            CCLOG("Error: Method 'tv.ouya.console.api.OuyaController.getButton' not available.");
         }
         return false;
     }
     
-    float getOuyaAxisValue(OuyaControllerAxis controllerAxis, jobject ouyaControllerGlobalRef)
+    float getOuyaAxisValue(OuyaControllerAxis controllerAxis, jobject ouyaControllerJNI)
     {
         JniMethodInfo methodInfo;
         
@@ -104,7 +104,7 @@ extern "C"
         
         if (isMethodAvailable)
         {
-            float axisValue = methodInfo.env->CallFloatMethod(ouyaControllerGlobalRef,
+            float axisValue = methodInfo.env->CallFloatMethod(ouyaControllerJNI,
                                                               methodInfo.methodID,
                                                               controllerAxis);
             methodInfo.env->DeleteLocalRef(methodInfo.classID);
@@ -112,11 +112,56 @@ extern "C"
         }
         else
         {
-            CCLOG("Error Method: getOuyaAxisValue not available");
+            CCLOG("Error: Method 'tv.ouya.console.api.OuyaController.getAxisValue' not available.");
         }
         return 0.0f;
     }
     
+    int getOuyaControllerDeviceId(jobject ouyaControllerJNI)
+    {
+        JniMethodInfo methodInfo;
+        
+        bool isMethodAvailable = JniHelper::getMethodInfo(methodInfo,
+                                                          "tv/ouya/console/api/OuyaController",
+                                                          "getDeviceId",
+                                                          "()I");
+        
+        if (isMethodAvailable)
+        {
+            int deviceId = methodInfo.env->CallIntMethod(ouyaControllerJNI,
+                                                         methodInfo.methodID);
+            methodInfo.env->DeleteLocalRef(methodInfo.classID);
+            return deviceId;
+        }
+        else
+        {
+            CCLOG("Error: Method 'tv.ouya.console.api.OuyaController.getDeviceId' not available.");
+        }
+        return -1;
+    }
+
+    int getOuyaControllerPlayerNum(jobject ouyaControllerJNI)
+    {
+        JniMethodInfo methodInfo;
+        
+        bool isMethodAvailable = JniHelper::getMethodInfo(methodInfo,
+                                                          "tv/ouya/console/api/OuyaController",
+                                                          "getPlayerNum",
+                                                          "()I");
+        
+        if (isMethodAvailable)
+        {
+            int playerNum = methodInfo.env->CallIntMethod(ouyaControllerJNI,
+                                                          methodInfo.methodID);
+            methodInfo.env->DeleteLocalRef(methodInfo.classID);
+            return playerNum;
+        }
+        else
+        {
+            CCLOG("Error: Method 'tv.ouya.console.api.OuyaController.getPlayerNum' not available.");
+        }
+        return -1;
+    }
     
     JNIEXPORT void JNICALL Java_com_levire_ouyabind_OuyaBindController_onNativeKeyDown(JNIEnv* env, jobject thiz, jint keyCode, jint deviceId)
     {
@@ -144,7 +189,7 @@ extern "C"
         JNIEnv *env;
         if (JniHelper::getJavaVM()->GetEnv((void**)&env, JNI_VERSION_1_4) != JNI_OK)
         {
-            CCLOG("Error deleting global JReference");
+            CCLOG("Error: Deleting global JReference failed.");
             return false;
         }
         else
