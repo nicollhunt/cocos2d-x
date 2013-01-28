@@ -192,6 +192,9 @@ bool CCTexture2D::initWithData(const void *data, CCTexture2DPixelFormat pixelFor
     glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
     glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
 
+    // NDH - Screw it. For FIST OF AWESOME nearest neighbour is more important than anything.
+    this->setAliasTexParameters();
+    
     // Specify OpenGL texture image
 
     switch(pixelFormat)
