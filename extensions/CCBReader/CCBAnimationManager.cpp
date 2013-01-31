@@ -174,7 +174,8 @@ void CCBAnimationManager::setDelegate(CCBAnimationManagerDelegate *pDelegate)
 
 const char* CCBAnimationManager::getRunningSequenceName()
 {
-    return mRunningSequence->getName();
+    // NDH - Handle case when no sequence is running
+    return mRunningSequence ? mRunningSequence->getName() : NULL;
 }
 
 CCSize CCBAnimationManager::getContainerSize(CCNode *pNode)
