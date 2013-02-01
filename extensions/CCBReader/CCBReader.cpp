@@ -509,12 +509,25 @@ float CCBReader::readFloat() {
             return (float)this->readInt(true);
         default:
             {
+#if (CC_TARGET_PLATFORM != CC_PLATFORM_IOS)
                 /* using a memcpy since the compiler isn't
                  * doing the float ptr math correctly on device.
                  * TODO still applies in C++ ? */
-                float * pF = (float*)(this->mBytes + this->mCurrentByte);
+//                float * pF = (float*)(this->mBytes + this->mCurrentByte);
+//                float f = 0;
+//                memcpy(&f, pF, sizeof(float));
+                
+                /* NDH - no need for memcpy on non-iOS platforms */
+                float f = *(float*)(this->mBytes + this->mCurrentByte);
+#else
+                /* NDH - copy byte by byte on iOS to avoid
+                 * crash in optimised code */
                 float f = 0;
-                memcpy(&f, pF, sizeof(float));
+                char * pDest = (char*)&f;
+                char * pSrc = (char*)(this->mBytes + this->mCurrentByte);
+                for (int i = 0 ; i < sizeof(float) ; i++)
+                    memcpy(pDest + i, pSrc + i, 1);
+#endif
                 this->mCurrentByte += 4;
                 return f;
             }
