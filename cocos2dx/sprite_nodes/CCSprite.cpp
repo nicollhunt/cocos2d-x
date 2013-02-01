@@ -544,6 +544,10 @@ void CCSprite::draw(void)
 
     CCAssert(!m_pobBatchNode, "If CCSprite is being rendered by CCSpriteBatchNode, CCSprite#draw SHOULD NOT be called");
 
+    // NDH - Simple optimisations
+    if (m_nOpacity == 0)
+        return;
+
     CC_NODE_DRAW_SETUP();
 
     ccGLBlendFunc( m_sBlendFunc.src, m_sBlendFunc.dst );

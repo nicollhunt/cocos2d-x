@@ -587,6 +587,10 @@ bool CCParticleSystem::isFull()
 // ParticleSystem - MainLoop
 void CCParticleSystem::update(float dt)
 {
+    // NDH - Simple optimisations
+    if (!m_bVisible)
+        return;
+    
     CC_PROFILER_START_CATEGORY(kCCProfilerCategoryParticles , "CCParticleSystem - update");
 
     if (m_bIsActive && m_fEmissionRate)

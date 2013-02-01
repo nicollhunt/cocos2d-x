@@ -662,6 +662,10 @@ void CCLayerColor::updateColor()
 
 void CCLayerColor::draw()
 {
+    // NDH - Simple optimisations
+    if (m_cOpacity == 0)
+        return;
+    
     CC_NODE_DRAW_SETUP();
 
     ccGLEnableVertexAttribs( kCCVertexAttribFlag_Position | kCCVertexAttribFlag_Color );
