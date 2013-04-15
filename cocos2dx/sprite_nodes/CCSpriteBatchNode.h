@@ -88,6 +88,10 @@ public:
     static CCSpriteBatchNode* createWithTexture(CCTexture2D* tex) {
         return CCSpriteBatchNode::createWithTexture(tex, kDefaultSpriteBatchCapacity);
     }
+    /* NDH - Adding create() method for CCBReader stuff */
+    static CCSpriteBatchNode* create() {
+        return CCSpriteBatchNode::createWithTexture(NULL);
+    }
 
     /** creates a CCSpriteBatchNode with a file image (.png, .jpeg, .pvr, etc) and capacity of children.
     The capacity will be increased in 33% in runtime if it run out of space.
