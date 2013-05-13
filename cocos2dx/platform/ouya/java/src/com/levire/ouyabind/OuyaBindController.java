@@ -53,14 +53,26 @@ public class OuyaBindController
 	public static boolean onGenericMotionEvent(android.view.MotionEvent event)
 	{
 		boolean handled = OuyaController.onGenericMotionEvent(event);
-		OuyaController controller = OuyaController.getControllerByDeviceId(event.getDeviceId());
-				
-		//Log.d("OUYA Controller", "onGenericMotionEvent "+ event.getDeviceId());
-		if (controller != null)
-		{
-			OuyaBindController.onNativeLeftStickMotionEvent(event.getDeviceId(), controller.getAxisValue(OuyaController.AXIS_LS_X), controller.getAxisValue(OuyaController.AXIS_LS_Y));
-			OuyaBindController.onNativeRightStickMotionEvent(event.getDeviceId(), controller.getAxisValue(OuyaController.AXIS_RS_X), controller.getAxisValue(OuyaController.AXIS_RS_Y));
-		}
+//		OuyaController controller = OuyaController.getControllerByDeviceId(event.getDeviceId());
+//		Log.d("OUYA Controller", "onGenericMotionEvent "+ event.getDeviceId() + controller);
+
+		int player = OuyaController.getPlayerNumByDeviceId(event.getDeviceId());    
+//		Log.d("OUYA Controller", "onGenericMotionEvent "+ player);
+	
+		float LS_X = event.getAxisValue(OuyaController.AXIS_LS_X);
+	    float LS_Y = event.getAxisValue(OuyaController.AXIS_LS_Y);
+	    float RS_X = event.getAxisValue(OuyaController.AXIS_RS_X);
+	    float RS_Y = event.getAxisValue(OuyaController.AXIS_RS_Y);
+	    float L2 = event.getAxisValue(OuyaController.AXIS_L2);
+	    float R2 = event.getAxisValue(OuyaController.AXIS_R2);
+	    
+	    OuyaBindController.onNativeLeftStickMotionEvent(event.getDeviceId(), LS_X, LS_Y);
+	    
+//		if (controller != null)
+//		{
+//			OuyaBindController.onNativeLeftStickMotionEvent(event.getDeviceId(), controller.getAxisValue(OuyaController.AXIS_LS_X), controller.getAxisValue(OuyaController.AXIS_LS_Y));
+//			OuyaBindController.onNativeRightStickMotionEvent(event.getDeviceId(), controller.getAxisValue(OuyaController.AXIS_RS_X), controller.getAxisValue(OuyaController.AXIS_RS_Y));
+//		}
 		return handled;
 	}
 }

@@ -545,10 +545,7 @@ void CCBAnimationManager::runAction(CCNode *pNode, CCBSequenceProperty *pSeqProp
             if (action)
             {
                 // Apply easing
-//                action = getEaseAction(action, kf0->getEasingType(), kf0->getEasingOpt());
-
-                // NDH - Till this is exposed in the editor, always apply easing...
-                action = getEaseAction(action, kCCBKeyframeEasingCubicInOut, 2.f);
+                action = getEaseAction(action, kf0->getEasingType(), kf0->getEasingOpt());
 
                 actions->addObject(action);
             }
