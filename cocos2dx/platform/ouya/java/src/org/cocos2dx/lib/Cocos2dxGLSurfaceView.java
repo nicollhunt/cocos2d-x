@@ -322,7 +322,8 @@ public class Cocos2dxGLSurfaceView extends GLSurfaceView {
 				});
 				return true;
 			default:
-				return super.onKeyDown(pKeyCode, pKeyEvent);
+				// NDH - returning true here stops bizarre ghost button presses
+				return true;//super.onKeyDown(pKeyCode, pKeyEvent);
 		}
 	}
 	

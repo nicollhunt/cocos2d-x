@@ -546,6 +546,8 @@ CCSpriteFrame * CCNodeLoader::parsePropTypeSpriteFrame(CCNode * pNode, CCNode * 
         }
     }
     
+    CCAssert(spriteFrame != NULL, "Error loading spriteframe");
+    
     return spriteFrame;
 }
 
