@@ -34,7 +34,8 @@ extern "C"
         BUTTON_R3 = 107,
         BUTTON_L3 = 106,
         AXIS_L2 = 17,
-        AXIS_R2 = 18
+        AXIS_R2 = 18,
+        OUYA_MENU = 82,
     };
     
     enum OuyaControllerAxis

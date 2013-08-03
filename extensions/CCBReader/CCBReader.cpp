@@ -493,7 +493,7 @@ int CCBReader::readInt(bool pSigned) {
 }
 
 
-float CCBReader::readFloat() {
+float __attribute__((optimize("O0"))) CCBReader::readFloat() {
     unsigned char type = this->readByte();
     
     switch (type) {

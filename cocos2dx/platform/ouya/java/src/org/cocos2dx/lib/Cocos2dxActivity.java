@@ -31,6 +31,8 @@ import android.os.Message;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
+import tv.ouya.console.api.OuyaController;
+
 public abstract class Cocos2dxActivity extends Activity implements Cocos2dxHelperListener {
 	// ===========================================================
 	// Constants
@@ -52,7 +54,7 @@ public abstract class Cocos2dxActivity extends Activity implements Cocos2dxHelpe
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
+			
     	this.mHandler = new Cocos2dxHandler(this);
 
     	this.init();
@@ -138,6 +140,9 @@ public abstract class Cocos2dxActivity extends Activity implements Cocos2dxHelpe
 
         // Set framelayout as the content view
 		setContentView(framelayout);
+		
+		// Initialise OUYA Controller stuff
+		OuyaController.init(this);
 	}
 	
     public Cocos2dxGLSurfaceView onCreateView() {
