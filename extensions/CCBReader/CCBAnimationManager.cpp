@@ -677,14 +677,21 @@ void CCBAnimationManager::sequenceCompleted()
         mDelegate->completedAnimationSequenceNamed(mRunningSequence->getName());
     }
     
-    if (mTarget && mAnimationCompleteCallbackFunc) {
-        (mTarget->*mAnimationCompleteCallbackFunc)();
-    }
+//    if (mTarget && mAnimationCompleteCallbackFunc) {
+//        (mTarget->*mAnimationCompleteCallbackFunc)();
+//    }
     
     int nextSeqId = mRunningSequence->getChainedSequenceId();
     mRunningSequence = NULL;
-    
-    if (nextSeqId != -1)
+
+    // NDH - allow callback functions to start new animations
+    if (mTarget && mAnimationCompleteCallbackFunc) {
+        (mTarget->*mAnimationCompleteCallbackFunc)();
+    }
+
+    // NDH - allow callback functions to start new animations
+//    if (nextSeqId != -1)
+    if (nextSeqId != -1 && mRunningSequence == NULL)
     {
         runAnimationsForSequenceIdTweenDuration(nextSeqId, 0);
     }
