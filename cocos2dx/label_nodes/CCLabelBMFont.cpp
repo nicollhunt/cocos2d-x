@@ -895,7 +895,10 @@ void CCLabelBMFont::createFontChars()
         if (charSet->find(c) == charSet->end())
         {
             CCLOG("CCLabelBMFont: Attempted to use character not defined in this bitmap: %d", c);
-            continue;      
+
+            // NDH - Replace invalid characters with a space
+//            continue;
+            c = ' ';
         }
 
         tCCFontDefHashElement *element = NULL;
@@ -920,7 +923,7 @@ void CCLabelBMFont::createFontChars()
         CCSprite *fontChar;
 
         bool hasSprite = true;
-        fontChar = (CCSprite*)(this->getChildByTag(i));
+        fontChar = (CCSprite*)(this->getChildByIndex(i));
         if( ! fontChar )
         {
             if( 0 )
@@ -1159,7 +1162,7 @@ void CCLabelBMFont::updateLabel()
         {
             CCSprite* characterSprite;
 
-            while (!(characterSprite = (CCSprite*)this->getChildByTag(j + skip)))
+            while (!(characterSprite = (CCSprite*)this->getChildByIndex(j + skip)))
                 skip++;
 
             if (!characterSprite->isVisible())
@@ -1327,7 +1330,7 @@ void CCLabelBMFont::updateLabel()
                 int index = i + line_length - 1 + lineNumber;
                 if (index < 0) continue;
 
-                CCSprite* lastChar = (CCSprite*)getChildByTag(index);
+                CCSprite* lastChar = (CCSprite*)getChildByIndex(index);
                 if ( lastChar == NULL )
                     continue;
 
@@ -1353,7 +1356,8 @@ void CCLabelBMFont::updateLabel()
                         index = i + j + lineNumber;
                         if (index < 0) continue;
 
-                        CCSprite* characterSprite = (CCSprite*)getChildByTag(index);
+                        CCSprite* characterSprite = (CCSprite*)getChildByIndex(index);
+
                         characterSprite->setPosition(ccpAdd(characterSprite->getPosition(), ccp(shift, 0.0f)));
                     }
                 }

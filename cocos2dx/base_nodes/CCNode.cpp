@@ -564,6 +564,16 @@ CCNode* CCNode::getChildByTag(int aTag)
     return NULL;
 }
 
+CCNode* CCNode::getChildByIndex(int index)
+{
+    if(m_pChildren && index < m_pChildren->count())
+    {
+        return (CCNode *)m_pChildren->objectAtIndex(index);
+    }
+    return NULL;
+}
+
+
 /* "add" logic MUST only be on this method
 * If a class want's to extend the 'addChild' behavior it only needs
 * to override this method

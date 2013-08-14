@@ -506,6 +506,11 @@ public:
      @since v0.7.1
      */
     CCNode * getChildByTag(int tag);
+    
+    /** Gets a child by its position in the children array
+     @return returns a CCNode object, NULL if no child at specified index
+     */
+    CCNode * getChildByIndex(int index);
 
     /** Reorders a child according to a new z value.
      * The child MUST be already added.
