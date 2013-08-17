@@ -115,7 +115,9 @@ public class Cocos2dxRenderer implements GLSurfaceView.Renderer {
 	private static native void nativeTouchesEnd(final int pID, final float pX, final float pY);
 	private static native void nativeTouchesMove(final int[] pIDs, final float[] pXs, final float[] pYs);
 	private static native void nativeTouchesCancel(final int[] pIDs, final float[] pXs, final float[] pYs);
-	private static native boolean nativeKeyDown(final int pKeyCode);
+	private static native boolean nativeAxisMovement(final int pAxisType, final float pValX, final float pValY, final int pDeviceID, final int pDeviceDesc);
+	private static native boolean nativeKeyDown(final int pKeyCode, final int pDeviceID, final int pDeviceDesc);
+	private static native boolean nativeKeyUp(final int pKeyCode, final int pDeviceID, final int pDeviceDesc);
 	private static native void nativeRender();
 	private static native void nativeInit(final int pWidth, final int pHeight);
 	private static native void nativeOnPause();
@@ -137,8 +139,16 @@ public class Cocos2dxRenderer implements GLSurfaceView.Renderer {
 		Cocos2dxRenderer.nativeTouchesMove(pIDs, pXs, pYs);
 	}
 
-	public void handleKeyDown(final int pKeyCode) {
-		Cocos2dxRenderer.nativeKeyDown(pKeyCode);
+	public void handleAxisMovement(final int pAxisType, final float pValX, final float pValY, final int pDeviceID, final int pDeviceDesc) {
+		Cocos2dxRenderer.nativeAxisMovement(pAxisType, pValX, pValY, pDeviceID, pDeviceDesc);
+	}
+	
+	public void handleKeyDown(final int pKeyCode, final int pDeviceID, final int pDeviceDesc) {
+		Cocos2dxRenderer.nativeKeyDown(pKeyCode, pDeviceID, pDeviceDesc);
+	}
+
+	public void handleKeyUp(final int pKeyCode, final int pDeviceID, final int pDeviceDesc) {
+		Cocos2dxRenderer.nativeKeyUp(pKeyCode, pDeviceID, pDeviceDesc);
 	}
 
 	public void handleOnPause() {

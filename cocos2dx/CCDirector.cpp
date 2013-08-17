@@ -43,6 +43,7 @@ THE SOFTWARE.
 #include "label_nodes/CCLabelAtlas.h"
 #include "actions/CCActionManager.h"
 #include "CCConfiguration.h"
+#include "gamepad_dispatcher/CCGamepadDispatcher.h"
 #include "keypad_dispatcher/CCKeypadDispatcher.h"
 #include "CCAccelerometer.h"
 #include "sprite_nodes/CCAnimationCache.h"
@@ -146,6 +147,9 @@ bool CCDirector::init(void)
     m_pTouchDispatcher = new CCTouchDispatcher();
     m_pTouchDispatcher->init();
 
+    // GamepadDispatcher
+    m_pGamepadDispatcher = new CCGamepadDispatcher();
+
     // KeypadDispatcher
     m_pKeypadDispatcher = new CCKeypadDispatcher();
 
@@ -172,6 +176,7 @@ CCDirector::~CCDirector(void)
     CC_SAFE_RELEASE(m_pScheduler);
     CC_SAFE_RELEASE(m_pActionManager);
     CC_SAFE_RELEASE(m_pTouchDispatcher);
+    CC_SAFE_RELEASE(m_pGamepadDispatcher);
     CC_SAFE_RELEASE(m_pKeypadDispatcher);
     CC_SAFE_DELETE(m_pAccelerometer);
 
@@ -886,6 +891,18 @@ void CCDirector::setTouchDispatcher(CCTouchDispatcher* pTouchDispatcher)
 CCTouchDispatcher* CCDirector::getTouchDispatcher()
 {
     return m_pTouchDispatcher;
+}
+
+void CCDirector::setGamepadDispatcher(CCGamepadDispatcher* pGamepadDispatcher)
+{
+    CC_SAFE_RETAIN(pGamepadDispatcher);
+    CC_SAFE_RELEASE(m_pGamepadDispatcher);
+    m_pGamepadDispatcher = pGamepadDispatcher;
+}
+
+CCGamepadDispatcher* CCDirector::getGamepadDispatcher()
+{
+    return m_pGamepadDispatcher;
 }
 
 void CCDirector::setKeypadDispatcher(CCKeypadDispatcher* pKeypadDispatcher)

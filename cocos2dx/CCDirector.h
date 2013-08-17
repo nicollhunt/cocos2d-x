@@ -71,6 +71,7 @@ class CCNode;
 class CCScheduler;
 class CCActionManager;
 class CCTouchDispatcher;
+class CCGamepadDispatcher;
 class CCKeypadDispatcher;
 class CCAccelerometer;
 
@@ -312,6 +313,11 @@ public:
      @since v2.0
      */
     CC_PROPERTY(CCTouchDispatcher*, m_pTouchDispatcher, TouchDispatcher);
+
+    /** CCGamepadDispatcher associated with this director
+     @since v2.0
+     */
+    CC_PROPERTY(CCGamepadDispatcher*, m_pGamepadDispatcher, GamepadDispatcher);
 
     /** CCKeypadDispatcher associated with this director
      @since v2.0

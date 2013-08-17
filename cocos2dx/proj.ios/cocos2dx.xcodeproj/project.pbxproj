@@ -287,6 +287,10 @@
 		15FBEE6B164BBB20008CB2C3 /* CCDrawNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 15FBEE6A164BBB20008CB2C3 /* CCDrawNode.h */; };
 		15FBEE6D164BBF77008CB2C3 /* CCDrawNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 15FBEE6C164BBF77008CB2C3 /* CCDrawNode.cpp */; };
 		2628297A15EC7064002C4240 /* ccTypeInfo.h in Headers */ = {isa = PBXBuildFile; fileRef = 2628297915EC7064002C4240 /* ccTypeInfo.h */; };
+		807C511B17BC0AF40045E172 /* CCGamepadDelegate.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 807C511717BC0AF40045E172 /* CCGamepadDelegate.cpp */; };
+		807C511C17BC0AF40045E172 /* CCGamepadDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = 807C511817BC0AF40045E172 /* CCGamepadDelegate.h */; };
+		807C511D17BC0AF40045E172 /* CCGamepadDispatcher.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 807C511917BC0AF40045E172 /* CCGamepadDispatcher.cpp */; };
+		807C511E17BC0AF40045E172 /* CCGamepadDispatcher.h in Headers */ = {isa = PBXBuildFile; fileRef = 807C511A17BC0AF40045E172 /* CCGamepadDispatcher.h */; };
 		80FEACE216A18EB800556073 /* CDAudioManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 80FEACD816A18EB800556073 /* CDAudioManager.h */; };
 		80FEACE316A18EB800556073 /* CDAudioManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 80FEACD916A18EB800556073 /* CDAudioManager.m */; };
 		80FEACE416A18EB800556073 /* CDConfig.h in Headers */ = {isa = PBXBuildFile; fileRef = 80FEACDA16A18EB800556073 /* CDConfig.h */; };
@@ -586,6 +590,10 @@
 		15FBEE6A164BBB20008CB2C3 /* CCDrawNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCDrawNode.h; sourceTree = "<group>"; };
 		15FBEE6C164BBF77008CB2C3 /* CCDrawNode.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CCDrawNode.cpp; sourceTree = "<group>"; };
 		2628297915EC7064002C4240 /* ccTypeInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ccTypeInfo.h; sourceTree = "<group>"; };
+		807C511717BC0AF40045E172 /* CCGamepadDelegate.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CCGamepadDelegate.cpp; path = gamepad_dispatcher/CCGamepadDelegate.cpp; sourceTree = "<group>"; };
+		807C511817BC0AF40045E172 /* CCGamepadDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CCGamepadDelegate.h; path = gamepad_dispatcher/CCGamepadDelegate.h; sourceTree = "<group>"; };
+		807C511917BC0AF40045E172 /* CCGamepadDispatcher.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CCGamepadDispatcher.cpp; path = gamepad_dispatcher/CCGamepadDispatcher.cpp; sourceTree = "<group>"; };
+		807C511A17BC0AF40045E172 /* CCGamepadDispatcher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CCGamepadDispatcher.h; path = gamepad_dispatcher/CCGamepadDispatcher.h; sourceTree = "<group>"; };
 		80FEACD816A18EB800556073 /* CDAudioManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CDAudioManager.h; sourceTree = "<group>"; };
 		80FEACD916A18EB800556073 /* CDAudioManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CDAudioManager.m; sourceTree = "<group>"; };
 		80FEACDA16A18EB800556073 /* CDConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CDConfig.h; sourceTree = "<group>"; };
@@ -657,6 +665,7 @@
 				1551A37F158F2ADE00E66CFE /* cocoa */,
 				15FBEE65164BBA97008CB2C3 /* draw_nodes */,
 				1551A396158F2ADE00E66CFE /* effects */,
+				807C511617BC0AC00045E172 /* gamepad_dispatcher */,
 				1551A3E8158F2ADE00E66CFE /* include */,
 				1551A3F0158F2ADE00E66CFE /* kazmath */,
 				1551A413158F2ADE00E66CFE /* keypad_dispatcher */,
@@ -1185,6 +1194,17 @@
 			path = draw_nodes;
 			sourceTree = "<group>";
 		};
+		807C511617BC0AC00045E172 /* gamepad_dispatcher */ = {
+			isa = PBXGroup;
+			children = (
+				807C511717BC0AF40045E172 /* CCGamepadDelegate.cpp */,
+				807C511817BC0AF40045E172 /* CCGamepadDelegate.h */,
+				807C511917BC0AF40045E172 /* CCGamepadDispatcher.cpp */,
+				807C511A17BC0AF40045E172 /* CCGamepadDispatcher.h */,
+			);
+			name = gamepad_dispatcher;
+			sourceTree = "<group>";
+		};
 		80FEACD716A18EB800556073 /* CocosDenshion */ = {
 			isa = PBXGroup;
 			children = (
@@ -1386,6 +1406,8 @@
 				80FEACEA16A18EB800556073 /* SimpleAudioEngine_objc.h in Headers */,
 				80FEACF016A18F0400556073 /* Export.h in Headers */,
 				80FEACF116A18F0400556073 /* SimpleAudioEngine.h in Headers */,
+				807C511C17BC0AF40045E172 /* CCGamepadDelegate.h in Headers */,
+				807C511E17BC0AF40045E172 /* CCGamepadDispatcher.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1567,6 +1589,8 @@
 				80FEACE816A18EB800556073 /* CocosDenshion.m in Sources */,
 				80FEACE916A18EB800556073 /* SimpleAudioEngine.mm in Sources */,
 				80FEACEB16A18EB800556073 /* SimpleAudioEngine_objc.m in Sources */,
+				807C511B17BC0AF40045E172 /* CCGamepadDelegate.cpp in Sources */,
+				807C511D17BC0AF40045E172 /* CCGamepadDispatcher.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

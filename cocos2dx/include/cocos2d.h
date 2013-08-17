@@ -94,6 +94,10 @@ THE SOFTWARE.
 #include "keypad_dispatcher/CCKeypadDelegate.h"
 #include "keypad_dispatcher/CCKeypadDispatcher.h"
 
+// gamepad_dispatcher
+#include "gamepad_dispatcher/CCGamepadDelegate.h"
+#include "gamepad_dispatcher/CCGamepadDispatcher.h"
+
 // label_nodes
 #include "label_nodes/CCLabelAtlas.h"
 #include "label_nodes/CCLabelTTF.h"

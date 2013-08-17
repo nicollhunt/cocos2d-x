@@ -41,6 +41,8 @@ draw_nodes/CCDrawingPrimitives.cpp \
 draw_nodes/CCDrawNode.cpp \
 effects/CCGrabber.cpp \
 effects/CCGrid.cpp \
+gamepad_dispatcher/CCGamepadDelegate.cpp \
+gamepad_dispatcher/CCGamepadDispatcher.cpp \
 kazmath/src/aabb.c \
 kazmath/src/mat3.c \
 kazmath/src/mat4.c \

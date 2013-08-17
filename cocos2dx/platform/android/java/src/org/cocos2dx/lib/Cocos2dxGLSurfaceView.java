@@ -23,6 +23,10 @@ THE SOFTWARE.
  ****************************************************************************/
 package org.cocos2dx.lib;
 
+import java.lang.reflect.Method;
+
+import org.cocos2dx.lib.Cocos2dxGLSurfaceView;
+
 import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.os.Handler;
@@ -180,6 +184,7 @@ public class Cocos2dxGLSurfaceView extends GLSurfaceView {
 
 	@Override
 	public boolean onTouchEvent(final MotionEvent pMotionEvent) {
+				
 		// these data are used in ACTION_MOVE and ACTION_CANCEL
 		final int pointerNumber = pMotionEvent.getPointerCount();
 		final int[] ids = new int[pointerNumber];
@@ -287,21 +292,130 @@ public class Cocos2dxGLSurfaceView extends GLSurfaceView {
 		}
 	}
 
+	public int getDeviceId(final android.view.InputEvent pEvent) {
+		final android.view.InputDevice device = pEvent.getDevice();
+	     if (device == null) {
+	         return -1;
+	     }
+	     return device.getId();
+	}
+	
+	public String getDeviceDescriptor(final android.view.InputEvent pEvent) {
+		final android.view.InputDevice device = pEvent.getDevice();
+	     if (device == null) {
+	         return null;
+	     }
+	     String desc = null;
+	     
+	     // The Amazon Kindle HD doesn't support InputDevice.getDescriptor for some reason
+	     // so fall back to getName() in that case
+	     Method m = null;
+	     try {
+	       m = android.view.InputDevice.class.getMethod("getDescriptor");
+	     } catch (Exception e) {
+	       // doesn't matter
+	     }
+	     
+	     if (m != null)
+	     {
+	    	 desc = device.getDescriptor();
+	     } else {
+	    	 desc = device.getName();
+	     }
+	     return desc;
+	}
+	
+	public int getDeviceHash(final android.view.InputEvent pEvent) {
+	     String deviceData = getDeviceDescriptor(pEvent);
+	     return deviceData.hashCode();
+	}
+	
+	@Override
+	public boolean onGenericMotionEvent(final MotionEvent pEvent)
+	{
+//		Log.d(Cocos2dxGLSurfaceView.TAG, String.format("onGenericMotionEvent source=%d action=%d",
+//				pEvent.getSource(),
+//				pEvent.getAction()));
+		
+		if (pEvent.getSource() == android.view.InputDevice.SOURCE_JOYSTICK) {
+	         if (pEvent.getAction() == MotionEvent.ACTION_MOVE) {
+
+	        	final int deviceId = getDeviceId(pEvent);
+	     		final int deviceHash = getDeviceHash(pEvent);
+	     		
+	     		final float xVal = pEvent.getAxisValue(MotionEvent.AXIS_X);
+	     	    final float yVal = pEvent.getAxisValue(MotionEvent.AXIS_Y);
+	     	    
+//	     		Log.d(Cocos2dxGLSurfaceView.TAG, String.format("onGenericMotionEvent %.2f,%.2f - Id = %d Hash = %d",
+//	     				xVal,
+//	     				yVal,
+//	     				deviceId,
+//	     				deviceHash
+//	     				));
+	     		
+	     		this.queueEvent(new Runnable() {
+	     			@Override
+	     			public void run() {
+	     				Cocos2dxGLSurfaceView.this.mCocos2dxRenderer.handleAxisMovement(0, xVal, yVal, deviceId, deviceHash);
+	     			}
+	     		});
+	     		
+	     		// For some obscure reason the dpad stuff (on the Red Samurai controller at least) goes through
+	     		// here first and if we don't call the base class it never makes it to onKeyDown()
+	     		// I HATE FUCKING ANDROID CONTROLLER BULLSHIT
+//	             return true;
+	         }
+	     }
+		
+		return super.onGenericMotionEvent(pEvent);
+	}
+	
 	@Override
 	public boolean onKeyDown(final int pKeyCode, final KeyEvent pKeyEvent) {
-		switch (pKeyCode) {
-			case KeyEvent.KEYCODE_BACK:
-			case KeyEvent.KEYCODE_MENU:
-				this.queueEvent(new Runnable() {
-					@Override
-					public void run() {
-						Cocos2dxGLSurfaceView.this.mCocos2dxRenderer.handleKeyDown(pKeyCode);
-					}
-				});
-				return true;
-			default:
-				return super.onKeyDown(pKeyCode, pKeyEvent);
-		}
+	
+		// Ignore repeated keys
+		if (pKeyEvent.getRepeatCount() != 0)
+			return true;
+
+		final int pDeviceId = getDeviceId(pKeyEvent);
+		final int pDeviceHash = getDeviceHash(pKeyEvent);
+//		Log.d(Cocos2dxGLSurfaceView.TAG, String.format("onKeyDown %d - Id = %d Hash = %d",
+//				pKeyCode,
+//				pDeviceId,
+//				pDeviceHash
+//				));
+			
+		this.queueEvent(new Runnable() {
+			@Override
+			public void run() {
+				Cocos2dxGLSurfaceView.this.mCocos2dxRenderer.handleKeyDown(pKeyCode, pDeviceId, pDeviceHash);
+			}
+		});
+		return true;
+	}
+	
+	@Override
+	public boolean onKeyUp(final int pKeyCode, final KeyEvent pKeyEvent) {
+		
+		// Ignore repeated keys
+		if (pKeyEvent.getRepeatCount() != 0)
+			return true;
+
+		final int pDeviceId = getDeviceId(pKeyEvent);
+		final int pDeviceHash = getDeviceHash(pKeyEvent);
+//		Log.d(Cocos2dxGLSurfaceView.TAG, String.format("onKeyUp %d - Id = %d Hash = %d",
+//				pKeyCode,
+//				pDeviceId,
+//				pDeviceHash
+//				));
+		
+		this.queueEvent(new Runnable() {
+			@Override
+			public void run() {
+				Cocos2dxGLSurfaceView.this.mCocos2dxRenderer.handleKeyUp(pKeyCode, pDeviceId, pDeviceHash);
+			}
+		});
+		return true;
 	}
 
 	// ===========================================================

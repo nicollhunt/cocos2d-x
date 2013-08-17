@@ -53,8 +53,8 @@ public class OuyaBindController
 	public static boolean onGenericMotionEvent(android.view.MotionEvent event)
 	{
 		boolean handled = OuyaController.onGenericMotionEvent(event);
-//		OuyaController controller = OuyaController.getControllerByDeviceId(event.getDeviceId());
-//		Log.d("OUYA Controller", "onGenericMotionEvent "+ event.getDeviceId() + controller);
+		OuyaController controller = OuyaController.getControllerByDeviceId(event.getDeviceId());
+//		Log.d("OUYA Controller", "onGenericMotionEvent "+ event.getDeviceId() + " " + controller);
 
 		int player = OuyaController.getPlayerNumByDeviceId(event.getDeviceId());    
 //		Log.d("OUYA Controller", "onGenericMotionEvent "+ player);
