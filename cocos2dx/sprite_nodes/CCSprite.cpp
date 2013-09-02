@@ -522,7 +522,10 @@ void CCSprite::updateTransform(void)
         // NOTE THAT WE HAVE ALSO DEFINED virtual CCNode::updateTransform()
         arrayMakeObjectsPerformSelector(m_pChildren, updateTransform, CCSprite*);
     }*/
-    CCNode::updateTransform();
+    if (m_bHasChildren)
+    {
+        CCNode::updateTransform();
+    }
 
 #if CC_SPRITE_DEBUG_DRAW
     // draw bounding box

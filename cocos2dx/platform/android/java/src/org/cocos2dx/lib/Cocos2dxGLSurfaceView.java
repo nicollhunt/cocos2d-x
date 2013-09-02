@@ -370,6 +370,20 @@ public class Cocos2dxGLSurfaceView extends GLSurfaceView {
 		return super.onGenericMotionEvent(pEvent);
 	}
 	
+	public boolean shouldConsumeKeyEvent(final int pKeyCode, final KeyEvent pKeyEvent)
+	{
+		return
+		(
+//			(
+//				pKeyEvent.getSource() == android.view.InputDevice.SOURCE_GAMEPAD || 
+				pKeyEvent.getSource() == android.view.InputDevice.SOURCE_JOYSTICK ||
+//			) ||
+			pKeyCode == KeyEvent.KEYCODE_MENU ||
+			pKeyCode == KeyEvent.KEYCODE_BACK ||
+			KeyEvent.isGamepadButton(pKeyCode)
+		);
+	}
+	
 	@Override
 	public boolean onKeyDown(final int pKeyCode, final KeyEvent pKeyEvent) {
 	
@@ -377,21 +391,29 @@ public class Cocos2dxGLSurfaceView extends GLSurfaceView {
 		if (pKeyEvent.getRepeatCount() != 0)
 			return true;
 
-		final int pDeviceId = getDeviceId(pKeyEvent);
-		final int pDeviceHash = getDeviceHash(pKeyEvent);
-//		Log.d(Cocos2dxGLSurfaceView.TAG, String.format("onKeyDown %d - Id = %d Hash = %d",
-//				pKeyCode,
-//				pDeviceId,
-//				pDeviceHash
-//				));
-			
-		this.queueEvent(new Runnable() {
-			@Override
-			public void run() {
-				Cocos2dxGLSurfaceView.this.mCocos2dxRenderer.handleKeyDown(pKeyCode, pDeviceId, pDeviceHash);
-			}
-		});
-		return true;
+//		Log.d(Cocos2dxGLSurfaceView.TAG, String.format("onKeyDown %d pKeyEvent.getSource()=%d",pKeyCode, pKeyEvent.getSource()));
+		
+		if (shouldConsumeKeyEvent(pKeyCode, pKeyEvent)) 
+		{
+			final int pDeviceId = getDeviceId(pKeyEvent);
+			final int pDeviceHash = getDeviceHash(pKeyEvent);
+//			Log.d(Cocos2dxGLSurfaceView.TAG, String.format("onKeyDown %d - Id = %d Hash = %x",
+//					pKeyCode,
+//					pDeviceId,
+//					pDeviceHash
+//					));
+				
+			this.queueEvent(new Runnable() {
+				@Override
+				public void run() {
+					Cocos2dxGLSurfaceView.this.mCocos2dxRenderer.handleKeyDown(pKeyCode, pDeviceId, pDeviceHash);
+				}
+			});
+				
+			return true;
+		}
+		
+		return super.onKeyDown(pKeyCode, pKeyEvent);
 	}
 	
 	@Override
@@ -401,21 +423,26 @@ public class Cocos2dxGLSurfaceView extends GLSurfaceView {
 		if (pKeyEvent.getRepeatCount() != 0)
 			return true;
 
-		final int pDeviceId = getDeviceId(pKeyEvent);
-		final int pDeviceHash = getDeviceHash(pKeyEvent);
-//		Log.d(Cocos2dxGLSurfaceView.TAG, String.format("onKeyUp %d - Id = %d Hash = %d",
-//				pKeyCode,
-//				pDeviceId,
-//				pDeviceHash
-//				));
+		if (shouldConsumeKeyEvent(pKeyCode, pKeyEvent)) 
+		{
+			final int pDeviceId = getDeviceId(pKeyEvent);
+			final int pDeviceHash = getDeviceHash(pKeyEvent);
+	//		Log.d(Cocos2dxGLSurfaceView.TAG, String.format("onKeyUp %d - Id = %d Hash = %d",
+	//				pKeyCode,
+	//				pDeviceId,
+	//				pDeviceHash
+	//				));
+			
+			this.queueEvent(new Runnable() {
+				@Override
+				public void run() {
+					Cocos2dxGLSurfaceView.this.mCocos2dxRenderer.handleKeyUp(pKeyCode, pDeviceId, pDeviceHash);
+				}
+			});
+			return true;
+		}
 		
-		this.queueEvent(new Runnable() {
-			@Override
-			public void run() {
-				Cocos2dxGLSurfaceView.this.mCocos2dxRenderer.handleKeyUp(pKeyCode, pDeviceId, pDeviceHash);
-			}
-		});
-		return true;
+		return super.onKeyUp(pKeyCode, pKeyEvent);
 	}
 
 	// ===========================================================

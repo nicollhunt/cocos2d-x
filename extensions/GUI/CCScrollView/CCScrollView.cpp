@@ -226,6 +226,13 @@ void CCScrollView::setContentOffsetInDuration(CCPoint offset, float dt)
     this->schedule(schedule_selector(CCScrollView::performedAnimatedScroll));
 }
 
+void CCScrollView::stopAnimation()
+{
+    m_pContainer->stopAllActions();
+    unscheduleAllSelectors();
+}
+
+
 CCPoint CCScrollView::getContentOffset()
 {
     return m_pContainer->getPosition();

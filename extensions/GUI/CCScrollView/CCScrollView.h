@@ -112,6 +112,8 @@ public:
      */
     void setContentOffsetInDuration(CCPoint offset, float dt); 
 
+    void stopAnimation();
+
     void setZoomScale(float s);
     /**
      * Sets a new scale and does that for a predefined duration.
@@ -299,7 +301,7 @@ protected:
     /**
      * scroll speed
      */
-    CCPoint m_tScrollDistance;
+    CC_SYNTHESIZE(CCPoint, m_tScrollDistance, ScrollDistance);
     /**
      * Touch point
      */
