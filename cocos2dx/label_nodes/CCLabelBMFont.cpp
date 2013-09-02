@@ -709,6 +709,14 @@ void CCLabelBMFont::purgeCachedData()
     FNTConfigRemoveCache();
 }
 
+/** Returns the actual displayed U16 characters.
+ */
+const unsigned short* CCLabelBMFont::getDisplayString(void)
+{
+    return m_sString;
+}
+
+
 CCLabelBMFont * CCLabelBMFont::create()
 {
     CCLabelBMFont * pRet = new CCLabelBMFont();
@@ -881,6 +889,8 @@ void CCLabelBMFont::createFontChars()
     CCRect rect;
     ccBMFontDef fontDef;
 
+    m_tTagToIndex.clear();
+    int nChildIndex = 0;
     for (unsigned int i= 0; i < stringLen; i++)
     {
         unsigned short c = m_sString[i];
@@ -908,7 +918,7 @@ void CCLabelBMFont::createFontChars()
         HASH_FIND_INT(m_pConfiguration->m_pFontDefDictionary, &key, element);
         if (! element)
         {
-            CCLOG("cocos2d: LabelBMFont: characer not found %d", c);
+            CCLOG("cocos2d: LabelBMFont: character not found %d", c);
             continue;
         }
 
@@ -920,10 +930,11 @@ void CCLabelBMFont::createFontChars()
         rect.origin.x += m_tImageOffset.x;
         rect.origin.y += m_tImageOffset.y;
 
-        CCSprite *fontChar;
+        CCSprite *fontChar = NULL;
 
         bool hasSprite = true;
-        fontChar = (CCSprite*)(this->getChildByIndex(i));
+        fontChar = (CCSprite*)(this->getChildByIndex(nChildIndex));
+        
         if( ! fontChar )
         {
             if( 0 )
@@ -953,6 +964,8 @@ void CCLabelBMFont::createFontChars()
             fontChar->setVisible(true);
             fontChar->setOpacity(255);
         }
+        m_tTagToIndex[i] = nChildIndex++;
+        //CC_ASSERT(fontChar->getTag() == i);
 
         // See issue 1343. cast( signed short + unsigned integer ) == unsigned integer (sign is lost!)
         int yOffset = m_pConfiguration->m_nCommonHeight - fontDef.yOffset;
@@ -1160,18 +1173,41 @@ void CCLabelBMFont::updateLabel()
         CCArray* children = getChildren();
         for (unsigned int j = 0; j < children->count(); j++)
         {
+            if (i >= stringLength)
+                break;
+            
+            unsigned short character = str_whole[i];
+            
+            // Newline.
+            if (character == '\n')
+            {
+                cc_utf8_trim_ws(&last_word);
+                
+                last_word.push_back('\n');
+                multiline_string.insert(multiline_string.end(), last_word.begin(), last_word.end());
+                last_word.clear();
+                start_word = false;
+                start_line = false;
+                startOfWord = -1;
+                startOfLine = -1;
+                i++;
+                line++;
+                
+                // NDH - Fixed line wrapping issues
+                j--;
+                continue;
+            }
+
             CCSprite* characterSprite;
-
-            while (!(characterSprite = (CCSprite*)this->getChildByIndex(j + skip)))
+            
+            while (m_tTagToIndex.find(j + skip) == m_tTagToIndex.end())
                 skip++;
-
+            
+            characterSprite = (CCSprite*)this->getChildByIndex(m_tTagToIndex[j + skip]);
+            
             if (!characterSprite->isVisible())
                 continue;
 
-            if (i >= stringLength)
-                break;
-
-            unsigned short character = str_whole[i];
 
             if (!start_word)
             {
@@ -1182,38 +1218,6 @@ void CCLabelBMFont::updateLabel()
             {
                 startOfLine = startOfWord;
                 start_line = true;
-            }
-
-            // Newline.
-            if (character == '\n')
-            {
-                cc_utf8_trim_ws(&last_word);
-
-                last_word.push_back('\n');
-                multiline_string.insert(multiline_string.end(), last_word.begin(), last_word.end());
-                last_word.clear();
-                start_word = false;
-                start_line = false;
-                startOfWord = -1;
-                startOfLine = -1;
-                i++;
-                line++;
-
-                if (i >= stringLength)
-                    break;
-
-                character = str_whole[i];
-
-                if (!startOfWord)
-                {
-                    startOfWord = getLetterPosXLeft( characterSprite );
-                    start_word = true;
-                }
-                if (!startOfLine)
-                {
-                    startOfLine  = startOfWord;
-                    start_line = true;
-                }
             }
 
             // Whitespace.
@@ -1330,7 +1334,7 @@ void CCLabelBMFont::updateLabel()
                 int index = i + line_length - 1 + lineNumber;
                 if (index < 0) continue;
 
-                CCSprite* lastChar = (CCSprite*)getChildByIndex(index);
+                CCSprite* lastChar = (CCSprite*)getChildByIndex(m_tTagToIndex[index]);
                 if ( lastChar == NULL )
                     continue;
 
@@ -1356,7 +1360,7 @@ void CCLabelBMFont::updateLabel()
                         index = i + j + lineNumber;
                         if (index < 0) continue;
 
-                        CCSprite* characterSprite = (CCSprite*)getChildByIndex(index);
+                        CCSprite* characterSprite = (CCSprite*)getChildByIndex(m_tTagToIndex[index]);
 
                         characterSprite->setPosition(ccpAdd(characterSprite->getPosition(), ccp(shift, 0.0f)));
                     }

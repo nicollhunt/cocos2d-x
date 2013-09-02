@@ -69,12 +69,12 @@ public:
     /**
     @brief dispatch the game pad axis msg
     */
-    bool dispatchGamepadAxisMSG(ccGamepadAxisMSGType eType, float fValueX, float fValueY, int nDeviceID, int nDeviceHash);
+    bool dispatchGamepadAxisMSG(ccGamepadAxisMSGType eType, float fValueX, float fValueY, int nDeviceID, unsigned int nDeviceHash);
 
     /**
      @brief dispatch the game pad button msg
      */
-    bool dispatchGamepadBtnMSG(ccGamepadBtnMSGType eType, int nKeyCode, int nDeviceID, int nDeviceHash);
+    bool dispatchGamepadBtnMSG(ccGamepadBtnMSGType eType, int nKeyCode, int nDeviceID, unsigned int nDeviceHash);
 
 protected:
 

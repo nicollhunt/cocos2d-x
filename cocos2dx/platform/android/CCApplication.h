@@ -61,7 +61,15 @@ public:
      */
     virtual TargetPlatform getTargetPlatform();
 
+    /**
+      @brief Returns true if platform is of type specified
+      */
+    virtual bool isTargetPlatform(TargetPlatform eType);
+
 protected:
+
+    char *m_pDeviceType;
+
     static CCApplication * sm_pSharedApplication;
 };
 

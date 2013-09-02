@@ -211,6 +211,8 @@ protected:
     // reused char
     CCSprite *m_pReusedChar;
     
+    std::map<int, int> m_tTagToIndex;
+    
 public:
     CCLabelBMFont();
 
@@ -220,6 +222,10 @@ public:
     @since v0.99.3
     */
     static void purgeCachedData();
+    
+    /** Returns the actual displayed U16 characters.
+    */
+    const unsigned short* getDisplayString(void);
 
     /** creates a bitmap font atlas with an initial string and the FNT file */
     static CCLabelBMFont * create(const char *str, const char *fntFile, float width, CCTextAlignment alignment, CCPoint imageOffset);

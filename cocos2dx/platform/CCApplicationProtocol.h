@@ -12,6 +12,10 @@ enum TargetPlatform
     kTargetIphone,
     kTargetIpad,
     kTargetBlackBerry,
+    
+    // NDH - Added some sub-platforms
+    kTargetOUYA,
+    kTargetGameStick,
 };
 
 /**
@@ -60,6 +64,11 @@ public:
      @brief Get target platform
      */
     virtual TargetPlatform getTargetPlatform() = 0;
+    
+    /**
+     @brief Returns true if platform is of type specified
+     */
+    virtual bool isTargetPlatform(TargetPlatform eType) = 0;
 };
 
 // end of platform group

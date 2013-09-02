@@ -54,10 +54,10 @@ class CC_DLL CCGamepadDelegate
 public:
     
     // Axis movement
-    virtual void gamepadAxisMoved(ccGamepadAxisMSGType eType, float fValueX, float fValueY, int nDeviceID, int nDeviceHash) {}
+    virtual void gamepadAxisMoved(ccGamepadAxisMSGType eType, float fValueX, float fValueY, int nDeviceID, unsigned int nDeviceHash) {}
     
     // Button down/up
-    virtual void gamepadBtn(ccGamepadBtnMSGType eType, int nKeyCode, int nDeviceID, int nDeviceHash) {}
+    virtual void gamepadBtn(ccGamepadBtnMSGType eType, int nKeyCode, int nDeviceID, unsigned int nDeviceHash) {}
 
 };
 

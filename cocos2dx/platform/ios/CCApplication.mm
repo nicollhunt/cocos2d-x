@@ -129,4 +129,10 @@ TargetPlatform CCApplication::getTargetPlatform()
     }
 }
 
+bool CCApplication::isTargetPlatform(TargetPlatform eType)
+{
+    return getTargetPlatform() == eType ? true : false;
+}
+
+
 NS_CC_END

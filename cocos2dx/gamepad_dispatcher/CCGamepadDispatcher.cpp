@@ -118,10 +118,8 @@ void CCGamepadDispatcher::forceRemoveDelegate(CCGamepadDelegate* pDelegate)
     }
 }
 
-bool CCGamepadDispatcher::dispatchGamepadAxisMSG(ccGamepadAxisMSGType eType, float fValueX, float fValueY, int nDeviceID, int nDeviceHash)
+bool CCGamepadDispatcher::dispatchGamepadAxisMSG(ccGamepadAxisMSGType eType, float fValueX, float fValueY, int nDeviceID, unsigned int nDeviceHash)
 {
-    CCLog("dispatchGamepadAxisMSG");
-
     CCGamepadHandler*  pHandler = NULL;
     CCGamepadDelegate* pDelegate = NULL;
 
@@ -165,9 +163,8 @@ bool CCGamepadDispatcher::dispatchGamepadAxisMSG(ccGamepadAxisMSGType eType, flo
     return true;
 }
 
-bool CCGamepadDispatcher::dispatchGamepadBtnMSG(ccGamepadBtnMSGType eType, int nKeyCode, int nDeviceID, int nDeviceHash)
+bool CCGamepadDispatcher::dispatchGamepadBtnMSG(ccGamepadBtnMSGType eType, int nKeyCode, int nDeviceID, unsigned int nDeviceHash)
 {
-    CCLog("CCGamepadDispatcher::dispatchGamepadBtnMSG %d %d", eType, nKeyCode);
     CCGamepadHandler*  pHandler = NULL;
     CCGamepadDelegate* pDelegate = NULL;
     

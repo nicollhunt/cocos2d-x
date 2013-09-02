@@ -129,4 +129,20 @@ TargetPlatform CCApplication::getTargetPlatform()
     return kTargetAndroid;
 }
 
+bool CCApplication::isTargetPlatform(TargetPlatform eType)
+{
+	if (eType == kTargetAndroid)
+	{
+		return true;
+	}
+
+	if (eType == kTargetOUYA && strcmp(getDeviceModelJNI(), "OUYA Console") == 0)
+		return true;
+
+	if (eType == kTargetGameStick && strstr(getDeviceModelJNI(), "GameStick") != NULL)
+		return true;
+
+	return false;
+}
+
 NS_CC_END
