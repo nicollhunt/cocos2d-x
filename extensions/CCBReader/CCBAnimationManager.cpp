@@ -347,6 +347,15 @@ CCActionInterval* CCBAnimationManager::getAction(CCBKeyframe *pKeyframe0, CCBKey
         
         return CCScaleTo::create(duration, x, y);
     }
+    else if (strcmp(pPropName, "anchorPoint") == 0)
+    {       
+        // Get point
+        CCArray *value = (CCArray*)pKeyframe1->getValue();
+        float x = ((CCBValue*)value->objectAtIndex(0))->getFloatValue();
+        float y = ((CCBValue*)value->objectAtIndex(1))->getFloatValue();
+                
+        return CCAnchorPointTo::create(duration, x, y);
+    }
     else 
     {
         CCLog("CCBReader: Failed to create animation for property: %s", pPropName);
@@ -428,6 +437,15 @@ void CCBAnimationManager::setAnimatedProperty(const char *pPropName, CCNode *pNo
             {
                 bool visible = ((CCBValue*)pValue)->getBoolValue();
                 pNode->setVisible(visible);
+            }
+            else if (strcmp(pPropName, "anchorPoint") == 0)
+            {
+                // Get relative position
+                CCArray *value = (CCArray*)pValue;
+                float x = ((CCBValue*)value->objectAtIndex(0))->getFloatValue();
+                float y = ((CCBValue*)value->objectAtIndex(1))->getFloatValue();
+
+                pNode->setAnchorPoint(ccp(x, y));
             }
             else
             {

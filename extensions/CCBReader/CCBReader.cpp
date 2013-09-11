@@ -751,7 +751,9 @@ CCBKeyframe* CCBReader::readKeyframe(int type)
     {
         value = CCBValue::create(readFloat());
     }
-    else if (type == kCCBPropTypeScaleLock || type == kCCBPropTypePosition)
+    else if (type == kCCBPropTypeScaleLock ||
+             type == kCCBPropTypePosition ||
+             type == kCCBPropTypePoint)
     {
         float a = readFloat();
         float b = readFloat();

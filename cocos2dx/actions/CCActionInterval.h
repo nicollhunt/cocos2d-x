@@ -760,6 +760,34 @@ private:
     CCFiniteTimeAction* m_pAction;
 };
 
+/** @brief Scales a CCNode object to a zoom factor by modifying it's scale attribute.
+ @warning This action doesn't support "reverse"
+ */
+class CC_DLL CCAnchorPointTo : public CCActionInterval
+{
+public:   
+    /** initializes the action with and X factor and a Y factor */
+    bool initWithDuration(float duration, float sx, float sy);
+    
+    virtual CCObject* copyWithZone(CCZone* pZone);
+    virtual void startWithTarget(CCNode *pTarget);
+    virtual void update(float time);
+    
+public:
+    
+    /** creates the action with and X factor and a Y factor */
+    static CCAnchorPointTo* create(float duration, float sx, float sy);
+protected:
+    float m_fX;
+    float m_fY;
+    float m_fStartX;
+    float m_fStartY;
+    float m_fEndX;
+    float m_fEndY;
+    float m_fDeltaX;
+    float m_fDeltaY;
+};
+
 // end of actions group
 /// @}
 

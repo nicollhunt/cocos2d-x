@@ -129,4 +129,17 @@ TargetPlatform CCApplication::getTargetPlatform()
     return kTargetAndroid;
 }
 
+bool CCApplication::isTargetPlatform(TargetPlatform eType)
+{
+	if (eType == kTargetAndroid)
+	{
+		return true;
+	}
+
+	if (eType == kTargetOUYA)
+		return true;
+
+	return false;
+}
+
 NS_CC_END

@@ -2518,4 +2518,75 @@ void CCTargetedAction::update(float time)
     m_pAction->update(time);
 }
 
+//
+// CCAnchorPointTo
+//
+CCAnchorPointTo* CCAnchorPointTo::create(float duration, float sx, float sy)
+{
+    CCAnchorPointTo *pAnchorPointTo = new CCAnchorPointTo();
+    pAnchorPointTo->initWithDuration(duration, sx, sy);
+    pAnchorPointTo->autorelease();
+    
+    return pAnchorPointTo;
+}
+
+bool CCAnchorPointTo::initWithDuration(float duration, float sx, float sy)
+{
+    if (CCActionInterval::initWithDuration(duration))
+    {
+        m_fEndX = sx;
+        m_fEndY = sy;
+        
+        return true;
+    }
+    
+    return false;
+}
+
+CCObject* CCAnchorPointTo::copyWithZone(CCZone *pZone)
+{
+    CCZone* pNewZone = NULL;
+    CCAnchorPointTo* pCopy = NULL;
+    if(pZone && pZone->m_pCopyObject)
+    {
+        //in case of being called at sub class
+        pCopy = (CCAnchorPointTo*)(pZone->m_pCopyObject);
+    }
+    else
+    {
+        pCopy = new CCAnchorPointTo();
+        pZone = pNewZone = new CCZone(pCopy);
+    }
+    
+    CCActionInterval::copyWithZone(pZone);
+    
+    
+    pCopy->initWithDuration(m_fDuration, m_fEndX, m_fEndY);
+    
+    CC_SAFE_DELETE(pNewZone);
+    return pCopy;
+}
+
+void CCAnchorPointTo::startWithTarget(CCNode *pTarget)
+{
+    CCActionInterval::startWithTarget(pTarget);
+    CCPoint point = pTarget->getAnchorPoint();
+    m_fStartX = point.x;
+    m_fStartY = point.y;
+    m_fDeltaX = m_fEndX - m_fStartX;
+    m_fDeltaY = m_fEndY - m_fStartY;
+}
+
+void CCAnchorPointTo::update(float time)
+{
+    if (m_pTarget)
+    {
+        CCPoint point;
+        point.x = m_fStartX + m_fDeltaX * time;
+        point.y = m_fStartY + m_fDeltaY * time;
+        m_pTarget->setAnchorPoint(point);
+    }
+}
+
+
 NS_CC_END
