@@ -493,7 +493,11 @@ int CCBReader::readInt(bool pSigned) {
 }
 
 
-float __attribute__((optimize("O0"))) CCBReader::readFloat() {
+float
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID || CC_TARGET_PLATFORM == CC_PLATFORM_OUYA)
+__attribute__((optimize("O0")))
+#endif
+CCBReader::readFloat() {
     unsigned char type = this->readByte();
     
     switch (type) {

@@ -184,6 +184,15 @@ bool CCSprite::initWithTexture(CCTexture2D *pTexture, const CCRect& rect, bool r
     m_sQuad.tl.colors = tmpColor;
     m_sQuad.tr.colors = tmpColor;
 
+#if CC_SPRITE_USE_TRIANGLE_LIST
+    m_aVertices[0].colors = tmpColor;
+    m_aVertices[1].colors = tmpColor;
+    m_aVertices[2].colors = tmpColor;
+    m_aVertices[3].colors = tmpColor;
+    m_aVertices[4].colors = tmpColor;
+    m_aVertices[5].colors = tmpColor;
+#endif
+
     // update texture (calls updateBlendFunc)
     setTexture(pTexture);
     setTextureRect(rect, rotated, rect.size);
@@ -349,6 +358,15 @@ void CCSprite::setTextureRect(const CCRect& rect, bool rotated, const CCSize& un
         m_sQuad.br.vertices = vertex3(x2, y1, 0);
         m_sQuad.tl.vertices = vertex3(x1, y2, 0);
         m_sQuad.tr.vertices = vertex3(x2, y2, 0);
+        
+#if CC_SPRITE_USE_TRIANGLE_LIST
+        m_aVertices[0].vertices = vertex3(x1, y2, 0); // tl
+        m_aVertices[1].vertices = vertex3(x1, y1, 0); // bl
+        m_aVertices[2].vertices = vertex3(x2, y2, 0); // tr
+        m_aVertices[3].vertices = vertex3(x2, y1, 0); // br
+        m_aVertices[4].vertices = vertex3(x2, y2, 0); // tr
+        m_aVertices[5].vertices = vertex3(x1, y1, 0); // bl
+#endif
     }
 }
 
@@ -405,6 +423,15 @@ void CCSprite::setTextureCoords(CCRect rect)
         m_sQuad.tl.texCoords.v = top;
         m_sQuad.tr.texCoords.u = right;
         m_sQuad.tr.texCoords.v = bottom;
+        
+#if CC_SPRITE_USE_TRIANGLE_LIST
+        m_aVertices[0].texCoords = m_sQuad.tl.texCoords; // tl
+        m_aVertices[1].texCoords = m_sQuad.bl.texCoords; // bl
+        m_aVertices[2].texCoords = m_sQuad.tr.texCoords; // tr
+        m_aVertices[3].texCoords = m_sQuad.br.texCoords; // br
+        m_aVertices[4].texCoords = m_sQuad.tr.texCoords; // tr
+        m_aVertices[5].texCoords = m_sQuad.bl.texCoords; // bl
+#endif
     }
     else
     {
@@ -438,6 +465,15 @@ void CCSprite::setTextureCoords(CCRect rect)
         m_sQuad.tl.texCoords.v = top;
         m_sQuad.tr.texCoords.u = right;
         m_sQuad.tr.texCoords.v = top;
+        
+#if CC_SPRITE_USE_TRIANGLE_LIST
+        m_aVertices[0].texCoords = m_sQuad.tl.texCoords; // tl
+        m_aVertices[1].texCoords = m_sQuad.bl.texCoords; // bl
+        m_aVertices[2].texCoords = m_sQuad.tr.texCoords; // tr
+        m_aVertices[3].texCoords = m_sQuad.br.texCoords; // br
+        m_aVertices[4].texCoords = m_sQuad.tr.texCoords; // tr
+        m_aVertices[5].texCoords = m_sQuad.bl.texCoords; // bl
+#endif
     }
 }
 
@@ -502,7 +538,16 @@ void CCSprite::updateTransform(void)
             m_sQuad.br.vertices = vertex3( RENDER_IN_SUBPIXEL(bx), RENDER_IN_SUBPIXEL(by), m_fVertexZ );
             m_sQuad.tl.vertices = vertex3( RENDER_IN_SUBPIXEL(dx), RENDER_IN_SUBPIXEL(dy), m_fVertexZ );
             m_sQuad.tr.vertices = vertex3( RENDER_IN_SUBPIXEL(cx), RENDER_IN_SUBPIXEL(cy), m_fVertexZ );
-        }
+            
+#if CC_SPRITE_USE_TRIANGLE_LIST
+            m_aVertices[0].vertices = m_sQuad.tl.vertices; // tl
+            m_aVertices[1].vertices = m_sQuad.bl.vertices; // bl
+            m_aVertices[2].vertices = m_sQuad.tr.vertices; // tr
+            m_aVertices[3].vertices = m_sQuad.br.vertices; // br
+            m_aVertices[4].vertices = m_sQuad.tr.vertices; // tr
+            m_aVertices[5].vertices = m_sQuad.bl.vertices; // bl
+#endif
+       }
 
         // MARMALADE CHANGE: ADDED CHECK FOR NULL, TO PERMIT SPRITES WITH NO BATCH NODE / TEXTURE ATLAS
         if (m_pobTextureAtlas)
@@ -571,8 +616,12 @@ void CCSprite::draw(void)
     ccGLEnableVertexAttribs( kCCVertexAttribFlag_PosColorTex );
 
 #define kQuadSize sizeof(m_sQuad.bl)
+#if CC_SPRITE_USE_TRIANGLE_LIST
+    long offset = (long) m_aVertices;
+#else
     long offset = (long)&m_sQuad;
-
+#endif
+    
     // vertex
     int diff = offsetof( ccV3F_C4B_T2F, vertices);
     glVertexAttribPointer(kCCVertexAttrib_Position, 3, GL_FLOAT, GL_FALSE, kQuadSize, (void*) (offset + diff));
@@ -586,8 +635,12 @@ void CCSprite::draw(void)
     glVertexAttribPointer(kCCVertexAttrib_Color, 4, GL_UNSIGNED_BYTE, GL_TRUE, kQuadSize, (void*)(offset + diff));
 
 
+#if CC_SPRITE_USE_TRIANGLE_LIST
+    glDrawArrays(GL_TRIANGLES, 0, 6);
+#else
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-
+#endif
+    
     CHECK_GL_ERROR_DEBUG();
 
 
@@ -901,6 +954,15 @@ void CCSprite::updateColor(void)
     m_sQuad.tl.colors = color4;
     m_sQuad.tr.colors = color4;
 
+#if CC_SPRITE_USE_TRIANGLE_LIST
+    m_aVertices[0].colors = color4; // tl
+    m_aVertices[1].colors = color4; // bl
+    m_aVertices[2].colors = color4; // tr
+    m_aVertices[3].colors = color4; // br
+    m_aVertices[4].colors = color4; // tr
+    m_aVertices[5].colors = color4; // bl
+#endif
+
     // renders using batch node
     if (m_pobBatchNode)
     {
@@ -1049,6 +1111,15 @@ void CCSprite::setBatchNode(CCSpriteBatchNode *pobSpriteBatchNode)
         m_sQuad.br.vertices = vertex3( x2, y1, 0 );
         m_sQuad.tl.vertices = vertex3( x1, y2, 0 );
         m_sQuad.tr.vertices = vertex3( x2, y2, 0 );
+
+#if CC_SPRITE_USE_TRIANGLE_LIST
+        m_aVertices[0].vertices = m_sQuad.tl.vertices; // tl
+        m_aVertices[1].vertices = m_sQuad.bl.vertices; // bl
+        m_aVertices[2].vertices = m_sQuad.tr.vertices; // tr
+        m_aVertices[3].vertices = m_sQuad.br.vertices; // br
+        m_aVertices[4].vertices = m_sQuad.tr.vertices; // tr
+        m_aVertices[5].vertices = m_sQuad.bl.vertices; // bl
+#endif
 
     } else {
 

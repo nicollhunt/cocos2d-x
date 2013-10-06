@@ -132,7 +132,7 @@ Only valid for cocos2d-mac. Not supported on cocos2d-ios.
  To enable set it to 1. Enabled by default.
  */
 #ifndef CC_NODE_RENDER_SUBPIXEL
-#define CC_NODE_RENDER_SUBPIXEL 1
+#define CC_NODE_RENDER_SUBPIXEL 0
 #endif
 
 /** @def CC_SPRITEBATCHNODE_RENDER_SUBPIXEL
@@ -154,6 +154,17 @@ Only valid for cocos2d-mac. Not supported on cocos2d-ios.
  */
 #ifndef CC_TEXTURE_ATLAS_USE_TRIANGLE_STRIP
 #define CC_TEXTURE_ATLAS_USE_TRIANGLE_STRIP 0
+#endif
+
+/** @def CC_SPRITE_USE_TRIANGLE_LIST
+ Use GL_TRIANGLES instead of GL_TRIANGLE_STRIP when rendering sprites.
+ It seems it is the recommend way, but it is much slower, so, enable it at your own risk
+ 
+ To enable set it to a value different than 0. Disabled by default.
+ 
+ */
+#ifndef CC_SPRITE_USE_TRIANGLE_LIST
+#define CC_SPRITE_USE_TRIANGLE_LIST 0
 #endif
 
 /** @def CC_TEXTURE_ATLAS_USE_VAO

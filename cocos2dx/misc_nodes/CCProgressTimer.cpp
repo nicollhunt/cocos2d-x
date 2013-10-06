@@ -192,6 +192,10 @@ ccTex2F CCProgressTimer::textureCoordFromAlphaPoint(CCPoint alpha)
     if (!m_pSprite) {
         return ret;
     }
+#if !CC_SPRITE_USE_TRIANGLE_STRIP
+    // TODO: Fix this
+    return ret;
+#else
     ccV3F_C4B_T2F_Quad quad = m_pSprite->getQuad();
     CCPoint min = ccp(quad.bl.texCoords.u,quad.bl.texCoords.v);
     CCPoint max = ccp(quad.tr.texCoords.u,quad.tr.texCoords.v);
@@ -200,6 +204,7 @@ ccTex2F CCProgressTimer::textureCoordFromAlphaPoint(CCPoint alpha)
         CC_SWAP(alpha.x, alpha.y, float);
     }
     return tex2(min.x * (1.f - alpha.x) + max.x * alpha.x, min.y * (1.f - alpha.y) + max.y * alpha.y);
+#endif
 }
 
 ccVertex2F CCProgressTimer::vertexFromAlphaPoint(CCPoint alpha)
@@ -208,12 +213,16 @@ ccVertex2F CCProgressTimer::vertexFromAlphaPoint(CCPoint alpha)
     if (!m_pSprite) {
         return ret;
     }
+#if !CC_SPRITE_USE_TRIANGLE_STRIP
+    return ret;
+#else
     ccV3F_C4B_T2F_Quad quad = m_pSprite->getQuad();
     CCPoint min = ccp(quad.bl.vertices.x,quad.bl.vertices.y);
     CCPoint max = ccp(quad.tr.vertices.x,quad.tr.vertices.y);
     ret.x = min.x * (1.f - alpha.x) + max.x * alpha.x;
     ret.y = min.y * (1.f - alpha.y) + max.y * alpha.y;
     return ret;
+#endif
 }
 
 void CCProgressTimer::updateColor(void)
@@ -224,11 +233,13 @@ void CCProgressTimer::updateColor(void)
 
     if (m_pVertexData)
     {
+#if CC_SPRITE_USE_TRIANGLE_STRIP
         ccColor4B sc = m_pSprite->getQuad().tl.colors;
         for (int i = 0; i < m_nVertexDataCount; ++i)
         {
             m_pVertexData[i].colors = sc;
-        }            
+        }
+#endif
     }
 }
 

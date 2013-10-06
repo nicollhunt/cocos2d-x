@@ -337,7 +337,9 @@ protected:
 
     // vertex coords, texture coords and color info
     ccV3F_C4B_T2F_Quad m_sQuad;
-
+#if CC_SPRITE_USE_TRIANGLE_LIST
+    ccV3F_C4B_T2F m_aVertices[6];
+#endif
     // opacity and RGB protocol
     ccColor3B m_sColorUnmodified;
     bool m_bOpacityModifyRGB;

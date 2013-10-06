@@ -283,7 +283,27 @@ typedef struct _ccV3F_C4B_T2F_Quad
     ccV3F_C4B_T2F    tr;
     //! bottom right
     ccV3F_C4B_T2F    br;
+
 } ccV3F_C4B_T2F_Quad;
+
+//! 4 ccVertex3FTex2FColor4B
+typedef struct _ccV3F_C4B_T2F_Quad_Triangles
+{
+    //! top left
+    ccV3F_C4B_T2F    tl;
+    //! bottom left
+    ccV3F_C4B_T2F    bl;
+    //! top right
+    ccV3F_C4B_T2F    tr;
+    //! bottom right
+    ccV3F_C4B_T2F    br;
+
+    //! bottom left
+    ccV3F_C4B_T2F    bl2;
+    //! top right
+    ccV3F_C4B_T2F    tr2;
+
+} ccV3F_C4B_T2F_Quad_Triangles;
 
 //! 4 ccVertex2FTex2FColor4F Quad
 typedef struct _ccV2F_C4F_T2F_Quad

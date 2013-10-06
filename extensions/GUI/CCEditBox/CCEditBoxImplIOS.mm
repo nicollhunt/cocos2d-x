@@ -65,7 +65,7 @@
     {
         if (self == nil) break;
         editState_ = NO;
-        self.textField = [[[CustomUITextField alloc] initWithFrame: frameRect] autorelease];
+        self.textField = [[[UITextField alloc] initWithFrame: frameRect] autorelease];
         if (!textField_) break;
         [textField_ setTextColor:[UIColor whiteColor]];
         textField_.font = [UIFont systemFontOfSize:frameRect.size.height*2/3]; //TODO need to delete hard code here.
@@ -269,6 +269,7 @@ void CCEditBoxImplIOS::setInputMode(EditBoxInputMode inputMode)
     {
         case kEditBoxInputModeEmailAddr:
             m_systemControl.textField.keyboardType = UIKeyboardTypeEmailAddress;
+            m_systemControl.textField.autocapitalizationType = UITextAutocapitalizationTypeNone;
             break;
         case kEditBoxInputModeNumeric:
             m_systemControl.textField.keyboardType = UIKeyboardTypeNumbersAndPunctuation;
