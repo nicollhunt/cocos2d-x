@@ -372,16 +372,33 @@ public class Cocos2dxGLSurfaceView extends GLSurfaceView {
 	
 	public boolean shouldConsumeKeyEvent(final int pKeyCode, final KeyEvent pKeyEvent)
 	{
-		return
-		(
-//			(
-//				pKeyEvent.getSource() == android.view.InputDevice.SOURCE_GAMEPAD || 
+		 // Not all Android versions support isGamepadButton
+	     Method m = null;
+	     try {
+	       m = KeyEvent.class.getMethod("isGamepadButton");
+	     } catch (Exception e) {
+	       // doesn't matter
+	     }
+	     
+	     if (m != null)
+	     {	     
+	    	 return
+			 (
 				pKeyEvent.getSource() == android.view.InputDevice.SOURCE_JOYSTICK ||
-//			) ||
-			pKeyCode == KeyEvent.KEYCODE_MENU ||
-			pKeyCode == KeyEvent.KEYCODE_BACK ||
-			KeyEvent.isGamepadButton(pKeyCode)
-		);
+				pKeyCode == KeyEvent.KEYCODE_MENU ||
+				pKeyCode == KeyEvent.KEYCODE_BACK ||
+				KeyEvent.isGamepadButton(pKeyCode)
+			 );
+	     }
+	     else
+	     {
+	    	 return
+			 (
+				 pKeyEvent.getSource() == android.view.InputDevice.SOURCE_JOYSTICK ||
+				 pKeyCode == KeyEvent.KEYCODE_MENU ||
+				 pKeyCode == KeyEvent.KEYCODE_BACK
+			 );
+	     }
 	}
 	
 	@Override

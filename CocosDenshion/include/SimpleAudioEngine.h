@@ -209,6 +209,11 @@ public:
     @param[in]        pszFilePath        The path of the effect file,or the FileName of T_SoundResInfo
     */
     void unloadEffect(const char* pszFilePath);
+    
+    /**
+     @brief          check if we're using the OpenSL engine
+     */
+    virtual bool isUsingOpenSL();
 };
 
 } // end of namespace CocosDenshion

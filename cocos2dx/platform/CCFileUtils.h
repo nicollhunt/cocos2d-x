@@ -94,6 +94,12 @@ public:
     std::string getWriteablePath();
 
     /**
+     @brief   Get the documents path for persistent data
+     @return  The path that can write/read file
+     */
+    std::string getDocumentPath();
+
+    /**
     @brief Set/Get whether pop-up a message box when the image load failed
     */
     void setPopupNotify(bool bNotify);

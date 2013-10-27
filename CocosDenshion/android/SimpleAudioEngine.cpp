@@ -380,4 +380,9 @@ void SimpleAudioEngine::stopAllEffects()
 	}
 }
 
+bool SimpleAudioEngine::isUsingOpenSL()
+{
+	return s_bI9100;
+}
+
 }

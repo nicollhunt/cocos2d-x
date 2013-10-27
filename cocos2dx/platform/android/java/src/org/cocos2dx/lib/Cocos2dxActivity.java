@@ -23,11 +23,15 @@ THE SOFTWARE.
  ****************************************************************************/
 package org.cocos2dx.lib;
 
+import java.lang.reflect.Method;
+
 import org.cocos2dx.lib.Cocos2dxHelper.Cocos2dxHelperListener;
 
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.Message;
+import android.view.KeyEvent;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
@@ -138,6 +142,19 @@ public abstract class Cocos2dxActivity extends Activity implements Cocos2dxHelpe
 
         // Set framelayout as the content view
 		setContentView(framelayout);
+		
+		// set the keep screen on flag        
+		this.mGLSurfaceView.setKeepScreenOn(true);
+
+	     try {
+	 		Method m = null;
+	 		m = Cocos2dxGLSurfaceView.class.getMethod("setSystemUiVisibility");
+	 		if (m != null) {
+	 			this.mGLSurfaceView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE);
+	 		}
+	     } catch (Exception e) {
+	       // doesn't matter
+	     }
 	}
 	
     public Cocos2dxGLSurfaceView onCreateView() {

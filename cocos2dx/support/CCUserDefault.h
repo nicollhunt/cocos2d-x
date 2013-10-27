@@ -116,6 +116,7 @@ private:
     static bool createXMLFile();
     static bool isXMLFileExist();
     static void initXMLFilePath();
+    static void checkForCacheVersion();
     
     static CCUserDefault* m_spUserDefault;
     static std::string m_sFilePath;

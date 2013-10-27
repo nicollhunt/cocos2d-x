@@ -25,6 +25,7 @@ THE SOFTWARE.
 #define __CC_PLATFORM_FILEUTILS_CPP__
 #include "platform/CCFileUtilsCommon_cpp.h"
 #include "support/zip_support/ZipUtils.h"
+#include "sys/stat.h"
 
 using namespace std;
 
@@ -156,6 +157,18 @@ string CCFileUtils::getWriteablePath()
     {
         return "";
     }
+}
+
+string CCFileUtils::getDocumentPath()
+{
+	// Fix for Nexus 10 (Android 4.2 multi-user environment)
+	// the path is retrieved through Java Context.getCacheDir() method
+	string dir("");
+	const char *tmp = "/data/data/com.ifightbears.fistofawesome/app_data";
+	mkdir(tmp, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+    dir.append(tmp).append("/");
+        
+    return dir;
 }
 
 NS_CC_END

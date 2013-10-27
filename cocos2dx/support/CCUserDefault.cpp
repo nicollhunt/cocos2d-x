@@ -333,6 +333,8 @@ CCUserDefault* CCUserDefault::sharedUserDefault()
 
 bool CCUserDefault::isXMLFileExist()
 {
+    checkForCacheVersion();
+
     FILE *fp = fopen(m_sFilePath.c_str(), "r");
     bool bRet = false;
 
@@ -345,13 +347,47 @@ bool CCUserDefault::isXMLFileExist()
     return bRet;
 }
 
+void CCUserDefault::checkForCacheVersion()
+{
+    // Copy any existing defaults file from the cache directory
+    string sCachePath = CCFileUtils::sharedFileUtils()->getWriteablePath() + XML_FILE_NAME;
+    string sDocumentsPath = CCFileUtils::sharedFileUtils()->getDocumentPath() + XML_FILE_NAME;
+    
+    FILE *fp = fopen(sCachePath.c_str(), "r");
+    if (fp != NULL)
+    {
+        unsigned long nSize;
+        unsigned char *pBuffer;
+        
+        // Read in existing file
+        fseek(fp,0,SEEK_END);
+        nSize = ftell(fp);
+        fseek(fp,0,SEEK_SET);
+        pBuffer = (unsigned char *)malloc(nSize);
+        nSize = fread(pBuffer, sizeof(unsigned char), nSize, fp);
+        fclose(fp);
+        
+        // Save to documents directory
+        fp = fopen(sDocumentsPath.c_str(), "w");
+        if (fp)
+        {
+            fwrite((void *)pBuffer, nSize, 1, fp);
+            fclose(fp);
+            
+            // Delete cache file
+            remove(sCachePath.c_str());
+        }
+        free(pBuffer);
+    }
+}
+
 void CCUserDefault::initXMLFilePath()
 {
     if (! m_sbIsFilePathInitialized)
     {
-        m_sFilePath += CCFileUtils::sharedFileUtils()->getWriteablePath() + XML_FILE_NAME;
+        m_sFilePath += CCFileUtils::sharedFileUtils()->getDocumentPath() + XML_FILE_NAME;
         m_sbIsFilePathInitialized = true;
-    }    
+    }
 }
 
 // create new xml file
