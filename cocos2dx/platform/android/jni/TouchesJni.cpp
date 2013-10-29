@@ -82,8 +82,15 @@ extern "C" {
     #define KEYCODE_MENU 0x52
 
     jboolean Java_org_cocos2dx_lib_Cocos2dxRenderer_nativeKeyDown(JNIEnv * env, jobject thiz, jint keyCode, jint deviceID, jint deviceHash) {
-//    	CCLog("Java_org_cocos2dx_lib_Cocos2dxRenderer_nativeKeyDown %d", keyCode);
+//    	CCLog("Java_org_cocos2dx_lib_Cocos2dxRenderer_nativeKeyDown keyCode=%d deviceID=%d deviceHash=%d", keyCode, deviceID, deviceHash);
     	CCDirector* pDirector = CCDirector::sharedDirector();
+
+    	if (keyCode == KEYCODE_BACK && deviceHash == 0)
+    	{
+			if (pDirector->getKeypadDispatcher()->dispatchKeypadMSG(kTypeBackClicked))
+				return JNI_TRUE;
+    	}
+
         switch (keyCode) {
 //            case KEYCODE_BACK:
 //                  if (pDirector->getKeypadDispatcher()->dispatchKeypadMSG(kTypeBackClicked))

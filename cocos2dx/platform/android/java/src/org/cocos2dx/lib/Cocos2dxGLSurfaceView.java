@@ -303,7 +303,7 @@ public class Cocos2dxGLSurfaceView extends GLSurfaceView {
 	public String getDeviceDescriptor(final android.view.InputEvent pEvent) {
 		final android.view.InputDevice device = pEvent.getDevice();
 	     if (device == null) {
-	         return null;
+	         return "Default";
 	     }
 	     String desc = null;
 	     
