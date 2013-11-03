@@ -164,11 +164,18 @@ string CCFileUtils::getDocumentPath()
 	// Fix for Nexus 10 (Android 4.2 multi-user environment)
 	// the path is retrieved through Java Context.getCacheDir() method
 	string dir("");
-	const char *tmp = "/data/data/com.ifightbears.fistofawesome/app_data";
-	mkdir(tmp, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
-    dir.append(tmp).append("/");
-        
-    return dir;
+	const char *tmp = getDocumentsDirectoryJNI();
+
+	if (tmp)
+	{
+		dir.append(tmp).append("/");
+
+		return dir;
+	}
+	else
+	{
+		return "";
+	}
 }
 
 NS_CC_END

@@ -33,6 +33,7 @@ extern "C"
         BUTTON_DPAD_RIGHT = 22,
         BUTTON_R3 = 107,
         BUTTON_L3 = 106,
+        BUTTON_PAUSE = 108,
         AXIS_L2 = 17,
         AXIS_R2 = 18,
         OUYA_MENU = 82,
