@@ -333,7 +333,11 @@ CCUserDefault* CCUserDefault::sharedUserDefault()
 
 bool CCUserDefault::isXMLFileExist()
 {
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID || \
+     CC_TARGET_PLATFORM == CC_PLATFORM_OUYA || \
+     CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
     checkForCacheVersion();
+#endif
 
     FILE *fp = fopen(m_sFilePath.c_str(), "r");
     bool bRet = false;
@@ -346,6 +350,10 @@ bool CCUserDefault::isXMLFileExist()
 
     return bRet;
 }
+
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID || \
+CC_TARGET_PLATFORM == CC_PLATFORM_OUYA || \
+CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
 
 void CCUserDefault::checkForCacheVersion()
 {
@@ -380,6 +388,7 @@ void CCUserDefault::checkForCacheVersion()
         free(pBuffer);
     }
 }
+#endif
 
 void CCUserDefault::initXMLFilePath()
 {

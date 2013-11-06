@@ -321,6 +321,17 @@ std::string CCFileUtils::getWriteablePath()
     return strRet;
 }
 
+std::string CCFileUtils::getDocumentPath()
+{
+    // save to document folder
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentsDirectory = [paths objectAtIndex:0];
+    std::string strRet = [documentsDirectory UTF8String];
+    strRet.append("/");
+    return strRet;
+}
+
+
 unsigned char* CCFileUtils::getFileDataFromZip(const char* pszZipFilePath, const char* pszFileName, unsigned long * pSize)
 {
     unsigned char * pBuffer = NULL;
