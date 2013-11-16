@@ -46,6 +46,8 @@ public class Cocos2dxGLSurfaceView extends GLSurfaceView {
 
 	private final static int HANDLER_OPEN_IME_KEYBOARD = 2;
 	private final static int HANDLER_CLOSE_IME_KEYBOARD = 3;
+	
+	private final static boolean mDisplayGamepadDebug = false;
 
 	// ===========================================================
 	// Fields
@@ -333,9 +335,12 @@ public class Cocos2dxGLSurfaceView extends GLSurfaceView {
 	@Override
 	public boolean onGenericMotionEvent(final MotionEvent pEvent)
 	{
-//		Log.d(Cocos2dxGLSurfaceView.TAG, String.format("onGenericMotionEvent source=%d action=%d",
-//				pEvent.getSource(),
-//				pEvent.getAction()));
+		if (mDisplayGamepadDebug)
+		{
+			Log.d(Cocos2dxGLSurfaceView.TAG, String.format("onGenericMotionEvent source=%d action=%d",
+					pEvent.getSource(),
+					pEvent.getAction()));
+		}
 		
 		if (pEvent.getSource() == android.view.InputDevice.SOURCE_JOYSTICK) {
 	         if (pEvent.getAction() == MotionEvent.ACTION_MOVE) {
@@ -346,12 +351,15 @@ public class Cocos2dxGLSurfaceView extends GLSurfaceView {
 	     		final float xVal = pEvent.getAxisValue(MotionEvent.AXIS_X);
 	     	    final float yVal = pEvent.getAxisValue(MotionEvent.AXIS_Y);
 	     	    
-//	     		Log.d(Cocos2dxGLSurfaceView.TAG, String.format("onGenericMotionEvent %.2f,%.2f - Id = %d Hash = %d",
-//	     				xVal,
-//	     				yVal,
-//	     				deviceId,
-//	     				deviceHash
-//	     				));
+	     	    if (mDisplayGamepadDebug)
+	     	    {
+		     		Log.d(Cocos2dxGLSurfaceView.TAG, String.format("onGenericMotionEvent %.2f,%.2f - Id = %d Hash = %d",
+		     				xVal,
+		     				yVal,
+		     				deviceId,
+		     				deviceHash
+		     				));
+	     	    }
 	     		
 	     		this.queueEvent(new Runnable() {
 	     			@Override
@@ -370,35 +378,89 @@ public class Cocos2dxGLSurfaceView extends GLSurfaceView {
 		return super.onGenericMotionEvent(pEvent);
 	}
 	
+	public int[] mValidGamePadKeyCodes = 
+		{
+			KeyEvent.KEYCODE_MENU,
+			KeyEvent.KEYCODE_BACK,
+			
+			KeyEvent.KEYCODE_DPAD_UP,
+			KeyEvent.KEYCODE_DPAD_DOWN,
+			KeyEvent.KEYCODE_DPAD_LEFT,
+			KeyEvent.KEYCODE_DPAD_RIGHT,
+			KeyEvent.KEYCODE_BUTTON_1,
+			KeyEvent.KEYCODE_BUTTON_2,
+			KeyEvent.KEYCODE_BUTTON_3,
+			KeyEvent.KEYCODE_BUTTON_4,
+			KeyEvent.KEYCODE_BUTTON_5,
+			KeyEvent.KEYCODE_BUTTON_6,
+			KeyEvent.KEYCODE_BUTTON_7,
+			KeyEvent.KEYCODE_BUTTON_8,
+			KeyEvent.KEYCODE_BUTTON_9,
+			KeyEvent.KEYCODE_BUTTON_10,
+			KeyEvent.KEYCODE_BUTTON_11,
+			KeyEvent.KEYCODE_BUTTON_12,
+			KeyEvent.KEYCODE_BUTTON_13,
+			KeyEvent.KEYCODE_BUTTON_14,
+			KeyEvent.KEYCODE_BUTTON_15,
+			KeyEvent.KEYCODE_BUTTON_16,
+			KeyEvent.KEYCODE_BUTTON_A,
+			KeyEvent.KEYCODE_BUTTON_B,
+			KeyEvent.KEYCODE_BUTTON_C,
+			KeyEvent.KEYCODE_BUTTON_L1,
+			KeyEvent.KEYCODE_BUTTON_L2,
+			KeyEvent.KEYCODE_BUTTON_R1,
+			KeyEvent.KEYCODE_BUTTON_R2,
+			KeyEvent.KEYCODE_BUTTON_SELECT,
+			KeyEvent.KEYCODE_BUTTON_START,
+			KeyEvent.KEYCODE_BUTTON_THUMBL,
+			KeyEvent.KEYCODE_BUTTON_THUMBR,
+			KeyEvent.KEYCODE_BUTTON_X,
+			KeyEvent.KEYCODE_BUTTON_Y,
+			KeyEvent.KEYCODE_BUTTON_Z
+		};
+	
 	public boolean shouldConsumeKeyEvent(final int pKeyCode, final KeyEvent pKeyEvent)
 	{
-		 // Not all Android versions support isGamepadButton
-	     Method m = null;
-	     try {
-	       m = KeyEvent.class.getMethod("isGamepadButton");
-	     } catch (Exception e) {
-	       // doesn't matter
-	     }
-	     
-	     if (m != null)
-	     {	     
-	    	 return
-			 (
-				pKeyEvent.getSource() == android.view.InputDevice.SOURCE_JOYSTICK ||
-				pKeyCode == KeyEvent.KEYCODE_MENU ||
-				pKeyCode == KeyEvent.KEYCODE_BACK ||
-				KeyEvent.isGamepadButton(pKeyCode)
-			 );
-	     }
-	     else
-	     {
-	    	 return
-			 (
-				 pKeyEvent.getSource() == android.view.InputDevice.SOURCE_JOYSTICK ||
-				 pKeyCode == KeyEvent.KEYCODE_MENU ||
-				 pKeyCode == KeyEvent.KEYCODE_BACK
-			 );
-	     }
+		boolean bConsume = false;
+				
+		for (int valid_key_code : mValidGamePadKeyCodes)
+		{
+			if (pKeyCode == valid_key_code)
+			{
+				bConsume = true;
+				break;
+			}		    	 
+		}
+		
+		if (!bConsume)
+		{
+			// Not all Android versions support isGamepadButton and/or getSource
+			Method m = null;
+			try {
+				m = KeyEvent.class.getMethod("isGamepadButton");
+				bConsume = KeyEvent.isGamepadButton(pKeyCode);
+			} catch (Exception e) {} // doesn't matter
+		}
+		
+		if (!bConsume)
+		{
+			// Not all Android versions support isGamepadButton and/or getSource
+			Method m = null;
+			try {
+				m = KeyEvent.class.getMethod("getSource");
+				bConsume = (pKeyEvent.getSource() & android.view.InputDevice.SOURCE_JOYSTICK) != 0;
+			} catch (Exception e) {} // doesn't matter
+		}
+		
+		if (mDisplayGamepadDebug)
+		{
+			Log.d(Cocos2dxGLSurfaceView.TAG, String.format("shouldConsumeKeyEvent %s - source=%d pKeyCode=%d", 
+					bConsume ? "TRUE" : "FALSE", 
+							pKeyEvent.getSource(), 
+							pKeyCode));		
+		}
+
+		return bConsume;
 	}
 	
 	@Override
@@ -408,17 +470,24 @@ public class Cocos2dxGLSurfaceView extends GLSurfaceView {
 		if (pKeyEvent.getRepeatCount() != 0)
 			return true;
 
-//		Log.d(Cocos2dxGLSurfaceView.TAG, String.format("onKeyDown %d pKeyEvent.getSource()=%d",pKeyCode, pKeyEvent.getSource()));
-		
+ 	    if (mDisplayGamepadDebug)
+ 	    {
+ 	    	Log.d(Cocos2dxGLSurfaceView.TAG, String.format("onKeyDown %d pKeyEvent.getSource()=%d",pKeyCode, pKeyEvent.getSource()));
+ 	    }
+ 	    
 		if (shouldConsumeKeyEvent(pKeyCode, pKeyEvent)) 
 		{
 			final int pDeviceId = getDeviceId(pKeyEvent);
 			final int pDeviceHash = getDeviceHash(pKeyEvent);
-//			Log.d(Cocos2dxGLSurfaceView.TAG, String.format("onKeyDown %d - Id = %d Hash = %x",
-//					pKeyCode,
-//					pDeviceId,
-//					pDeviceHash
-//					));
+			
+     	    if (mDisplayGamepadDebug)
+     	    {
+				Log.d(Cocos2dxGLSurfaceView.TAG, String.format("onKeyDown %d - Id = %d Hash = %x",
+						pKeyCode,
+						pDeviceId,
+						pDeviceHash
+						));
+     	    }
 				
 			this.queueEvent(new Runnable() {
 				@Override
@@ -444,11 +513,15 @@ public class Cocos2dxGLSurfaceView extends GLSurfaceView {
 		{
 			final int pDeviceId = getDeviceId(pKeyEvent);
 			final int pDeviceHash = getDeviceHash(pKeyEvent);
-	//		Log.d(Cocos2dxGLSurfaceView.TAG, String.format("onKeyUp %d - Id = %d Hash = %d",
-	//				pKeyCode,
-	//				pDeviceId,
-	//				pDeviceHash
-	//				));
+			
+     	    if (mDisplayGamepadDebug)
+     	    {
+				Log.d(Cocos2dxGLSurfaceView.TAG, String.format("onKeyUp %d - Id = %d Hash = %d",
+						pKeyCode,
+						pDeviceId,
+						pDeviceHash
+						));
+     	    }
 			
 			this.queueEvent(new Runnable() {
 				@Override

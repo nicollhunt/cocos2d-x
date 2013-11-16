@@ -30,6 +30,7 @@ import org.cocos2dx.lib.Cocos2dxHelper.Cocos2dxHelperListener;
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.Message;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,6 +49,8 @@ public abstract class Cocos2dxActivity extends Activity implements Cocos2dxHelpe
 	
 	private Cocos2dxGLSurfaceView mGLSurfaceView;
 	private Cocos2dxHandler mHandler;
+	private static boolean mHelperInitialised = false;
+	private static boolean mWindowHasFocus = false;
 
 	// ===========================================================
 	// Constructors
@@ -61,7 +64,12 @@ public abstract class Cocos2dxActivity extends Activity implements Cocos2dxHelpe
 
     	this.init();
 
-		Cocos2dxHelper.init(this, this);
+    	// NDH - Only initialise Cocos2dxHelper once
+		if (!mHelperInitialised)
+		{
+			Cocos2dxHelper.init(this, this);
+			mHelperInitialised = true;
+		}
 	}
 
 	// ===========================================================
@@ -77,7 +85,9 @@ public abstract class Cocos2dxActivity extends Activity implements Cocos2dxHelpe
 		super.onResume();
 
 		Cocos2dxHelper.onResume();
-		this.mGLSurfaceView.onResume();
+		
+		if (mWindowHasFocus)
+			this.mGLSurfaceView.onResume();
 	}
 
 	@Override
@@ -86,6 +96,21 @@ public abstract class Cocos2dxActivity extends Activity implements Cocos2dxHelpe
 
 		Cocos2dxHelper.onPause();
 		this.mGLSurfaceView.onPause();
+	}
+	
+	@Override
+	public void onWindowFocusChanged(boolean hasFocus)
+	{
+		if (hasFocus)
+		{	
+			this.mGLSurfaceView.onResume();
+		}
+		else
+		{
+		    this.mGLSurfaceView.onPause();
+		}
+		
+		mWindowHasFocus = hasFocus;
 	}
 
 	@Override

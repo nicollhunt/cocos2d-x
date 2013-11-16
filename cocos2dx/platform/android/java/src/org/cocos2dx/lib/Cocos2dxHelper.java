@@ -31,11 +31,14 @@ import android.content.pm.ApplicationInfo;
 import android.content.res.AssetManager;
 import android.os.Build;
 import android.os.Environment;
+import android.util.Log;
 
 public class Cocos2dxHelper {
 	// ===========================================================
 	// Constants
 	// ===========================================================
+	
+	private static final String TAG = Cocos2dxHelper.class.getSimpleName();
 
 	// ===========================================================
 	// Fields
@@ -51,6 +54,7 @@ public class Cocos2dxHelper {
 	private static String sDocumentsDirectory;
 
 	private static Cocos2dxHelperListener sCocos2dxHelperListener;
+	private static Context sContext;
 
 	// ===========================================================
 	// Constructors
@@ -71,6 +75,9 @@ public class Cocos2dxHelper {
 		Cocos2dxHelper.sCocos2dMusic = new Cocos2dxMusic(pContext);
 		Cocos2dxHelper.sCocos2dSound = new Cocos2dxSound(pContext);
 		Cocos2dxHelper.sAssetManager = pContext.getAssets();
+		
+		Cocos2dxHelper.sContext = pContext;
+		
 		Cocos2dxBitmap.setContext(pContext);
 	}
 

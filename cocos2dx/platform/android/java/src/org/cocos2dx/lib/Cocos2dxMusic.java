@@ -203,14 +203,6 @@ public class Cocos2dxMusic {
 		if (pVolume > 1.0f) {
 			pVolume = 1.0f;
 		}
-		
-		KeyguardManager myKM = (KeyguardManager) this.mContext.getSystemService(Context.KEYGUARD_SERVICE);
-		if( myKM.inKeyguardRestrictedInputMode()) {
-		 //it is locked
-			pVolume = 0.0f;
-		} else {
-		 //it is not locked
-		}
 
 		this.mLeftVolume = this.mRightVolume = pVolume;
 		if (this.mBackgroundMediaPlayer != null) {
