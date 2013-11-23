@@ -17,23 +17,35 @@ import android.view.KeyEvent;
 
 public class OuyaBindController
 {	
+	// Print debug logs?
+    static boolean mDebugLog = false;
+    static String mDebugTag = "OUYAController";
+
+    protected static void debugLog(String message) {
+    	if (mDebugLog)
+    	{
+    		Log.d(mDebugTag, message);
+    	}
+    }
+    
 	public static OuyaController getControllerByPlayer(int playerNum) {
-		Log.d("OUYA Controller", "getControllerByPlayer with Player: "+playerNum);
+		debugLog("getControllerByPlayer with Player: "+playerNum);
 		OuyaController ouyaController = OuyaController.getControllerByPlayer(playerNum);
-		Log.d("OUYA Controller", "Found Controller: "+ouyaController);
+		debugLog("Found Controller: "+ouyaController);
 		return ouyaController;
 	}
 	
 	public static OuyaController getControllerByDeviceId(int deviceId)
 	{
 		OuyaController controller = OuyaController.getControllerByDeviceId(deviceId);
-		Log.d("OUYA Controller", "Got controller: "+controller);
+		debugLog("Got controller: "+controller);
 		return controller;
 	}
 	
 	public static native void onNativeKeyDown(final int pKeyCode, final int deviceId);
 	public static boolean onKeyDown(final int pKeyCode, final KeyEvent pKeyEvent)
 	{
+		debugLog(String.format("onKeyDown %d", pKeyCode));
 		boolean handled = OuyaController.onKeyDown(pKeyCode, pKeyEvent);
 		OuyaBindController.onNativeKeyDown(pKeyCode, pKeyEvent.getDeviceId());
 		return handled;
@@ -42,6 +54,7 @@ public class OuyaBindController
 	public static native void onNativeKeyUp(final int pKeyCode, final int deviceId);
 	public static boolean onKeyUp(final int pKeyCode, final KeyEvent pKeyEvent)
 	{
+		debugLog(String.format("onKeyUp %d", pKeyCode));
 		boolean handled = OuyaController.onKeyUp(pKeyCode, pKeyEvent);
 		OuyaBindController.onNativeKeyUp(pKeyCode, pKeyEvent.getDeviceId());
 		return handled;
@@ -54,10 +67,10 @@ public class OuyaBindController
 	{
 		boolean handled = OuyaController.onGenericMotionEvent(event);
 		OuyaController controller = OuyaController.getControllerByDeviceId(event.getDeviceId());
-//		Log.d("OUYA Controller", "onGenericMotionEvent "+ event.getDeviceId() + " " + controller);
+		debugLog("onGenericMotionEvent "+ event.getDeviceId() + " " + controller);
 
 		int player = OuyaController.getPlayerNumByDeviceId(event.getDeviceId());    
-//		Log.d("OUYA Controller", "onGenericMotionEvent "+ player);
+		debugLog(" - player "+ player);
 	
 		float LS_X = event.getAxisValue(OuyaController.AXIS_LS_X);
 	    float LS_Y = event.getAxisValue(OuyaController.AXIS_LS_Y);

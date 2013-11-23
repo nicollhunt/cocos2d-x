@@ -126,6 +126,12 @@ ccLanguageType CCApplication::getCurrentLanguage()
 
 TargetPlatform CCApplication::getTargetPlatform()
 {
+    if (strcmp(getDeviceModelJNI(), "OUYA Console") == 0)
+		return kTargetOUYA;
+
+    if (strstr(getDeviceModelJNI(), "GameStick") != NULL)
+		return kTargetGameStick;
+
     return kTargetAndroid;
 }
 
