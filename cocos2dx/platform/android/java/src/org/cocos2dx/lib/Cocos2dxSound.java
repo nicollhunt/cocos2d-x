@@ -41,6 +41,17 @@ public class Cocos2dxSound {
 	// ===========================================================
 
 	private static final String TAG = "Cocos2dxSound";
+	
+	// Print debug logs?
+    static boolean mDebugLog = false;
+    static String mDebugTag = "Cocos2dxSound";
+
+    protected static void debugLog(String message) {
+    	if (mDebugLog)
+    	{
+    		Log.d(mDebugTag, message);
+    	}
+    }
 
 	// ===========================================================
 	// Fields
@@ -104,6 +115,7 @@ public class Cocos2dxSound {
 	// ===========================================================
 
 	public int preloadEffect(final String pPath) {
+		debugLog(String.format("preloadEffect(%s)", pPath));
 		Integer soundID = this.mPathSoundIDMap.get(pPath);
 
 		if (soundID == null) {
@@ -118,6 +130,8 @@ public class Cocos2dxSound {
 	}
 
 	public void unloadEffect(final String pPath) {
+		debugLog(String.format("unloadEffect(%s)", pPath));
+
 		// stop effects
 		final ArrayList<Integer> streamIDs = this.mPathStreamIDsMap.get(pPath);
 		if (streamIDs != null) {

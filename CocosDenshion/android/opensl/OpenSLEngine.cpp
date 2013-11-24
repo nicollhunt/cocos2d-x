@@ -404,6 +404,9 @@ typedef struct _CallbackContext
 	AudioPlayer* player;
 } CallbackContext;
 
+// NDH - Delete OpenSL objects in main thread
+vector<CallbackContext*> DestroyList;
+
 void PlayOverEvent(SLPlayItf caller, void* pContext, SLuint32 playEvent)
 {
 	CallbackContext* context = (CallbackContext*)pContext;
@@ -418,8 +421,10 @@ void PlayOverEvent(SLPlayItf caller, void* pContext, SLuint32 playEvent)
 				break;
 			}
 		}
-		destroyAudioPlayer(context->player);
-		free(context);
+		// NDH - Delete OpenSL objects in main thread
+		DestroyList.push_back(context);
+//		destroyAudioPlayer(context->player);
+//		free(context);
 	}
 }
 
@@ -466,8 +471,27 @@ void resumeSingleEffect(AudioPlayer * player)
 	}
 }
 
+// NDH - Delete OpenSL objects in main thread
+void CheckDestroyList()
+{
+	// Copy list to avoid multi-threaded issues
+	vector<CallbackContext*> list = DestroyList;
+	DestroyList.clear();
+
+	vector<CallbackContext*>::iterator it = list.begin();
+	while(it != list.end())
+	{
+		destroyAudioPlayer((*it)->player);
+		free((*it));
+		it++;
+	}
+}
+
 bool OpenSLEngine::recreatePlayer(const char* filename)
 {
+	// NDH - Delete OpenSL objects in main thread
+	CheckDestroyList();
+
 	unsigned int effectID = _Hash(filename);
 	EffectList::iterator p = sharedList().find(effectID);
 	vector<AudioPlayer*>* vec = p->second;
@@ -501,6 +525,9 @@ bool OpenSLEngine::recreatePlayer(const char* filename)
 
 unsigned int OpenSLEngine::preloadEffect(const char * filename)
 {
+	// NDH - Delete OpenSL objects in main thread
+	CheckDestroyList();
+
 	unsigned int nID = _Hash(filename);
 	// if already exists
 	EffectList::iterator p = sharedList().find(nID);

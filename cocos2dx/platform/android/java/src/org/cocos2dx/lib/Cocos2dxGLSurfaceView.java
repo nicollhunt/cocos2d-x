@@ -311,19 +311,16 @@ public class Cocos2dxGLSurfaceView extends GLSurfaceView {
 	     
 	     // The Amazon Kindle HD doesn't support InputDevice.getDescriptor for some reason
 	     // so fall back to getName() in that case
-	     Method m = null;
-	     try {
-	       m = android.view.InputDevice.class.getMethod("getDescriptor");
-	     } catch (Exception e) {
-	       // doesn't matter
-	     }
-	     
-	     if (m != null)
+	     try
 	     {
+		     Method m = android.view.InputDevice.class.getMethod("getDescriptor");
 	    	 desc = device.getDescriptor();
-	     } else {
+	     } 
+	     catch (Exception e)
+	     {
 	    	 desc = device.getName();
 	     }
+	     
 	     return desc;
 	}
 	
