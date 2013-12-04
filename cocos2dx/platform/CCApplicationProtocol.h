@@ -14,6 +14,7 @@ enum TargetPlatform
     kTargetBlackBerry,
     
     // NDH - Added some sub-platforms
+    kTargetIOS,
     kTargetOUYA,
     kTargetGameStick,
 };

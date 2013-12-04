@@ -155,6 +155,12 @@ TargetPlatform CCApplication::getTargetPlatform()
     return kTargetWindows;
 }
 
+bool CCApplication::isTargetPlatform(TargetPlatform eType)
+{
+	return kTargetWindows == eType;
+}
+
+
 void CCApplication::setResourceRootPath(const std::string& rootResDir)
 {
     m_resourceRootPath = rootResDir;

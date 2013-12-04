@@ -131,6 +131,9 @@ TargetPlatform CCApplication::getTargetPlatform()
 
 bool CCApplication::isTargetPlatform(TargetPlatform eType)
 {
+    if (eType == kTargetIOS)
+        return true;
+    
     return getTargetPlatform() == eType ? true : false;
 }
 

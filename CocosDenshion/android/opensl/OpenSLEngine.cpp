@@ -1,8 +1,13 @@
 #include "OpenSLEngine.h"
+#include "pthread.h"
+#include <set>
 
 #define LOGD(...) __android_log_print(ANDROID_LOG_DEBUG,"OPENSL_ENGINE.CPP", __VA_ARGS__)
 
 using namespace std;
+
+// NDH - POSIX threads
+static pthread_mutex_t s_Mutex;
 
 
 OpenSLEngine::OpenSLEngine()
@@ -139,6 +144,8 @@ struct AudioPlayer
 	SLVolumeItf fdPlayerVolume;
 } musicPlayer; /* for background music */
 
+void setSingleEffectState(AudioPlayer * player, int state);
+
 typedef map<unsigned int, vector<AudioPlayer*>* > EffectList;
 typedef pair<unsigned int, vector<AudioPlayer*>* > Effect;
 
@@ -227,9 +234,15 @@ int getFileDescriptor(const char * filename, off_t & start, off_t & length)
 	int fd = AAsset_openFileDescriptor(Asset, &start, &length);
 	assert(0 <= fd);
 
+	if (fd < 0)
+	{
+		LOGD("AAsset_openFileDescriptor failed! %s", filename);
+		return FILE_NOT_FOUND;
+	}
+
 	void (*AAsset_close)(AAsset* asset);
 	AAsset_close = (void (*)(AAsset* asset))
-		dlsym(s_pAndroidHandle, "AAsset_close");
+						dlsym(s_pAndroidHandle, "AAsset_close");
 	AAsset_close(Asset);
 
 	return fd;
@@ -297,17 +310,26 @@ bool initAudioPlayer(AudioPlayer* player, const char* filename)
 
 void destroyAudioPlayer(AudioPlayer * player)
 {
-	if (player && player->fdPlayerObject != NULL)
+	if (player != NULL)
 	{
-		SLresult result;
-		result = (*(player->fdPlayerPlay))->SetPlayState(player->fdPlayerPlay, SL_PLAYSTATE_STOPPED);
-		assert(SL_RESULT_SUCCESS == result);
+		if (player->fdPlayerObject != NULL)
+		{
+			// Stop playback
+			SLresult result;
+			result = (*(player->fdPlayerPlay))->SetPlayState(player->fdPlayerPlay, SL_PLAYSTATE_STOPPED);
+			assert(SL_RESULT_SUCCESS == result);
 
-		(*(player->fdPlayerObject))->Destroy(player->fdPlayerObject);
-		player->fdPlayerObject = NULL;
-		player->fdPlayerPlay = NULL;
-		player->fdPlayerSeek = NULL;
-		player->fdPlayerVolume = NULL;
+			// Disable any callbacks
+			result = (*(player->fdPlayerPlay))->SetCallbackEventsMask(player->fdPlayerPlay, 0);
+			assert(SL_RESULT_SUCCESS == result);
+
+			// Destroy OpenSL object
+			(*(player->fdPlayerObject))->Destroy(player->fdPlayerObject);
+			memset(player, 0, sizeof(AudioPlayer));
+		}
+
+		// Release AudioPlayer memory
+		delete player;
 	}
 }
 
@@ -353,6 +375,9 @@ void OpenSLEngine::createEngine(void* pHandle)
 		// realize the output mix object in sync. mode
 		result = (*s_pOutputMixObject)->Realize(s_pOutputMixObject, SL_BOOLEAN_FALSE);
 		assert(SL_RESULT_SUCCESS == result);
+
+		// NDH - Create mutex
+        pthread_mutex_init( &s_Mutex, NULL );
 	}
 }
 
@@ -391,6 +416,9 @@ void OpenSLEngine::closeEngine()
 		s_pEngineEngine = NULL;
 	}
 
+	// NDH - Destroy mutex
+	pthread_mutex_destroy( &s_Mutex );
+
 	LOGD("engine destory");
 }
 
@@ -405,28 +433,7 @@ typedef struct _CallbackContext
 } CallbackContext;
 
 // NDH - Delete OpenSL objects in main thread
-vector<CallbackContext*> DestroyList;
-
-void PlayOverEvent(SLPlayItf caller, void* pContext, SLuint32 playEvent)
-{
-	CallbackContext* context = (CallbackContext*)pContext;
-	if (playEvent == SL_PLAYEVENT_HEADATEND)
-	{
-		vector<AudioPlayer*>::iterator iter;
-		for (iter = (context->vec)->begin() ; iter != (context->vec)->end() ; ++ iter)
-		{
-			if (*iter == context->player)
-			{
-				(context->vec)->erase(iter);
-				break;
-			}
-		}
-		// NDH - Delete OpenSL objects in main thread
-		DestroyList.push_back(context);
-//		destroyAudioPlayer(context->player);
-//		free(context);
-	}
-}
+set<CallbackContext*> DestroyList;
 
 void setSingleEffectVolume(AudioPlayer* player, SLmillibel volume)
 {
@@ -471,37 +478,73 @@ void resumeSingleEffect(AudioPlayer * player)
 	}
 }
 
+void PlayOverEvent(SLPlayItf caller, void* pContext, SLuint32 playEvent)
+{
+	CallbackContext* context = (CallbackContext*)pContext;
+	if (playEvent == SL_PLAYEVENT_HEADATEND)
+	{
+		// NDH - Delete OpenSL objects in main thread
+        pthread_mutex_lock( &s_Mutex );
+        if (DestroyList.find(context) == DestroyList.end())
+        {
+        	DestroyList.insert(context);
+        }
+        else
+        {
+        	LOGD(">>>>>>>  TRYING TO DELETE SAME CONTEXT!!!! <<<<<<<<<<");
+        }
+		pthread_mutex_unlock( &s_Mutex );
+	}
+}
+
 // NDH - Delete OpenSL objects in main thread
 void CheckDestroyList()
 {
-	// Copy list to avoid multi-threaded issues
-	vector<CallbackContext*> list = DestroyList;
-	DestroyList.clear();
+	// Use mutex to avoid multi-threaded issues
+    pthread_mutex_lock( &s_Mutex );
+    set<CallbackContext*> list = DestroyList;
+    DestroyList.clear();
+    pthread_mutex_unlock( &s_Mutex );
 
-	vector<CallbackContext*>::iterator it = list.begin();
+	set<CallbackContext*>::iterator it = list.begin();
 	while(it != list.end())
 	{
-		destroyAudioPlayer((*it)->player);
-		free((*it));
+		CallbackContext *pContext = *it;
+
+		vector<AudioPlayer*>::iterator iter;
+		for (iter = (pContext->vec)->begin() ; iter != (pContext->vec)->end() ; ++ iter)
+		{
+			if (*iter == pContext->player)
+			{
+				(pContext->vec)->erase(iter);
+				break;
+			}
+		}
+
+		destroyAudioPlayer(pContext->player);
+		delete pContext;
+
 		it++;
 	}
 }
 
 bool OpenSLEngine::recreatePlayer(const char* filename)
 {
-	// NDH - Delete OpenSL objects in main thread
-	CheckDestroyList();
-
 	unsigned int effectID = _Hash(filename);
 	EffectList::iterator p = sharedList().find(effectID);
 	vector<AudioPlayer*>* vec = p->second;
 	AudioPlayer* newPlayer = new AudioPlayer();
 	if (!initAudioPlayer(newPlayer, filename))
 	{
+		delete newPlayer;
 		LOGD("failed to recreate");
 		return false;
 	}
 	vec->push_back(newPlayer);
+
+	// set volume
+	setSingleEffectVolume(newPlayer, m_effectVolume);
+	setSingleEffectState(newPlayer, SL_PLAYSTATE_STOPPED);
 
 	// set callback
 	SLresult result;
@@ -514,9 +557,7 @@ bool OpenSLEngine::recreatePlayer(const char* filename)
 	result = (*(newPlayer->fdPlayerPlay))->SetCallbackEventsMask(newPlayer->fdPlayerPlay, SL_PLAYEVENT_HEADATEND);
 	assert(SL_RESULT_SUCCESS == result);
 
-	// set volume 
-	setSingleEffectVolume(newPlayer, m_effectVolume);
-	setSingleEffectState(newPlayer, SL_PLAYSTATE_STOPPED);
+	// Start playback
 	setSingleEffectState(newPlayer, SL_PLAYSTATE_PLAYING);
 
 	// LOGD("vec count is %d of effectID %d", vec->size(), effectID);
@@ -539,7 +580,7 @@ unsigned int OpenSLEngine::preloadEffect(const char * filename)
 	AudioPlayer* player = new AudioPlayer();
 	if (!initAudioPlayer(player, filename))
 	{
-		free(player);
+		delete player;
 		return FILE_NOT_FOUND;
 	}
 	
@@ -554,18 +595,24 @@ unsigned int OpenSLEngine::preloadEffect(const char * filename)
 
 void OpenSLEngine::unloadEffect(const char * filename)
 {
+
+	// NDH - Delete OpenSL objects in main thread
+	CheckDestroyList();
+
 	unsigned int nID = _Hash(filename);
 
 	EffectList::iterator p = sharedList().find(nID);
 	if (p != sharedList().end())
 	{
+		sharedList().erase(nID);
+
 		vector<AudioPlayer*>* vec = p->second;
 		for (vector<AudioPlayer*>::iterator iter = vec->begin() ; iter != vec->end() ; ++ iter)
 		{
 			destroyAudioPlayer(*iter);
 		}
 		vec->clear();
-		sharedList().erase(nID);
+		delete vec;
 	}
 }
 
@@ -594,13 +641,19 @@ void OpenSLEngine::setEffectState(unsigned int effectID, int state, bool isClear
 			// if stopped, clear the recreated players which are unused
 			if (isClear)
 			{
+				// NDH - Delete OpenSL objects in main thread
+				CheckDestroyList();
+
 				setSingleEffectState(*(vec->begin()), state);
+
 				vector<AudioPlayer*>::reverse_iterator r_iter = vec->rbegin();
 				for (int i = 1, size = vec->size() ; i < size ; ++ i)
 				{
-					destroyAudioPlayer(*r_iter);
+					AudioPlayer*player = *r_iter;
 					r_iter ++;
 					vec->pop_back();
+
+					destroyAudioPlayer(player);
 				}
 			}
 			else

@@ -94,6 +94,9 @@
     <Filter Include="draw_nodes">
       <UniqueIdentifier>{1179d205-d065-49f0-8457-bc4c3f1d0cb3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="gamepad_dispatcher">
+      <UniqueIdentifier>{4ba57913-9779-42e8-a4fc-73af5a4317bd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\base_nodes\CCAtlasNode.cpp">
@@ -436,6 +439,12 @@
     </ClCompile>
     <ClCompile Include="..\shaders\CCGLProgram.cpp">
       <Filter>shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gamepad_dispatcher\CCGamepadDelegate.cpp">
+      <Filter>gamepad_dispatcher</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gamepad_dispatcher\CCGamepadDispatcher.cpp">
+      <Filter>gamepad_dispatcher</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -886,6 +895,12 @@
     </ClInclude>
     <ClInclude Include="..\shaders\CCGLProgram.h">
       <Filter>shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="..\gamepad_dispatcher\CCGamepadDelegate.h">
+      <Filter>gamepad_dispatcher</Filter>
+    </ClInclude>
+    <ClInclude Include="..\gamepad_dispatcher\CCGamepadDispatcher.h">
+      <Filter>gamepad_dispatcher</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

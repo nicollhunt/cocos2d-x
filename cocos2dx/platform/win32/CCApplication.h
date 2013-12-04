@@ -36,6 +36,11 @@ public:
      */
     virtual TargetPlatform getTargetPlatform();
 
+	/**
+	@brief Returns true if platform is of type specified
+	*/
+	virtual bool isTargetPlatform(TargetPlatform eType);
+
     /* set the Resource root path */
     void setResourceRootPath(const std::string& rootResDir);
 
