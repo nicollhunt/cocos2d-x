@@ -295,33 +295,47 @@ public class Cocos2dxGLSurfaceView extends GLSurfaceView {
 	}
 
 	public int getDeviceId(final android.view.InputEvent pEvent) {
-		final android.view.InputDevice device = pEvent.getDevice();
-	     if (device == null) {
-	         return -1;
-	     }
-	     return device.getId();
+		try
+		{
+			final android.view.InputDevice device = pEvent.getDevice();
+			if (device == null) {
+				return -1;
+			}
+			return device.getId();
+		}
+		catch (NoClassDefFoundError e)
+		{
+			return -1;
+		}
 	}
 	
 	public String getDeviceDescriptor(final android.view.InputEvent pEvent) {
-		final android.view.InputDevice device = pEvent.getDevice();
-	     if (device == null) {
-	         return "Default";
-	     }
-	     String desc = null;
-	     
-	     // The Amazon Kindle HD doesn't support InputDevice.getDescriptor for some reason
-	     // so fall back to getName() in that case
-	     try
-	     {
-		     Method m = android.view.InputDevice.class.getMethod("getDescriptor");
-	    	 desc = device.getDescriptor();
-	     } 
-	     catch (Exception e)
-	     {
-	    	 desc = device.getName();
-	     }
-	     
-	     return desc;
+		try
+		{
+			final android.view.InputDevice device = pEvent.getDevice();
+			if (device == null) {
+				return "Default";
+			}
+			String desc = null;
+
+			// The Amazon Kindle HD doesn't support InputDevice.getDescriptor for some reason
+			// so fall back to getName() in that case
+			try
+			{
+				Method m = android.view.InputDevice.class.getMethod("getDescriptor");
+				desc = device.getDescriptor();
+			} 
+			catch (Exception e)
+			{
+				desc = device.getName();
+			}
+
+			return desc;
+		}
+		catch (NoClassDefFoundError e)
+		{
+			return "Default";
+		}
 	}
 	
 	public int getDeviceHash(final android.view.InputEvent pEvent) {
@@ -340,38 +354,38 @@ public class Cocos2dxGLSurfaceView extends GLSurfaceView {
 		}
 		
 		if (pEvent.getSource() == android.view.InputDevice.SOURCE_JOYSTICK) {
-	         if (pEvent.getAction() == MotionEvent.ACTION_MOVE) {
+			if (pEvent.getAction() == MotionEvent.ACTION_MOVE) {
 
-	        	final int deviceId = getDeviceId(pEvent);
-	     		final int deviceHash = getDeviceHash(pEvent);
-	     		
-	     		final float xVal = pEvent.getAxisValue(MotionEvent.AXIS_X);
-	     	    final float yVal = pEvent.getAxisValue(MotionEvent.AXIS_Y);
-	     	    
-	     	    if (mDisplayGamepadDebug)
-	     	    {
-		     		Log.d(Cocos2dxGLSurfaceView.TAG, String.format("onGenericMotionEvent %.2f,%.2f - Id = %d Hash = %d",
-		     				xVal,
-		     				yVal,
-		     				deviceId,
-		     				deviceHash
-		     				));
-	     	    }
-	     		
-	     		this.queueEvent(new Runnable() {
-	     			@Override
-	     			public void run() {
-	     				Cocos2dxGLSurfaceView.this.mCocos2dxRenderer.handleAxisMovement(0, xVal, yVal, deviceId, deviceHash);
-	     			}
-	     		});
-	     		
-	     		// For some obscure reason the dpad stuff (on the Red Samurai controller at least) goes through
-	     		// here first and if we don't call the base class it never makes it to onKeyDown()
-	     		// I HATE FUCKING ANDROID CONTROLLER BULLSHIT
-//	             return true;
-	         }
-	     }
-		
+				final int deviceId = getDeviceId(pEvent);
+				final int deviceHash = getDeviceHash(pEvent);
+
+				final float xVal = pEvent.getAxisValue(MotionEvent.AXIS_X);
+				final float yVal = pEvent.getAxisValue(MotionEvent.AXIS_Y);
+
+				if (mDisplayGamepadDebug)
+				{
+					Log.d(Cocos2dxGLSurfaceView.TAG, String.format("onGenericMotionEvent %.2f,%.2f - Id = %d Hash = %d",
+							xVal,
+							yVal,
+							deviceId,
+							deviceHash
+							));
+				}
+
+				this.queueEvent(new Runnable() {
+					@Override
+					public void run() {
+						Cocos2dxGLSurfaceView.this.mCocos2dxRenderer.handleAxisMovement(0, xVal, yVal, deviceId, deviceHash);
+					}
+				});
+
+				// For some obscure reason the dpad stuff (on the Red Samurai controller at least) goes through
+				// here first and if we don't call the base class it never makes it to onKeyDown()
+				// I HATE FUCKING ANDROID CONTROLLER BULLSHIT
+				//	             return true;
+			}
+		}
+
 		return super.onGenericMotionEvent(pEvent);
 	}
 	
