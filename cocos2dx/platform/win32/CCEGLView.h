@@ -49,6 +49,11 @@ public:
     virtual void setFrameSize(float width, float height);
     virtual void setIMEKeyboardState(bool bOpen);
 
+	bool enterFullscreen(int fullscreenWidth = 0, int fullscreenHeight = 0);
+	bool exitFullscreen(int windowX, int windowY, int windowedWidth, int windowedHeight, int windowedPaddingX, int windowedPaddingY);
+	int getFullscreenWidth();
+	int getFullscreenHeight();
+
     void setMenuResource(LPCWSTR menu);
     void setWndProc(CUSTOM_WND_PROC proc);
 

@@ -585,6 +585,83 @@ void CCEGLView::setIMEKeyboardState(bool /*bOpen*/)
 
 }
 
+int CCEGLView::getFullscreenWidth()
+{
+	return GetDeviceCaps(m_hDC, HORZRES);
+}
+
+int CCEGLView::getFullscreenHeight()
+{
+	return GetDeviceCaps(m_hDC, VERTRES);
+}
+
+bool CCEGLView::enterFullscreen(int fullscreenWidth, int fullscreenHeight)
+{
+	DEVMODE fullscreenSettings;
+	bool isChangeSuccessful;
+
+	if (fullscreenWidth == 0 || fullscreenHeight == 0)
+	{
+		fullscreenWidth = GetDeviceCaps(m_hDC, HORZRES);
+		fullscreenHeight = GetDeviceCaps(m_hDC, VERTRES);
+	}
+
+	int colourBits = GetDeviceCaps(m_hDC, BITSPIXEL);
+	int refreshRate = GetDeviceCaps(m_hDC, VREFRESH);
+
+	EnumDisplaySettings(NULL, 0, &fullscreenSettings);
+	fullscreenSettings.dmPelsWidth = fullscreenWidth;
+	fullscreenSettings.dmPelsHeight = fullscreenHeight;
+	fullscreenSettings.dmBitsPerPel = colourBits;
+	fullscreenSettings.dmDisplayFrequency = refreshRate;
+	fullscreenSettings.dmFields = DM_PELSWIDTH |
+		DM_PELSHEIGHT |
+		DM_BITSPERPEL |
+		DM_DISPLAYFREQUENCY;
+
+	DWORD dwStyleEx = GetWindowLong(m_hWnd, GWL_STYLE);
+	SetWindowLongPtr(m_hWnd, GWL_EXSTYLE, dwStyleEx & /*WS_EX_APPWINDOW |*/ WS_EX_TOPMOST);
+
+	DWORD dwStyle = GetWindowLong(m_hWnd, GWL_STYLE);
+	SetWindowLongPtr(m_hWnd, GWL_STYLE, dwStyle & ~WS_OVERLAPPEDWINDOW);
+
+	SetWindowPos(m_hWnd, HWND_TOPMOST, 0, 0, fullscreenWidth, fullscreenHeight, SWP_SHOWWINDOW);
+	isChangeSuccessful = ChangeDisplaySettings(&fullscreenSettings, CDS_FULLSCREEN) == DISP_CHANGE_SUCCESSFUL;
+	ShowWindow(m_hWnd, SW_MAXIMIZE);
+
+	resize(fullscreenWidth, fullscreenHeight);
+
+	WINDOWPLACEMENT g_wpPrev = { sizeof(g_wpPrev) };
+
+	MONITORINFO mi = { sizeof(mi) };
+	if (GetWindowPlacement(m_hWnd, &g_wpPrev) &&
+		GetMonitorInfo(MonitorFromWindow(m_hWnd,
+		MONITOR_DEFAULTTOPRIMARY), &mi)) {
+		SetWindowLong(m_hWnd, GWL_STYLE,
+			dwStyle & ~WS_OVERLAPPEDWINDOW);
+		SetWindowPos(m_hWnd, HWND_TOP,
+			mi.rcMonitor.left, mi.rcMonitor.top,
+			mi.rcMonitor.right - mi.rcMonitor.left,
+			mi.rcMonitor.bottom - mi.rcMonitor.top,
+			SWP_NOOWNERZORDER | SWP_FRAMECHANGED);
+	}
+
+	return isChangeSuccessful;
+}
+
+bool CCEGLView::exitFullscreen(int windowX, int windowY, int windowedWidth, int windowedHeight, int windowedPaddingX, int windowedPaddingY)
+{
+	bool isChangeSuccessful;
+
+	SetWindowLongPtr(m_hWnd, GWL_EXSTYLE, WS_EX_LEFT);
+	SetWindowLongPtr(m_hWnd, GWL_STYLE, WS_OVERLAPPEDWINDOW | WS_VISIBLE);
+	isChangeSuccessful = ChangeDisplaySettings(NULL, CDS_RESET) == DISP_CHANGE_SUCCESSFUL;
+	SetWindowPos(m_hWnd, HWND_NOTOPMOST, windowX, windowY, windowedWidth + windowedPaddingX, windowedHeight + windowedPaddingY, SWP_SHOWWINDOW);
+	ShowWindow(m_hWnd, SW_RESTORE);
+
+	return isChangeSuccessful;
+}
+
 void CCEGLView::setMenuResource(LPCWSTR menu)
 {
     m_menu = menu;

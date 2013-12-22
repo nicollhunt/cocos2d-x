@@ -19,6 +19,10 @@ NS_CC_EXT_BEGIN
 class CCBSelectorResolver {
     public:
         virtual ~CCBSelectorResolver() {};
+    
+    // NDH - So we can use custom targets when binding menu items
+    virtual CCObject *onResolveCCBCCMenuItemTarget(const char* pSelectorName) = 0;
+
     virtual SEL_MenuHandler onResolveCCBCCMenuItemSelector(CCObject * pTarget, const char* pSelectorName) = 0;
     
     virtual SEL_CCControlHandler onResolveCCBCCControlSelector(CCObject * pTarget, const char* pSelectorName) = 0;

@@ -712,11 +712,17 @@ BlockData * CCNodeLoader::parsePropTypeBlock(CCNode * pNode, CCNode * pParent, C
                     CCBSelectorResolver * targetAsCCBSelectorResolver = dynamic_cast<CCBSelectorResolver *>(target);
                     
                     if(targetAsCCBSelectorResolver != NULL) {
+                        // NDH + So we can use custom targets when binding menu items
+                        target = targetAsCCBSelectorResolver->onResolveCCBCCMenuItemTarget(selectorName.c_str());
+                        // NDH -
                         selMenuHandler = targetAsCCBSelectorResolver->onResolveCCBCCMenuItemSelector(target, selectorName.c_str());
                     }
                     if(selMenuHandler == 0) {
                         CCBSelectorResolver * ccbSelectorResolver = pCCBReader->getCCBSelectorResolver();
                         if(ccbSelectorResolver != NULL) {
+                            // NDH + So we can use custom targets when binding menu items
+                            target = ccbSelectorResolver->onResolveCCBCCMenuItemTarget(selectorName.c_str());
+                            // NDH -
                             selMenuHandler = ccbSelectorResolver->onResolveCCBCCMenuItemSelector(target, selectorName.c_str());
                         }
                     }
