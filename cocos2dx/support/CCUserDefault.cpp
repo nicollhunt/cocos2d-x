@@ -351,12 +351,12 @@ bool CCUserDefault::isXMLFileExist()
     return bRet;
 }
 
+void CCUserDefault::checkForCacheVersion()
+{
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID || \
 CC_TARGET_PLATFORM == CC_PLATFORM_OUYA || \
 CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
 
-void CCUserDefault::checkForCacheVersion()
-{
     // Copy any existing defaults file from the cache directory
     string sCachePath = CCFileUtils::sharedFileUtils()->getWriteablePath() + XML_FILE_NAME;
     string sDocumentsPath = CCFileUtils::sharedFileUtils()->getDocumentPath() + XML_FILE_NAME;
@@ -387,8 +387,8 @@ void CCUserDefault::checkForCacheVersion()
         }
         free(pBuffer);
     }
-}
 #endif
+}
 
 void CCUserDefault::initXMLFilePath()
 {
