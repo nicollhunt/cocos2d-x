@@ -169,17 +169,7 @@ public abstract class Cocos2dxActivity extends Activity implements Cocos2dxHelpe
 		setContentView(framelayout);
 		
 		// set the keep screen on flag        
-		this.mGLSurfaceView.setKeepScreenOn(true);
-
-	     try {
-	 		Method m = null;
-	 		m = Cocos2dxGLSurfaceView.class.getMethod("setSystemUiVisibility");
-	 		if (m != null) {
-	 			this.mGLSurfaceView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE);
-	 		}
-	     } catch (Exception e) {
-	       // doesn't matter
-	     }
+		this.mGLSurfaceView.setKeepScreenOn(true);		
 	}
 	
     public Cocos2dxGLSurfaceView onCreateView() {
