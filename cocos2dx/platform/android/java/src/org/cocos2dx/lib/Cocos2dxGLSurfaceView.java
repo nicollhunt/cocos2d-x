@@ -62,7 +62,7 @@ public class Cocos2dxGLSurfaceView extends GLSurfaceView {
 
 	private Cocos2dxRenderer mCocos2dxRenderer;
 	private Cocos2dxEditText mCocos2dxEditText;
-
+	
 	// ===========================================================
 	// Constructors
 	// ===========================================================
@@ -121,7 +121,7 @@ public class Cocos2dxGLSurfaceView extends GLSurfaceView {
 		};
 		
 		// Hide navigation controls where possible...
-		updateSystemUiVisibility();
+		initSystemUiVisibility();
 	}
 
 	// ===========================================================
@@ -160,7 +160,10 @@ public class Cocos2dxGLSurfaceView extends GLSurfaceView {
 		}
 	}
 	
-	public void updateSystemUiVisibility()
+	//
+	// Attempt to put app into fullscreen mode, or as close as system allows...
+	//
+	public void initSystemUiVisibility()
 	{
 		int SDK_INT = android.os.Build.VERSION.SDK_INT;
 		
@@ -168,18 +171,31 @@ public class Cocos2dxGLSurfaceView extends GLSurfaceView {
 		
 		if(SDK_INT >= 19)
 		{
-			setSystemUiVisibility(
- 		            View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+			final int nVisibilityFlags = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
  		            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
  		            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
  		            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION // hide nav bar
  		            | View.SYSTEM_UI_FLAG_FULLSCREEN
- 		            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+ 		            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
+			
+			// Set flags immediately
+			setSystemUiVisibility(nVisibilityFlags);
+			
+			// Also set flags if something else changes them, e.g. volume hardware buttons, etc...
+			setOnSystemUiVisibilityChangeListener(new OnSystemUiVisibilityChangeListener() {
+	            @Override
+	            public void onSystemUiVisibilityChange(int visibility) {
+	                if(visibility == 0) {
+	                	mCocos2dxGLSurfaceView.setSystemUiVisibility(nVisibilityFlags);
+	                }
+	            }
+	        });
 		}
 		else if(SDK_INT >= 14)
 		{
+			// Request dimmed state of soft keyboard
 			setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE);
-		}
+		}		
 	}
 
 	// ===========================================================
@@ -190,9 +206,6 @@ public class Cocos2dxGLSurfaceView extends GLSurfaceView {
 	public void onResume() {
 		super.onResume();
 		
-		// Hide navigation controls where possible...
-		updateSystemUiVisibility();
-
 		this.queueEvent(new Runnable() {
 			@Override
 			public void run() {
