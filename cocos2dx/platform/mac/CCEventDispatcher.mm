@@ -31,8 +31,151 @@
 #import "ccConfig.h"
 #include "support/data_support/utlist.h"
 
+#include "CCDirector.h"
+#include "keyboard_dispatcher/CCKeyboardDispatcher.h"
+
 //NS_CC_BEGIN;
 static CCEventDispatcher *sharedDispatcher = nil;
+
+#include <unordered_map>
+#include <Carbon/Carbon.h>
+
+static std::unordered_map<int, int> g_keyCodeMap;
+
+USING_NS_CC;
+
+void initKeycodeMap()
+{
+    g_keyCodeMap[kVK_Space] = KEY_SPACE;
+    
+    {
+        /* Printable keys */
+        g_keyCodeMap[kVK_Space ] = KEY_SPACE;
+        //    g_keyCodeMap[kVK_ANSI_APOSTROPHE] = KEY_APOSTROPHE;
+        g_keyCodeMap[kVK_ANSI_Comma] = KEY_COMMA;
+        g_keyCodeMap[kVK_ANSI_Minus] = KEY_MINUS;
+        g_keyCodeMap[kVK_ANSI_Period] = KEY_PERIOD;
+        g_keyCodeMap[kVK_ANSI_Slash] = KEY_SLASH;
+        g_keyCodeMap[kVK_ANSI_0] = KEY_0;
+        g_keyCodeMap[kVK_ANSI_1] = KEY_1;
+        g_keyCodeMap[kVK_ANSI_2] = KEY_2;
+        g_keyCodeMap[kVK_ANSI_3] = KEY_3;
+        g_keyCodeMap[kVK_ANSI_4] = KEY_4;
+        g_keyCodeMap[kVK_ANSI_5] = KEY_5;
+        g_keyCodeMap[kVK_ANSI_6] = KEY_6;
+        g_keyCodeMap[kVK_ANSI_7] = KEY_7;
+        g_keyCodeMap[kVK_ANSI_8] = KEY_8;
+        g_keyCodeMap[kVK_ANSI_9] = KEY_9;
+        g_keyCodeMap[kVK_ANSI_Semicolon] = KEY_SEMICOLON,
+        g_keyCodeMap[kVK_ANSI_Equal] = KEY_EQUAL;
+        g_keyCodeMap[kVK_ANSI_A] = KEY_A;
+        g_keyCodeMap[kVK_ANSI_B] = KEY_B;
+        g_keyCodeMap[kVK_ANSI_C] = KEY_C;
+        g_keyCodeMap[kVK_ANSI_D] = KEY_D;
+        g_keyCodeMap[kVK_ANSI_E] = KEY_E;
+        g_keyCodeMap[kVK_ANSI_F] = KEY_F;
+        g_keyCodeMap[kVK_ANSI_G] = KEY_G;
+        g_keyCodeMap[kVK_ANSI_H] = KEY_H;
+        g_keyCodeMap[kVK_ANSI_I] = KEY_I;
+        g_keyCodeMap[kVK_ANSI_J] = KEY_J;
+        g_keyCodeMap[kVK_ANSI_K] = KEY_K;
+        g_keyCodeMap[kVK_ANSI_L] = KEY_L;
+        g_keyCodeMap[kVK_ANSI_M] = KEY_M;
+        g_keyCodeMap[kVK_ANSI_N] = KEY_N;
+        g_keyCodeMap[kVK_ANSI_O] = KEY_O;
+        g_keyCodeMap[kVK_ANSI_P] = KEY_P;
+        g_keyCodeMap[kVK_ANSI_Q] = KEY_Q;
+        g_keyCodeMap[kVK_ANSI_R] = KEY_R;
+        g_keyCodeMap[kVK_ANSI_S] = KEY_S;
+        g_keyCodeMap[kVK_ANSI_T] = KEY_T;
+        g_keyCodeMap[kVK_ANSI_U] = KEY_U;
+        g_keyCodeMap[kVK_ANSI_V] = KEY_V;
+        g_keyCodeMap[kVK_ANSI_W] = KEY_W;
+        g_keyCodeMap[kVK_ANSI_X] = KEY_X;
+        g_keyCodeMap[kVK_ANSI_Y] = KEY_Y;
+        g_keyCodeMap[kVK_ANSI_Z] = KEY_Z;
+        g_keyCodeMap[kVK_ANSI_LeftBracket] = KEY_LEFT_BRACKET;
+        g_keyCodeMap[kVK_ANSI_Backslash] = KEY_BACK_SLASH;
+        g_keyCodeMap[kVK_ANSI_RightBracket] = KEY_RIGHT_BRACKET;
+        g_keyCodeMap[kVK_ANSI_Grave] = KEY_GRAVE;
+        //    g_keyCodeMap[kVK_ANSI_WORLD_1] = KEY_GRAVE;
+        //    g_keyCodeMap[kVK_ANSI_WORLD_2] = KEY_NONE;
+        
+        /* Function keys */
+        g_keyCodeMap[kVK_Escape] = KEY_ESCAPE;
+        g_keyCodeMap[kVK_Return] = KEY_RETURN;
+        g_keyCodeMap[kVK_Tab] = KEY_TAB;
+        g_keyCodeMap[kVK_ForwardDelete] = KEY_BACKSPACE;
+        //    g_keyCodeMap[kVK_ANSI_INSERT] = KEY_INSERT;
+        g_keyCodeMap[kVK_Delete] = KEY_DELETE;
+        g_keyCodeMap[kVK_RightArrow] = KEY_RIGHT_ARROW;
+        g_keyCodeMap[kVK_LeftArrow] = KEY_LEFT_ARROW;
+        g_keyCodeMap[kVK_DownArrow] = KEY_DOWN_ARROW;
+        g_keyCodeMap[kVK_UpArrow] = KEY_UP_ARROW;
+        g_keyCodeMap[kVK_PageUp] = KEY_KP_PG_UP;
+        g_keyCodeMap[kVK_PageDown] = KEY_KP_PG_DOWN;
+        g_keyCodeMap[kVK_Home] = KEY_KP_HOME;
+        g_keyCodeMap[kVK_End] = KEY_END;
+        g_keyCodeMap[kVK_CapsLock] = KEY_CAPS_LOCK;
+        //    g_keyCodeMap[kVK_ANSI_SCROLL_LOCK] = KEY_SCROLL_LOCK;
+        //    g_keyCodeMap[kVK_ANSI_NUM_LOCK] = KEY_NUM_LOCK;
+        //    g_keyCodeMap[kVK_ANSI_PRINT_SCREEN] = KEY_PRINT;
+        //    g_keyCodeMap[kVK_ANSI_PAUSE] = KEY_PAUSE;
+        g_keyCodeMap[kVK_F1] = KEY_F1;
+        g_keyCodeMap[kVK_F2] = KEY_F2;
+        g_keyCodeMap[kVK_F3] = KEY_F3;
+        g_keyCodeMap[kVK_F4] = KEY_F4;
+        g_keyCodeMap[kVK_F5] = KEY_F5;
+        g_keyCodeMap[kVK_F6] = KEY_F6;
+        g_keyCodeMap[kVK_F7] = KEY_F7;
+        g_keyCodeMap[kVK_F8] = KEY_F8;
+        g_keyCodeMap[kVK_F9] = KEY_F9;
+        g_keyCodeMap[kVK_F10] = KEY_F10;
+        g_keyCodeMap[kVK_F11] = KEY_F11;
+        g_keyCodeMap[kVK_F12] = KEY_F12;
+        g_keyCodeMap[kVK_F13] = KEY_NONE;
+        g_keyCodeMap[kVK_F14] = KEY_NONE;
+        g_keyCodeMap[kVK_F15] = KEY_NONE;
+        g_keyCodeMap[kVK_F16] = KEY_NONE;
+        g_keyCodeMap[kVK_F17] = KEY_NONE;
+        g_keyCodeMap[kVK_F18] = KEY_NONE;
+        g_keyCodeMap[kVK_F19] = KEY_NONE;
+        g_keyCodeMap[kVK_F20] = KEY_NONE;
+        //    g_keyCodeMap[kVK_F21] = KEY_NONE;
+        //    g_keyCodeMap[kVK_F22] = KEY_NONE;
+        //    g_keyCodeMap[kVK_F23] = KEY_NONE;
+        //    g_keyCodeMap[kVK_F24] = KEY_NONE;
+        //    g_keyCodeMap[kVK_F25] = KEY_NONE;
+        g_keyCodeMap[kVK_ANSI_Keypad0] = KEY_0;
+        g_keyCodeMap[kVK_ANSI_Keypad1] = KEY_1;
+        g_keyCodeMap[kVK_ANSI_Keypad2] = KEY_2;
+        g_keyCodeMap[kVK_ANSI_Keypad3] = KEY_3;
+        g_keyCodeMap[kVK_ANSI_Keypad4] = KEY_4;
+        g_keyCodeMap[kVK_ANSI_Keypad5] = KEY_5;
+        g_keyCodeMap[kVK_ANSI_Keypad6] = KEY_6;
+        g_keyCodeMap[kVK_ANSI_Keypad7] = KEY_7;
+        g_keyCodeMap[kVK_ANSI_Keypad8] = KEY_8;
+        g_keyCodeMap[kVK_ANSI_Keypad9] = KEY_9;
+        g_keyCodeMap[kVK_ANSI_KeypadDecimal] = KEY_PERIOD;
+        g_keyCodeMap[kVK_ANSI_KeypadDivide] = KEY_KP_DIVIDE;
+        g_keyCodeMap[kVK_ANSI_KeypadMultiply] = KEY_KP_MULTIPLY;
+        g_keyCodeMap[kVK_ANSI_KeypadMinus] = KEY_KP_MINUS;
+        g_keyCodeMap[kVK_ANSI_KeypadPlus] = KEY_KP_PLUS;
+        g_keyCodeMap[kVK_ANSI_KeypadEnter] = KEY_KP_ENTER;
+        g_keyCodeMap[kVK_ANSI_KeypadEquals] = KEY_EQUAL;
+        g_keyCodeMap[kVK_Shift] = KEY_SHIFT;
+        g_keyCodeMap[kVK_Control] = KEY_CTRL;
+        //    g_keyCodeMap[kVK_ANSI_LEFT_ALT] = KEY_ALT;
+        g_keyCodeMap[kVK_Option] = KEY_HYPER;
+        g_keyCodeMap[kVK_RightShift] = KEY_SHIFT;
+        g_keyCodeMap[kVK_RightControl] = KEY_CTRL;
+        //    g_keyCodeMap[kVK_ANSI_RIGHT_ALT] = KEY_ALT;
+        g_keyCodeMap[kVK_RightOption] = KEY_HYPER;
+        //    g_keyCodeMap[kVK_ANSI_MENU] = KEY_MENU;
+        //    g_keyCodeMap[kVK_ANSI_LAST] = KEY_NONE          }
+    };
+}
+
 
 enum  {
 	// mouse
@@ -123,6 +266,9 @@ static int		eventQueueCount;
 #if	CC_DIRECTOR_MAC_USE_DISPLAY_LINK_THREAD
 		eventQueueCount = 0;
 #endif
+        
+        // NDH - Use a standard mapping for all keyboards
+        initKeycodeMap();
 	}
 	
 	return self;
@@ -502,7 +648,9 @@ static int		eventQueueCount;
 {
 	if( dispatchEvents_ ) {
 		tListEntry *entry, *tmp;
-		
+
+      cocos2d::CCKeyboardDispatcher *kbDisp = cocos2d::CCDirector::sharedDirector()->getKeyboardDispatcher();
+      kbDisp->dispatchKeyboardEvent(g_keyCodeMap[event.keyCode], true);
 		DL_FOREACH_SAFE( keyboardDelegates_, entry, tmp ) {
 			if ( entry->flags & kCCImplementsKeyDown ) {
 				void *swallows = [entry->delegate performSelector:@selector(ccKeyDown:) withObject:event];
@@ -510,7 +658,7 @@ static int		eventQueueCount;
 					break;
 			}
 		}
-	}
+	}    
 }
 
 - (void)keyUp:(NSEvent *)event
@@ -518,6 +666,8 @@ static int		eventQueueCount;
 	if( dispatchEvents_ ) {
 		tListEntry *entry, *tmp;
 		
+      cocos2d::CCKeyboardDispatcher *kbDisp = cocos2d::CCDirector::sharedDirector()->getKeyboardDispatcher();
+      kbDisp->dispatchKeyboardEvent(g_keyCodeMap[event.keyCode], false);
 		DL_FOREACH_SAFE( keyboardDelegates_, entry, tmp ) {
 			if ( entry->flags & kCCImplementsKeyUp ) {
 				void *swallows = [entry->delegate performSelector:@selector(ccKeyUp:) withObject:event];

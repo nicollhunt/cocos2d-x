@@ -56,7 +56,9 @@ THE SOFTWARE.
 #include "support/CCProfiling.h"
 #include "CCEGLView.h"
 #include <string>
-
+#ifdef KEYBOARD_SUPPORT
+#include "keyboard_dispatcher/CCKeyboardDispatcher.h"
+#endif
 /**
  Position of the FPS
  
@@ -146,6 +148,10 @@ bool CCDirector::init(void)
     // touchDispatcher
     m_pTouchDispatcher = new CCTouchDispatcher();
     m_pTouchDispatcher->init();
+#ifdef KEYBOARD_SUPPORT
+    // KeyboardDispatcher
+    _keyboardDispatcher = new CCKeyboardDispatcher();
+#endif
 
     // GamepadDispatcher
     m_pGamepadDispatcher = new CCGamepadDispatcher();
@@ -176,6 +182,9 @@ CCDirector::~CCDirector(void)
     CC_SAFE_RELEASE(m_pScheduler);
     CC_SAFE_RELEASE(m_pActionManager);
     CC_SAFE_RELEASE(m_pTouchDispatcher);
+#ifdef KEYBOARD_SUPPORT
+    CC_SAFE_RELEASE(_keyboardDispatcher);
+#endif
     CC_SAFE_RELEASE(m_pGamepadDispatcher);
     CC_SAFE_RELEASE(m_pKeypadDispatcher);
     CC_SAFE_DELETE(m_pAccelerometer);
@@ -218,6 +227,8 @@ void CCDirector::drawScene(void)
     {
         m_pScheduler->update(m_fDeltaTime);
     }
+    else
+        m_pScheduler->update(0.f);
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -892,6 +903,20 @@ CCTouchDispatcher* CCDirector::getTouchDispatcher()
 {
     return m_pTouchDispatcher;
 }
+
+#ifdef KEYBOARD_SUPPORT
+void CCDirector::setKeyboardDispatcher(CCKeyboardDispatcher* pKeyboardDispatcher)
+{
+    CC_SAFE_RETAIN(pKeyboardDispatcher);
+    CC_SAFE_RELEASE(_keyboardDispatcher);
+    _keyboardDispatcher = pKeyboardDispatcher;
+}
+
+CCKeyboardDispatcher* CCDirector::getKeyboardDispatcher()
+{
+    return _keyboardDispatcher;
+}
+#endif
 
 void CCDirector::setGamepadDispatcher(CCGamepadDispatcher* pGamepadDispatcher)
 {

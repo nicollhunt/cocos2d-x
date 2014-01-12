@@ -37,6 +37,8 @@ static void static_preloadBackgroundMusic(const char* pszFilePath)
 
 static void static_playBackgroundMusic(const char* pszFilePath, bool bLoop)
 {
+    // NDH - Stop any current music otherwise it keeps adding tracks
+    [[SimpleAudioEngine sharedEngine] stopBackgroundMusic];
     [[SimpleAudioEngine sharedEngine] playBackgroundMusic: [NSString stringWithUTF8String: pszFilePath] loop: bLoop];
 }
 

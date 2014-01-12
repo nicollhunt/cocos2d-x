@@ -40,7 +40,6 @@ THE SOFTWARE.
 #import "CCEventDispatcher.h"
 #import "CCEGLView.h"
 
-
 //USING_NS_CC;
 static EAGLView *view;
 
@@ -88,7 +87,7 @@ static EAGLView *view;
     cocos2d::CCEGLView::sharedOpenGLView()->setFrameSize(frameRect.size.width, frameRect.size.height);
     
     frameZoomFactor_ = 1.0f;
-	
+	    
 	view = self;
 	return self;
 }
@@ -447,18 +446,20 @@ static EAGLView *view;
 
 - (void)keyDown:(NSEvent *)theEvent
 {
-	DISPATCH_EVENT(theEvent, _cmd);
+    if (![theEvent isARepeat])
+        DISPATCH_EVENT(theEvent, _cmd);
 	
 	// pass the event along to the next responder (like your NSWindow subclass)
-	[super keyDown:theEvent];
+	//[super keyDown:theEvent];
 }
 
 - (void)keyUp:(NSEvent *)theEvent
 {
-	DISPATCH_EVENT(theEvent, _cmd);
+    if (![theEvent isARepeat])
+        DISPATCH_EVENT(theEvent, _cmd);
 
 	// pass the event along to the next responder (like your NSWindow subclass)
-	[super keyUp:theEvent];
+	//[super keyUp:theEvent];
 }
 
 - (void)flagsChanged:(NSEvent *)theEvent
