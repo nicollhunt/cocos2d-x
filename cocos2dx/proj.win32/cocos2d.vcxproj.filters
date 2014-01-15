@@ -97,6 +97,9 @@
     <Filter Include="gamepad_dispatcher">
       <UniqueIdentifier>{4ba57913-9779-42e8-a4fc-73af5a4317bd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="keyboard_dispatcher">
+      <UniqueIdentifier>{5c8a420e-9580-448e-ab4c-89e25a1e5997}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\base_nodes\CCAtlasNode.cpp">
@@ -445,6 +448,12 @@
     </ClCompile>
     <ClCompile Include="..\gamepad_dispatcher\CCGamepadDispatcher.cpp">
       <Filter>gamepad_dispatcher</Filter>
+    </ClCompile>
+    <ClCompile Include="..\keyboard_dispatcher\CCKeyboardDelegate.cpp">
+      <Filter>keyboard_dispatcher</Filter>
+    </ClCompile>
+    <ClCompile Include="..\keyboard_dispatcher\CCKeyboardDispatcher.cpp">
+      <Filter>keyboard_dispatcher</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -901,6 +910,12 @@
     </ClInclude>
     <ClInclude Include="..\gamepad_dispatcher\CCGamepadDispatcher.h">
       <Filter>gamepad_dispatcher</Filter>
+    </ClInclude>
+    <ClInclude Include="..\keyboard_dispatcher\CCKeyboardDelegate.h">
+      <Filter>keyboard_dispatcher</Filter>
+    </ClInclude>
+    <ClInclude Include="..\keyboard_dispatcher\CCKeyboardDispatcher.h">
+      <Filter>keyboard_dispatcher</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

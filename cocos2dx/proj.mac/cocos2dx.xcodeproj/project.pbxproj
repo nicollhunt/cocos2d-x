@@ -121,8 +121,6 @@
 		1551A6DA158F2ADE00E66CFE /* CCLabelBMFont.h in Headers */ = {isa = PBXBuildFile; fileRef = 1551A41C158F2ADE00E66CFE /* CCLabelBMFont.h */; };
 		1551A6DB158F2ADE00E66CFE /* CCLabelTTF.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1551A41D158F2ADE00E66CFE /* CCLabelTTF.cpp */; };
 		1551A6DC158F2ADE00E66CFE /* CCLabelTTF.h in Headers */ = {isa = PBXBuildFile; fileRef = 1551A41E158F2ADE00E66CFE /* CCLabelTTF.h */; };
-		1551A6DD158F2ADE00E66CFE /* CCLayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1551A420158F2ADE00E66CFE /* CCLayer.cpp */; };
-		1551A6DE158F2ADE00E66CFE /* CCLayer.h in Headers */ = {isa = PBXBuildFile; fileRef = 1551A421158F2ADE00E66CFE /* CCLayer.h */; };
 		1551A6DF158F2ADE00E66CFE /* CCScene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1551A422158F2ADE00E66CFE /* CCScene.cpp */; };
 		1551A6E0158F2ADE00E66CFE /* CCScene.h in Headers */ = {isa = PBXBuildFile; fileRef = 1551A423158F2ADE00E66CFE /* CCScene.h */; };
 		1551A6E1158F2ADE00E66CFE /* CCTransition.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1551A424158F2ADE00E66CFE /* CCTransition.cpp */; };
@@ -298,6 +296,12 @@
 		809EF7B41870B869003E0CC7 /* SimpleAudioEngine_objc.h in Headers */ = {isa = PBXBuildFile; fileRef = 809EF7A81870B869003E0CC7 /* SimpleAudioEngine_objc.h */; };
 		809EF7B51870B869003E0CC7 /* SimpleAudioEngine_objc.m in Sources */ = {isa = PBXBuildFile; fileRef = 809EF7A91870B869003E0CC7 /* SimpleAudioEngine_objc.m */; };
 		809EFAC01870C82A003E0CC7 /* SimpleAudioEngine.mm in Sources */ = {isa = PBXBuildFile; fileRef = 809EFABF1870C82A003E0CC7 /* SimpleAudioEngine.mm */; };
+		80DE959318817C9400A4ED9B /* CCKeyboardDispatcher.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 80DE959118817C9400A4ED9B /* CCKeyboardDispatcher.cpp */; };
+		80DE959418817C9400A4ED9B /* CCKeyboardDispatcher.h in Headers */ = {isa = PBXBuildFile; fileRef = 80DE959218817C9400A4ED9B /* CCKeyboardDispatcher.h */; };
+		80DE959618817CB700A4ED9B /* CCKeyboardDelegate.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 80DE959518817CB700A4ED9B /* CCKeyboardDelegate.cpp */; };
+		80DE959818817CDF00A4ED9B /* CCKeyboardDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = 80DE959718817CDF00A4ED9B /* CCKeyboardDelegate.h */; };
+		80DE959B1881856200A4ED9B /* CCLayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 80DE95991881856200A4ED9B /* CCLayer.cpp */; };
+		80DE959C1881856200A4ED9B /* CCLayer.h in Headers */ = {isa = PBXBuildFile; fileRef = 80DE959A1881856200A4ED9B /* CCLayer.h */; };
 		F4D7A74715F269D10081CE26 /* ccTypeInfo.h in Headers */ = {isa = PBXBuildFile; fileRef = F4D7A74615F269D10081CE26 /* ccTypeInfo.h */; };
 /* End PBXBuildFile section */
 
@@ -419,8 +423,6 @@
 		1551A41C158F2ADE00E66CFE /* CCLabelBMFont.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCLabelBMFont.h; sourceTree = "<group>"; };
 		1551A41D158F2ADE00E66CFE /* CCLabelTTF.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CCLabelTTF.cpp; sourceTree = "<group>"; };
 		1551A41E158F2ADE00E66CFE /* CCLabelTTF.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCLabelTTF.h; sourceTree = "<group>"; };
-		1551A420158F2ADE00E66CFE /* CCLayer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CCLayer.cpp; sourceTree = "<group>"; };
-		1551A421158F2ADE00E66CFE /* CCLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCLayer.h; sourceTree = "<group>"; };
 		1551A422158F2ADE00E66CFE /* CCScene.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CCScene.cpp; sourceTree = "<group>"; };
 		1551A423158F2ADE00E66CFE /* CCScene.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCScene.h; sourceTree = "<group>"; };
 		1551A424158F2ADE00E66CFE /* CCTransition.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CCTransition.cpp; sourceTree = "<group>"; };
@@ -596,6 +598,12 @@
 		809EF7A81870B869003E0CC7 /* SimpleAudioEngine_objc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SimpleAudioEngine_objc.h; path = ../../CocosDenshion/mac/SimpleAudioEngine_objc.h; sourceTree = "<group>"; };
 		809EF7A91870B869003E0CC7 /* SimpleAudioEngine_objc.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SimpleAudioEngine_objc.m; path = ../../CocosDenshion/mac/SimpleAudioEngine_objc.m; sourceTree = "<group>"; };
 		809EFABF1870C82A003E0CC7 /* SimpleAudioEngine.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = SimpleAudioEngine.mm; path = ../../CocosDenshion/mac/SimpleAudioEngine.mm; sourceTree = "<group>"; };
+		80DE959118817C9400A4ED9B /* CCKeyboardDispatcher.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CCKeyboardDispatcher.cpp; path = keyboard_dispatcher/CCKeyboardDispatcher.cpp; sourceTree = "<group>"; };
+		80DE959218817C9400A4ED9B /* CCKeyboardDispatcher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CCKeyboardDispatcher.h; path = keyboard_dispatcher/CCKeyboardDispatcher.h; sourceTree = "<group>"; };
+		80DE959518817CB700A4ED9B /* CCKeyboardDelegate.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CCKeyboardDelegate.cpp; path = keyboard_dispatcher/CCKeyboardDelegate.cpp; sourceTree = "<group>"; };
+		80DE959718817CDF00A4ED9B /* CCKeyboardDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CCKeyboardDelegate.h; path = keyboard_dispatcher/CCKeyboardDelegate.h; sourceTree = "<group>"; };
+		80DE95991881856200A4ED9B /* CCLayer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CCLayer.cpp; sourceTree = "<group>"; };
+		80DE959A1881856200A4ED9B /* CCLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCLayer.h; sourceTree = "<group>"; };
 		F4D7A74615F269D10081CE26 /* ccTypeInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ccTypeInfo.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -666,6 +674,7 @@
 				1551A37F158F2ADE00E66CFE /* cocoa */,
 				152DCD89165614AB009B8D87 /* draw_nodes */,
 				1551A396158F2ADE00E66CFE /* effects */,
+				80DE959018817C7F00A4ED9B /* keyboard_dispatcher */,
 				8062A7E017E724460061DC29 /* gamepad_dispatcher */,
 				1551A3E8158F2ADE00E66CFE /* include */,
 				1551A3F0158F2ADE00E66CFE /* kazmath */,
@@ -889,8 +898,8 @@
 		1551A41F158F2ADE00E66CFE /* layers_scenes_transitions_nodes */ = {
 			isa = PBXGroup;
 			children = (
-				1551A420158F2ADE00E66CFE /* CCLayer.cpp */,
-				1551A421158F2ADE00E66CFE /* CCLayer.h */,
+				80DE95991881856200A4ED9B /* CCLayer.cpp */,
+				80DE959A1881856200A4ED9B /* CCLayer.h */,
 				1551A422158F2ADE00E66CFE /* CCScene.cpp */,
 				1551A423158F2ADE00E66CFE /* CCScene.h */,
 				1551A424158F2ADE00E66CFE /* CCTransition.cpp */,
@@ -1209,6 +1218,17 @@
 			name = include;
 			sourceTree = "<group>";
 		};
+		80DE959018817C7F00A4ED9B /* keyboard_dispatcher */ = {
+			isa = PBXGroup;
+			children = (
+				80DE959118817C9400A4ED9B /* CCKeyboardDispatcher.cpp */,
+				80DE959518817CB700A4ED9B /* CCKeyboardDelegate.cpp */,
+				80DE959218817C9400A4ED9B /* CCKeyboardDispatcher.h */,
+				80DE959718817CDF00A4ED9B /* CCKeyboardDelegate.h */,
+			);
+			name = keyboard_dispatcher;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -1249,6 +1269,7 @@
 				1551A660158F2ADE00E66CFE /* CCSet.h in Headers */,
 				1551A662158F2ADE00E66CFE /* CCString.h in Headers */,
 				1551A664158F2ADE00E66CFE /* CCZone.h in Headers */,
+				80DE959418817C9400A4ED9B /* CCKeyboardDispatcher.h in Headers */,
 				1551A667158F2ADE00E66CFE /* CCGrabber.h in Headers */,
 				1551A669158F2ADE00E66CFE /* CCGrid.h in Headers */,
 				809EF7B21870B869003E0CC7 /* CocosDenshion.h in Headers */,
@@ -1278,7 +1299,6 @@
 				1551A6D8158F2ADE00E66CFE /* CCLabelAtlas.h in Headers */,
 				1551A6DA158F2ADE00E66CFE /* CCLabelBMFont.h in Headers */,
 				1551A6DC158F2ADE00E66CFE /* CCLabelTTF.h in Headers */,
-				1551A6DE158F2ADE00E66CFE /* CCLayer.h in Headers */,
 				1551A6E0158F2ADE00E66CFE /* CCScene.h in Headers */,
 				1551A6E2158F2ADE00E66CFE /* CCTransition.h in Headers */,
 				1551A6E4158F2ADE00E66CFE /* CCTransitionPageTurn.h in Headers */,
@@ -1311,6 +1331,7 @@
 				1551A81C158F2ADF00E66CFE /* ccShader_Position_uColor_frag.h in Headers */,
 				1551A81D158F2ADF00E66CFE /* ccShader_Position_uColor_vert.h in Headers */,
 				1551A81E158F2ADF00E66CFE /* ccShader_PositionColor_frag.h in Headers */,
+				80DE959818817CDF00A4ED9B /* CCKeyboardDelegate.h in Headers */,
 				1551A81F158F2ADF00E66CFE /* ccShader_PositionColor_vert.h in Headers */,
 				1551A820158F2ADF00E66CFE /* ccShader_PositionTexture_frag.h in Headers */,
 				1551A821158F2ADF00E66CFE /* ccShader_PositionTexture_uColor_frag.h in Headers */,
@@ -1345,6 +1366,7 @@
 				1551A84F158F2ADF00E66CFE /* ioapi.h in Headers */,
 				1551A851158F2ADF00E66CFE /* unzip.h in Headers */,
 				1551A853158F2ADF00E66CFE /* ZipUtils.h in Headers */,
+				80DE959C1881856200A4ED9B /* CCLayer.h in Headers */,
 				1551A854158F2ADF00E66CFE /* CCIMEDelegate.h in Headers */,
 				1551A856158F2ADF00E66CFE /* CCIMEDispatcher.h in Headers */,
 				1551A858158F2ADF00E66CFE /* CCTextFieldTTF.h in Headers */,
@@ -1486,7 +1508,6 @@
 				1551A6D7158F2ADE00E66CFE /* CCLabelAtlas.cpp in Sources */,
 				1551A6D9158F2ADE00E66CFE /* CCLabelBMFont.cpp in Sources */,
 				1551A6DB158F2ADE00E66CFE /* CCLabelTTF.cpp in Sources */,
-				1551A6DD158F2ADE00E66CFE /* CCLayer.cpp in Sources */,
 				1551A6DF158F2ADE00E66CFE /* CCScene.cpp in Sources */,
 				1551A6E1158F2ADE00E66CFE /* CCTransition.cpp in Sources */,
 				1551A6E3158F2ADE00E66CFE /* CCTransitionPageTurn.cpp in Sources */,
@@ -1505,6 +1526,8 @@
 				1551A724158F2ADE00E66CFE /* CCSAXParser.cpp in Sources */,
 				1551A74E158F2ADE00E66CFE /* platform.cpp in Sources */,
 				1551A816158F2ADF00E66CFE /* CCScriptSupport.cpp in Sources */,
+				80DE959318817C9400A4ED9B /* CCKeyboardDispatcher.cpp in Sources */,
+				80DE959618817CB700A4ED9B /* CCKeyboardDelegate.cpp in Sources */,
 				1551A818158F2ADF00E66CFE /* CCGLProgram.cpp in Sources */,
 				1551A81A158F2ADF00E66CFE /* ccGLStateCache.cpp in Sources */,
 				1551A829158F2ADF00E66CFE /* CCShaderCache.cpp in Sources */,
@@ -1546,6 +1569,7 @@
 				41CD6C3715BF7382005E6F29 /* CCApplication.mm in Sources */,
 				41CD6C3815BF7382005E6F29 /* CCCommon.mm in Sources */,
 				41CD6C3A15BF7382005E6F29 /* CCDirectorCaller.mm in Sources */,
+				80DE959B1881856200A4ED9B /* CCLayer.cpp in Sources */,
 				41CD6C3C15BF7382005E6F29 /* CCEGLView.mm in Sources */,
 				41CD6C3E15BF7382005E6F29 /* CCEventDispatcher.mm in Sources */,
 				41CD6C3F15BF7382005E6F29 /* CCFileUtils.mm in Sources */,
@@ -1579,7 +1603,7 @@
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_C_LANGUAGE_STANDARD = "compiler-default";
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -1614,7 +1638,7 @@
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_C_LANGUAGE_STANDARD = "compiler-default";
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -1641,6 +1665,7 @@
 					USE_FILE32API,
 					CC_TARGET_OS_MAC,
 					"COCOS2D_DEBUG=1",
+					"KEYBOARD_SUPPORT=1",
 				);
 				HEADER_SEARCH_PATHS = (
 					"\"$(SRCROOT)/..\"",
@@ -1667,6 +1692,7 @@
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					USE_FILE32API,
 					CC_TARGET_OS_MAC,
+					"KEYBOARD_SUPPORT=1",
 				);
 				HEADER_SEARCH_PATHS = (
 					"\"$(SRCROOT)/..\"",
