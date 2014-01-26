@@ -588,7 +588,7 @@ bool CCParticleSystem::isFull()
 void CCParticleSystem::update(float dt)
 {
     // NDH - Simple optimisations
-    if (!m_bVisible)
+    if (!m_bVisible || dt < FLT_EPSILON)
         return;
     
     CC_PROFILER_START_CATEGORY(kCCProfilerCategoryParticles , "CCParticleSystem - update");

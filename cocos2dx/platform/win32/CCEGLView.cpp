@@ -323,6 +323,7 @@ CCEGLView::CCEGLView()
 , m_wndproc(NULL)
 , m_fFrameZoomFactor(1.0f)
 , m_bSupportTouch(false)
+, m_bIsFullscreen(false)
 {
     strcpy(m_szViewName, "Cocos2dxWin32");
 }
@@ -622,6 +623,15 @@ LRESULT CCEGLView::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
             (*m_lpfnAccelerometerKeyHook)( message,wParam,lParam );
         }
         break;
+
+	case WM_SYSKEYDOWN:
+		// Watch for Alt+Return to toggle fullscreen mode
+		if (wParam == VK_RETURN && GetAsyncKeyState(VK_MENU))
+		{
+			toggleFullscreen();
+		}
+		return DefWindowProc(m_hWnd, message, wParam, lParam);
+		break;
     case WM_CHAR:
         {
             if (wParam < 0x20)
@@ -746,6 +756,31 @@ int CCEGLView::getFullscreenHeight()
 	return GetDeviceCaps(m_hDC, VERTRES);
 }
 
+void CCEGLView::setWindowTitle(const char *szTitle)
+{
+	WCHAR wszBuf[50] = { 0 };
+	MultiByteToWideChar(CP_UTF8, 0, szTitle, -1, wszBuf, sizeof(wszBuf));
+
+	SetWindowText(m_hWnd, wszBuf);
+}
+
+void CCEGLView::toggleFullscreen()
+{
+	m_bIsFullscreen = !m_bIsFullscreen;
+	if (m_bIsFullscreen)
+	{
+		setFrameZoomFactor(1.0f);
+		// Enter full screen mode with the resolution size specified at exact fit
+		// eglView->setDesignResolutionSize(1024, 768, kResolutionExactFit);
+		enterFullscreen(0, 0);
+	}
+	else
+	{
+		setFrameZoomFactor(0.5f);
+		exitFullscreen(0, 0, 0, 0, 0, 0);
+	}
+}
+
 bool CCEGLView::enterFullscreen(int fullscreenWidth, int fullscreenHeight)
 {
 	DEVMODE fullscreenSettings;
@@ -803,6 +838,18 @@ bool CCEGLView::enterFullscreen(int fullscreenWidth, int fullscreenHeight)
 bool CCEGLView::exitFullscreen(int windowX, int windowY, int windowedWidth, int windowedHeight, int windowedPaddingX, int windowedPaddingY)
 {
 	bool isChangeSuccessful;
+
+	if (windowedWidth == 0 || windowedHeight == 0)
+	{
+		windowedWidth = GetDeviceCaps(m_hDC, HORZRES) / 2;
+		windowedHeight = GetDeviceCaps(m_hDC, VERTRES) / 2;
+
+		windowX = windowedWidth / 2;
+		windowY = windowedHeight / 2;
+
+		windowedPaddingX = 0;
+		windowedPaddingY = 0;
+	}
 
 	SetWindowLongPtr(m_hWnd, GWL_EXSTYLE, WS_EX_LEFT);
 	SetWindowLongPtr(m_hWnd, GWL_STYLE, WS_OVERLAPPEDWINDOW | WS_VISIBLE);

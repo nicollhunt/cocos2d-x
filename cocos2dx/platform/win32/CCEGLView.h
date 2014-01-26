@@ -49,6 +49,9 @@ public:
     virtual void setFrameSize(float width, float height);
     virtual void setIMEKeyboardState(bool bOpen);
 
+	void setWindowTitle(const char *szTitle);
+
+	void toggleFullscreen();
 	bool enterFullscreen(int fullscreenWidth = 0, int fullscreenHeight = 0);
 	bool exitFullscreen(int windowX, int windowY, int windowedWidth, int windowedHeight, int windowedPaddingX, int windowedPaddingY);
 	int getFullscreenWidth();
@@ -100,6 +103,7 @@ private:
     CUSTOM_WND_PROC m_wndproc;
 
     float m_fFrameZoomFactor;
+	bool m_bIsFullscreen;
 };
 
 NS_CC_END
