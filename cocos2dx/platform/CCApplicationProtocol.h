@@ -5,6 +5,8 @@ NS_CC_BEGIN
 
 enum TargetPlatform
 {
+	kTargetUndefined,
+
     kTargetWindows,
     kTargetLinux,
     kTargetMacOS,
@@ -17,6 +19,7 @@ enum TargetPlatform
     kTargetIOS,
     kTargetOUYA,
     kTargetGameStick,
+    kTargetAmazonStreamingBox,
 };
 
 /**

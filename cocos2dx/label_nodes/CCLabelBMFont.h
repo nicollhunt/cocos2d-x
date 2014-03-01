@@ -202,7 +202,7 @@ protected:
     // max width until a line break is added
     float m_fWidth;
     
-    CCBMFontConfiguration *m_pConfiguration;
+    CC_SYNTHESIZE(CCBMFontConfiguration *, m_pConfiguration, Configuration)
     
     bool m_bLineBreakWithoutSpaces;
     // offset of the texture atlas

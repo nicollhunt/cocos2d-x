@@ -115,7 +115,15 @@ public class Cocos2dxHelper {
 		return Locale.getDefault().getLanguage();
 	}
 	
+	public static String getDeviceManufacturer(){
+		Log.d(Cocos2dxHelper.TAG, String.format("getDeviceModel Build.MODEL=%s Build.MANUFACTURER=%s", Build.MODEL, Build.MANUFACTURER));		
+
+		return Build.MANUFACTURER;
+    }
+	
 	public static String getDeviceModel(){
+		Log.d(Cocos2dxHelper.TAG, String.format("getDeviceModel Build.MODEL=%s Build.MANUFACTURER=%s", Build.MODEL, Build.MANUFACTURER));		
+
 		return Build.MODEL;
     }
 

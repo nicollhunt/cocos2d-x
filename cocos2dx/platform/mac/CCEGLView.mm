@@ -92,6 +92,9 @@ void CCEGLView::setViewPortInPoints(float x , float y , float w , float h)
 {
     float frameZoomFactor = [[EAGLView sharedEGLView] frameZoomFactor];
     
+    m_tFrameSize.width = w;
+    m_tFrameSize.height = h;
+    
     glViewport((GLint)(x * m_fScaleX * frameZoomFactor + m_obViewPortRect.origin.x * frameZoomFactor),
                (GLint)(y * m_fScaleY * frameZoomFactor + m_obViewPortRect.origin.y * frameZoomFactor),
                (GLsizei)(w * m_fScaleX * frameZoomFactor),
@@ -101,6 +104,12 @@ void CCEGLView::setViewPortInPoints(float x , float y , float w , float h)
 void CCEGLView::setScissorInPoints(float x , float y , float w , float h)
 {
     float frameZoomFactor = [[EAGLView sharedEGLView] frameZoomFactor];
+
+    x = [[EAGLView sharedEGLView] getWidth] / frameZoomFactor / m_tFrameSize.width * x;
+    y = [[EAGLView sharedEGLView] getHeight] / frameZoomFactor / m_tFrameSize.height * y;
+
+    w = [[EAGLView sharedEGLView] getWidth] / frameZoomFactor / m_tFrameSize.width * w;
+    h = [[EAGLView sharedEGLView] getHeight] / frameZoomFactor / m_tFrameSize.height * h;
     
     glScissor((GLint)(x * m_fScaleX * frameZoomFactor + m_obViewPortRect.origin.x * frameZoomFactor),
               (GLint)(y * m_fScaleY * frameZoomFactor + m_obViewPortRect.origin.y * frameZoomFactor),

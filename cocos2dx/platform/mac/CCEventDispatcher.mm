@@ -37,10 +37,10 @@
 //NS_CC_BEGIN;
 static CCEventDispatcher *sharedDispatcher = nil;
 
-#include <unordered_map>
+#include <map>
 #include <Carbon/Carbon.h>
 
-static std::unordered_map<int, int> g_keyCodeMap;
+static std::map<int, int> g_keyCodeMap;
 
 USING_NS_CC;
 

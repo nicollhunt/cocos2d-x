@@ -38,6 +38,10 @@ THE SOFTWARE.
 
 static std::unordered_map<int, int> g_keyCodeMap;
 
+static int g_nWindowedPrefs = WS_CAPTION | WS_MINIMIZEBOX | WS_POPUPWINDOW;
+static float s_fWidth = 0;
+static float s_fHeight = 0;
+
 USING_NS_CC;
 
 void initKeycodeMap()
@@ -83,7 +87,7 @@ void initKeycodeMap()
 	g_keyCodeMap['T'] = KEY_T;
 	g_keyCodeMap['U'] = KEY_U;
 	g_keyCodeMap['V'] = KEY_V;
-	g_keyCodeMap['w'] = KEY_W;
+	g_keyCodeMap['W'] = KEY_W;
 	g_keyCodeMap['X'] = KEY_X;
 	g_keyCodeMap['Y'] = KEY_Y;
 	g_keyCodeMap['Z'] = KEY_Z;
@@ -171,6 +175,31 @@ void initKeycodeMap()
 #endif
 }
 
+void debugPrintWindowSize(HWND hWnd)
+{
+	// Find out border size
+	RECT rcWindow;
+	GetWindowRect(hWnd, &rcWindow);
+
+	CCLog("GetWindowRect - %d,%d,%d,%d (%dx%d)",
+		rcWindow.left, rcWindow.top, rcWindow.right, rcWindow.bottom,
+		rcWindow.right - rcWindow.left,
+		rcWindow.top - rcWindow.bottom);
+
+	RECT rcClient;
+	GetClientRect(hWnd, &rcClient);
+
+	CCLog("GetClientRect - %d,%d,%d,%d (%dx%d)",
+		rcClient.left, rcClient.top, rcClient.right, rcClient.bottom,
+		rcClient.right - rcClient.left,
+		rcClient.top - rcClient.bottom);
+
+	POINT ptDiff;
+	ptDiff.x = (rcWindow.right - rcWindow.left) - rcClient.right;
+	ptDiff.y = (rcWindow.bottom - rcWindow.top) - rcClient.bottom;
+
+
+}
 
 #if(_MSC_VER >= 1600) // Visual Studio 2010 or higher version.
 // Windows Touch define
@@ -313,6 +342,8 @@ static LRESULT CALLBACK _WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM 
     }
 }
 
+HICON CCEGLView::m_hIcon = NULL;
+
 CCEGLView::CCEGLView()
 : m_bCaptured(false)
 , m_hWnd(NULL)
@@ -421,7 +452,7 @@ bool CCEGLView::Create()
         wc.cbClsExtra     = 0;                              // No Extra Window Data
         wc.cbWndExtra     = 0;                                // No Extra Window Data
         wc.hInstance      = hInstance;                        // Set The Instance
-        wc.hIcon          = LoadIcon( NULL, IDI_WINLOGO );    // Load The Default Icon
+		wc.hIcon          = m_hIcon;                        // Set The Window Icon
         wc.hCursor        = LoadCursor( NULL, IDC_ARROW );    // Load The Arrow Pointer
         wc.hbrBackground  = NULL;                           // No Background Required For GL
         wc.lpszMenuName   = m_menu;                         //
@@ -438,17 +469,17 @@ bool CCEGLView::Create()
 
         // create window
         m_hWnd = CreateWindowEx(
-            WS_EX_APPWINDOW | WS_EX_WINDOWEDGE,    // Extended Style For The Window
+			WS_EX_APPWINDOW | WS_EX_WINDOWEDGE | WS_EX_LEFT | WS_EX_APPWINDOW,    // Extended Style For The Window
             kWindowClassName,                                    // Class Name
-            wszBuf,                                                // Window Title
-            WS_CAPTION | WS_POPUPWINDOW | WS_MINIMIZEBOX,        // Defined Window Style
+            wszBuf,                                               // Window Title
+			g_nWindowedPrefs,                                    // Defined Window Style
             0, 0,                                                // Window Position
             //TODO: Initializing width with a large value to avoid getting a wrong client area by 'GetClientRect' function.
-            1000,                                               // Window Width
-            1000,                                               // Window Height
-            NULL,                                                // No Parent Window
-            NULL,                                                // No Menu
-            hInstance,                                            // Instance
+            getFullscreenWidth(),                                               // Window Width
+            getFullscreenHeight(),                                               // Window Height
+            NULL,                                               // No Parent Window
+            NULL,                                               // No Menu
+            hInstance,                                          // Instance
             NULL );
 
         CC_BREAK_IF(! m_hWnd);
@@ -468,6 +499,8 @@ bool CCEGLView::Create()
 	    m_bSupportTouch = (s_pfRegisterTouchWindowFunction(m_hWnd, 0) != 0);
     }
 #endif /* #if(_MSC_VER >= 1600) */
+
+	debugPrintWindowSize(m_hWnd);
 
     return bRet;
 }
@@ -601,12 +634,14 @@ LRESULT CCEGLView::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
             CCDirector::sharedDirector()->getKeypadDispatcher()->dispatchKeypadMSG(kTypeBackClicked);
         }
 
+		// Only pass on non-repeating keypresses
+		if ((lParam & 0x40000000) == 0)
 		{
 			cocos2d::CCKeyboardDispatcher *kbDisp = cocos2d::CCDirector::sharedDirector()->getKeyboardDispatcher();
 			kbDisp->dispatchKeyboardEvent(g_keyCodeMap[wParam], true);
 		}
 
-        if ( m_lpfnAccelerometerKeyHook!=NULL )
+		if (m_lpfnAccelerometerKeyHook != NULL)
         {
             (*m_lpfnAccelerometerKeyHook)( message,wParam,lParam );
         }
@@ -736,6 +771,7 @@ void CCEGLView::swapBuffers()
 {
     if (m_hDC != NULL)
     {
+		glFlush();
         ::SwapBuffers(m_hDC);
     }
 }
@@ -766,98 +802,73 @@ void CCEGLView::setWindowTitle(const char *szTitle)
 
 void CCEGLView::toggleFullscreen()
 {
-	m_bIsFullscreen = !m_bIsFullscreen;
+	setFullscreen(!m_bIsFullscreen);
+}
+
+void CCEGLView::setFullscreen(bool bFullscreen)
+{
+	if (m_bIsFullscreen == bFullscreen)
+		return;
+
+	m_bIsFullscreen = bFullscreen;
+
 	if (m_bIsFullscreen)
 	{
-		setFrameZoomFactor(1.0f);
-		// Enter full screen mode with the resolution size specified at exact fit
-		// eglView->setDesignResolutionSize(1024, 768, kResolutionExactFit);
-		enterFullscreen(0, 0);
+		enterFullscreen();
 	}
 	else
 	{
-		setFrameZoomFactor(0.5f);
-		exitFullscreen(0, 0, 0, 0, 0, 0);
+		exitFullscreen();
 	}
 }
 
-bool CCEGLView::enterFullscreen(int fullscreenWidth, int fullscreenHeight)
+int g_nPrevStyle = 0;
+int g_nPrevStyleEx = 0;
+
+bool CCEGLView::enterFullscreen()
 {
-	DEVMODE fullscreenSettings;
-	bool isChangeSuccessful;
+	bool isChangeSuccessful = true;
 
-	if (fullscreenWidth == 0 || fullscreenHeight == 0)
-	{
-		fullscreenWidth = GetDeviceCaps(m_hDC, HORZRES);
-		fullscreenHeight = GetDeviceCaps(m_hDC, VERTRES);
-	}
+	g_nPrevStyle = GetWindowLong(m_hWnd, GWL_STYLE);
+	g_nPrevStyleEx = GetWindowLong(m_hWnd, GWL_EXSTYLE);
 
-	int colourBits = GetDeviceCaps(m_hDC, BITSPIXEL);
-	int refreshRate = GetDeviceCaps(m_hDC, VREFRESH);
+	// Set new window style and size.
+	SetWindowLongPtr(m_hWnd, GWL_STYLE, g_nPrevStyle & ~g_nWindowedPrefs);
+			
+	bool for_metro = 0;
+	if (!for_metro) {
+			MONITORINFO monitor_info;
+			monitor_info.cbSize = sizeof(monitor_info);
+			GetMonitorInfo(MonitorFromWindow(m_hWnd, MONITOR_DEFAULTTONEAREST),
+				&monitor_info);
 
-	EnumDisplaySettings(NULL, 0, &fullscreenSettings);
-	fullscreenSettings.dmPelsWidth = fullscreenWidth;
-	fullscreenSettings.dmPelsHeight = fullscreenHeight;
-	fullscreenSettings.dmBitsPerPel = colourBits;
-	fullscreenSettings.dmDisplayFrequency = refreshRate;
-	fullscreenSettings.dmFields = DM_PELSWIDTH |
-		DM_PELSHEIGHT |
-		DM_BITSPERPEL |
-		DM_DISPLAYFREQUENCY;
+			RECT window_rect(monitor_info.rcMonitor);
+			SetWindowPos(m_hWnd, NULL,
+				window_rect.left, 
+				window_rect.top,
+				window_rect.right - window_rect.left,
+				window_rect.bottom - window_rect.top,
+				SWP_NOOWNERZORDER | SWP_FRAMECHANGED);
 
-	DWORD dwStyleEx = GetWindowLong(m_hWnd, GWL_STYLE);
-	SetWindowLongPtr(m_hWnd, GWL_EXSTYLE, dwStyleEx & /*WS_EX_APPWINDOW |*/ WS_EX_TOPMOST);
-
-	DWORD dwStyle = GetWindowLong(m_hWnd, GWL_STYLE);
-	SetWindowLongPtr(m_hWnd, GWL_STYLE, dwStyle & ~WS_OVERLAPPEDWINDOW);
-
-	SetWindowPos(m_hWnd, HWND_TOPMOST, 0, 0, fullscreenWidth, fullscreenHeight, SWP_SHOWWINDOW);
-	isChangeSuccessful = ChangeDisplaySettings(&fullscreenSettings, CDS_FULLSCREEN) == DISP_CHANGE_SUCCESSFUL;
-	ShowWindow(m_hWnd, SW_MAXIMIZE);
-
-	resize(fullscreenWidth, fullscreenHeight);
-
-	WINDOWPLACEMENT g_wpPrev = { sizeof(g_wpPrev) };
-
-	MONITORINFO mi = { sizeof(mi) };
-	if (GetWindowPlacement(m_hWnd, &g_wpPrev) &&
-		GetMonitorInfo(MonitorFromWindow(m_hWnd,
-		MONITOR_DEFAULTTOPRIMARY), &mi)) {
-		SetWindowLong(m_hWnd, GWL_STYLE,
-			dwStyle & ~WS_OVERLAPPEDWINDOW);
-		SetWindowPos(m_hWnd, HWND_TOP,
-			mi.rcMonitor.left, mi.rcMonitor.top,
-			mi.rcMonitor.right - mi.rcMonitor.left,
-			mi.rcMonitor.bottom - mi.rcMonitor.top,
-			SWP_NOOWNERZORDER | SWP_FRAMECHANGED);
+			CCEGLViewProtocol::setFrameSize(window_rect.right - window_rect.left, window_rect.bottom - window_rect.top);
 	}
 
 	return isChangeSuccessful;
 }
 
-bool CCEGLView::exitFullscreen(int windowX, int windowY, int windowedWidth, int windowedHeight, int windowedPaddingX, int windowedPaddingY)
+bool CCEGLView::exitFullscreen()
 {
-	bool isChangeSuccessful;
+	int windowedWidth = getFullscreenWidth() / 2;
+	int windowedHeight = getFullscreenHeight() / 2;
 
-	if (windowedWidth == 0 || windowedHeight == 0)
-	{
-		windowedWidth = GetDeviceCaps(m_hDC, HORZRES) / 2;
-		windowedHeight = GetDeviceCaps(m_hDC, VERTRES) / 2;
+	SetWindowLongPtr(m_hWnd, GWL_STYLE, g_nPrevStyle);
 
-		windowX = windowedWidth / 2;
-		windowY = windowedHeight / 2;
+	// adjust window size for menubar
+	resize(windowedWidth, windowedHeight);
 
-		windowedPaddingX = 0;
-		windowedPaddingY = 0;
-	}
+	CCEGLViewProtocol::setFrameSize(windowedWidth, windowedHeight);
 
-	SetWindowLongPtr(m_hWnd, GWL_EXSTYLE, WS_EX_LEFT);
-	SetWindowLongPtr(m_hWnd, GWL_STYLE, WS_OVERLAPPEDWINDOW | WS_VISIBLE);
-	isChangeSuccessful = ChangeDisplaySettings(NULL, CDS_RESET) == DISP_CHANGE_SUCCESSFUL;
-	SetWindowPos(m_hWnd, HWND_NOTOPMOST, windowX, windowY, windowedWidth + windowedPaddingX, windowedHeight + windowedPaddingY, SWP_SHOWWINDOW);
-	ShowWindow(m_hWnd, SW_RESTORE);
-
-	return isChangeSuccessful;
+	return true;
 }
 
 void CCEGLView::setMenuResource(LPCWSTR menu)
@@ -880,12 +891,24 @@ HWND CCEGLView::getHWnd()
     return m_hWnd;
 }
 
+void CCEGLView::setIcon(HICON hIcon)
+{
+	m_hIcon = hIcon;
+}
+
+
 void CCEGLView::resize(int width, int height)
 {
     if (! m_hWnd)
     {
         return;
     }
+
+	// Initial size to force window update
+	MoveWindow(m_hWnd, 0, 0, width, height, TRUE);
+
+	int nFullscreenWidth = this->getFullscreenWidth();
+	int nFullscreenHeight = this->getFullscreenHeight();
 
     RECT rcWindow;
     GetWindowRect(m_hWnd, &rcWindow);
@@ -897,28 +920,13 @@ void CCEGLView::resize(int width, int height)
     POINT ptDiff;
     ptDiff.x = (rcWindow.right - rcWindow.left) - rcClient.right;
     ptDiff.y = (rcWindow.bottom - rcWindow.top) - rcClient.bottom;
-    rcClient.right = rcClient.left + width;
-    rcClient.bottom = rcClient.top + height;
 
-    const CCSize& frameSize = getFrameSize();
-    if (frameSize.width > 0)
-    {
-#ifdef _DEBUG
-        char szBuf[MAX_PATH + 1];
-        memset(szBuf, 0, sizeof(szBuf));
-        snprintf(szBuf, MAX_PATH, "%s - %0.0fx%0.0f - %0.2f",
-                   m_szViewName, frameSize.width, frameSize.height, m_fFrameZoomFactor);
-        WCHAR wszBuf[MAX_PATH] = {0};
-        MultiByteToWideChar(CP_UTF8, 0, szBuf, -1, wszBuf, sizeof(wszBuf));
-        SetWindowText(m_hWnd, wszBuf);
-#endif
-    }
+	int nWindowX = (nFullscreenWidth - width - ptDiff.x) / 2;
+	int nWindowY = (nFullscreenHeight - height - ptDiff.y) / 2;
 
-    AdjustWindowRectEx(&rcClient, GetWindowLong(m_hWnd, GWL_STYLE), FALSE, GetWindowLong(m_hWnd, GWL_EXSTYLE));
-
-    // change width and height
-    SetWindowPos(m_hWnd, 0, 0, 0, width + ptDiff.x, height + ptDiff.y,
-                 SWP_NOCOPYBITS | SWP_NOMOVE | SWP_NOOWNERZORDER | SWP_NOZORDER);
+	// Resize, accounting for window borders
+	MoveWindow(m_hWnd, nWindowX, nWindowY,
+		width + ptDiff.x, height + ptDiff.y, TRUE);
 }
 
 void CCEGLView::setFrameZoomFactor(float fZoomFactor)
@@ -976,6 +984,9 @@ void CCEGLView::centerWindow()
 
 void CCEGLView::setViewPortInPoints(float x , float y , float w , float h)
 {
+	s_fWidth = w;
+	s_fHeight = h;
+
     glViewport((GLint)(x * m_fScaleX * m_fFrameZoomFactor + m_obViewPortRect.origin.x * m_fFrameZoomFactor),
         (GLint)(y * m_fScaleY  * m_fFrameZoomFactor + m_obViewPortRect.origin.y * m_fFrameZoomFactor),
         (GLsizei)(w * m_fScaleX * m_fFrameZoomFactor),
@@ -984,6 +995,23 @@ void CCEGLView::setViewPortInPoints(float x , float y , float w , float h)
 
 void CCEGLView::setScissorInPoints(float x , float y , float w , float h)
 {
+	float frameZoomFactor = getFrameZoomFactor();
+
+	//float fWidth = getFrameSize().width;
+	//float fHeight = getFrameSize().height;
+
+	RECT rcClient;
+	GetClientRect(m_hWnd, &rcClient);
+
+	float fWidth = rcClient.right - rcClient.left;
+	float fHeight = rcClient.bottom - rcClient.top;
+
+	x = fWidth / frameZoomFactor / s_fWidth * x;
+	y = fHeight / frameZoomFactor / s_fHeight * y;
+
+	w = fWidth / frameZoomFactor / s_fWidth * w;
+	h = fHeight / frameZoomFactor / s_fHeight * h;
+
     glScissor((GLint)(x * m_fScaleX * m_fFrameZoomFactor + m_obViewPortRect.origin.x * m_fFrameZoomFactor),
               (GLint)(y * m_fScaleY * m_fFrameZoomFactor + m_obViewPortRect.origin.y * m_fFrameZoomFactor),
               (GLsizei)(w * m_fScaleX * m_fFrameZoomFactor),

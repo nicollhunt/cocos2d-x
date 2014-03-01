@@ -263,7 +263,8 @@ static EAGLView *view;
         [fullScreenWindow_ makeKeyAndOrderFront:self];
 		[fullScreenWindow_ makeMainWindow];
 		//[fullScreenWindow_ setNextResponder:superViewGLView_];
-
+        
+        
     } else {
 
         // Remove glView from fullscreen window
@@ -333,7 +334,7 @@ static EAGLView *view;
 	ids[0] = [theEvent eventNumber];
 	xs[0] = x / frameZoomFactor_;
 	ys[0] = y / frameZoomFactor_;
-
+    
 	cocos2d::CCDirector::sharedDirector()->getOpenGLView()->handleTouchesBegin(1, ids, xs, ys);
 }
 

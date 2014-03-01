@@ -142,10 +142,24 @@ bool CCApplication::isTargetPlatform(TargetPlatform eType)
 		return true;
 	}
 
-	if (eType == kTargetOUYA && strcmp(getDeviceModelJNI(), "OUYA Console") == 0)
-		return true;
+	static TargetPlatform eSpecific = kTargetUndefined;
 
-	if (eType == kTargetGameStick && strstr(getDeviceModelJNI(), "GameStick") != NULL)
+	if (eSpecific == kTargetUndefined)
+	{
+		eSpecific = kTargetAndroid;
+
+		if (strcmp(getDeviceModelJNI(), "OUYA Console") == 0)
+			eSpecific = kTargetOUYA;
+
+		if (strstr(getDeviceModelJNI(), "GameStick") != NULL)
+			eSpecific = kTargetGameStick;
+
+		if ((strstr(getDeviceModelJNI(), "AFT") != NULL || strstr(getDeviceModelJNI(), "bueller") != NULL)
+				&& strstr(getDeviceManufacturerJNI(), "Amazon") != NULL)
+			eSpecific = kTargetAmazonStreamingBox;
+	}
+
+	if (eType == eSpecific)
 		return true;
 
 	return false;
