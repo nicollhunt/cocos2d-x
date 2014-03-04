@@ -233,6 +233,8 @@ static EAGLView *view;
 
 	EAGLView *openGLview = [[self class] sharedEGLView];
 
+    [self setFrameZoomFactor:fullscreen ? 1 : 0.5];
+
     if( fullscreen ) {
         originalWinRect_ = [openGLview frame];
 

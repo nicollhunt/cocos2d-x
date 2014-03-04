@@ -167,6 +167,11 @@ unsigned char* CCFileUtils::getFileData(const char* pszFileName, const char* psz
     return pBuffer;
 }
 
+void CCFileUtils::setWritablePathAppName(const char *pszAppName)
+{
+	m_obWritablePathAppName = pszAppName;
+}
+
 string CCFileUtils::getWriteablePath()
 {
 	// Get full path of executable, e.g. c:\Program Files (x86)\My Game Folder\MyGame.exe
@@ -174,7 +179,7 @@ string CCFileUtils::getWriteablePath()
 	::GetModuleFileNameA(NULL, full_path, _MAX_PATH + 1);
 
 	// Debug app uses executable directory; Non-debug app uses local app data directory
-#ifndef _DEBUG
+//#ifndef _DEBUG
 		// Get filename of executable only, e.g. MyGame.exe
 		char *base_name = strrchr(full_path, '\\');
 
@@ -202,7 +207,7 @@ string CCFileUtils::getWriteablePath()
 				}
 			}
 		}
-#endif // not defined _DEBUG
+//#endif // not defined _DEBUG
 
 	// If fetching of local app data directory fails, use the executable one
 	string ret((char*)full_path);

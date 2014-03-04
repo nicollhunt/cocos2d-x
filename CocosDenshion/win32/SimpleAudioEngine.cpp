@@ -33,8 +33,13 @@ static MciPlayer& sharedMusic()
     return s_Music;
 }
 
+float m_fMusicVolume;
+float m_fEffectsVolume;
+
 SimpleAudioEngine::SimpleAudioEngine()
 {
+	m_fMusicVolume = 1.f;
+	m_fEffectsVolume = 1.f;
 }
 
 SimpleAudioEngine::~SimpleAudioEngine()
@@ -238,20 +243,28 @@ bool SimpleAudioEngine::isUsingOpenSL()
 
 float SimpleAudioEngine::getBackgroundMusicVolume()
 {
-    return 1.0;
+	return m_fMusicVolume;
 }
 
 void SimpleAudioEngine::setBackgroundMusicVolume(float volume)
 {
+	m_fMusicVolume = volume;
+	sharedMusic().Volume((UINT)(volume * 1000.0));
 }
 
 float SimpleAudioEngine::getEffectsVolume()
 {
-    return 1.0;
+	return m_fEffectsVolume;
 }
 
 void SimpleAudioEngine::setEffectsVolume(float volume)
 {
+	m_fEffectsVolume = volume;
+	EffectList::iterator iter;
+	for (iter = sharedList().begin(); iter != sharedList().end(); iter++)
+	{
+		iter->second->Volume((UINT)(volume * 1000.0));
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////

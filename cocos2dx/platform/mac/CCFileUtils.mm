@@ -311,13 +311,35 @@ bool CCFileUtils::isPopupNotify()
     return s_bPopupNotify;
 }
 
+void CCFileUtils::setWritablePathAppName(const char *pszAppName)
+{
+    m_obWritablePathAppName = pszAppName;
+}
+
+
 std::string CCFileUtils::getWriteablePath()
 {
     // save to document folder
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES);
     NSString *documentsDirectory = [paths objectAtIndex:0];
     std::string strRet = [documentsDirectory UTF8String];
     strRet.append("/");
+    if (m_obWritablePathAppName.length() > 0)
+    {
+        strRet += m_obWritablePathAppName;
+        strRet.append("/");
+        
+        // Create directory if it doesn't exist
+        NSError * error = nil;
+        [[NSFileManager defaultManager] createDirectoryAtPath:[NSString stringWithUTF8String:strRet.c_str()]
+                                  withIntermediateDirectories:YES
+                                                   attributes:nil
+                                                        error:&error];
+        if (error != nil) {
+            NSLog(@"error creating directory: %@", error);
+            //..
+        }
+    }
     return strRet;
 }
 

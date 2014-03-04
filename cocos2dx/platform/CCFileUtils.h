@@ -87,6 +87,11 @@ public:
     */
     const char* getResourceDirectory();
 
+    /*
+    @brief  Directory name to use when writing to writeable path
+    */
+    void setWritablePathAppName(const char *pszAppName);
+    
     /**
     @brief   Get the writeable path
     @return  The path that can write/read file
@@ -111,6 +116,8 @@ protected:
     }
     
     std::string m_obDirectory;
+    std::string m_obWritablePathAppName;
+
 };
 
 // end of platform group
