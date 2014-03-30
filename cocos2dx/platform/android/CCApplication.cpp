@@ -154,7 +154,8 @@ bool CCApplication::isTargetPlatform(TargetPlatform eType)
 		if (strstr(getDeviceModelJNI(), "GameStick") != NULL)
 			eSpecific = kTargetGameStick;
 
-		if ((strstr(getDeviceModelJNI(), "AFT") != NULL || strstr(getDeviceModelJNI(), "bueller") != NULL)
+		std::string sModel = getDeviceModelJNI();
+		if ((strstr(sModel.c_str(), "AFT") == sModel.c_str())
 				&& strstr(getDeviceManufacturerJNI(), "Amazon") != NULL)
 			eSpecific = kTargetAmazonStreamingBox;
 	}
