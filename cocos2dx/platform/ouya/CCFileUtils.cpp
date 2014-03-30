@@ -140,6 +140,11 @@ unsigned char* CCFileUtils::getFileData(const char* pszFileName, const char* psz
     return pData;
 }
 
+void CCFileUtils::setWritablePathAppName(const char *pszPath)
+{
+	// Unused on this platform
+}
+
 string CCFileUtils::getWriteablePath()
 {
     // Fix for Nexus 10 (Android 4.2 multi-user environment)
