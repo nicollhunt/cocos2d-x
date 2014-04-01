@@ -81,51 +81,72 @@ CCApplication* CCApplication::sharedApplication()
     return sm_pSharedApplication;
 }
 
+BOOL checkLocaleIdentfier(NSString *localeIdentifier, const char *pszCode)
+{
+    int nCodeLength = strlen(pszCode);
+    const char *pszLocaleIdentifier = [localeIdentifier UTF8String];
+    return strncmp(pszLocaleIdentifier, pszCode, nCodeLength) == 0;
+}
+
 ccLanguageType CCApplication::getCurrentLanguage()
 {
-    // get the current language and country config
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    NSArray *languages = [defaults objectForKey:@"AppleLanguages"];
-    NSString *currentLanguage = [languages objectAtIndex:0];
-
     // get the current language code.(such as English is "en", Chinese is "zh" and so on)
-    NSDictionary* temp = [NSLocale componentsFromLocaleIdentifier:currentLanguage];
-    NSString * languageCode = [temp objectForKey:NSLocaleLanguageCode];
+    NSString * languageCode = [[NSLocale currentLocale] localeIdentifier];
 
     ccLanguageType ret = kLanguageEnglish;
-    if ([languageCode isEqualToString:@"zh"])
+    if (checkLocaleIdentfier(languageCode, "zh"))
     {
         ret = kLanguageChinese;
     }
-    else if ([languageCode isEqualToString:@"en"])
+    else if ([languageCode isEqualToString:@"en_US"])
+    {
+        ret = kLanguageAmericanEnglish;
+    }
+    else if (checkLocaleIdentfier(languageCode, "en"))
     {
         ret = kLanguageEnglish;
     }
-    else if ([languageCode isEqualToString:@"fr"]){
+    else if (checkLocaleIdentfier(languageCode, "fr"))
+    {
         ret = kLanguageFrench;
     }
-    else if ([languageCode isEqualToString:@"it"]){
+    else if (checkLocaleIdentfier(languageCode, "it"))
+    {
         ret = kLanguageItalian;
     }
-    else if ([languageCode isEqualToString:@"de"]){
+    else if (checkLocaleIdentfier(languageCode, "de"))
+    {
         ret = kLanguageGerman;
     }
-    else if ([languageCode isEqualToString:@"es"]){
+    else if (checkLocaleIdentfier(languageCode, "es"))
+    {
         ret = kLanguageSpanish;
     }
-    else if ([languageCode isEqualToString:@"ru"]){
+    else if (checkLocaleIdentfier(languageCode, "ru"))
+    {
         ret = kLanguageRussian;
     }
-    else if ([languageCode isEqualToString:@"ko"]){
+    else if (checkLocaleIdentfier(languageCode, "ko"))
+    {
         ret = kLanguageKorean;
     }
-    else if ([languageCode isEqualToString:@"ja"]){
+    else if (checkLocaleIdentfier(languageCode, "ja"))
+    {
         ret = kLanguageJapanese;
     }
-    else if ([languageCode isEqualToString:@"hu"]){
+    else if (checkLocaleIdentfier(languageCode, "hu"))
+    {
         ret = kLanguageHungarian;
     }
-    
+    else if (checkLocaleIdentfier(languageCode, "pl"))
+    {
+        ret = kLanguagePolish;
+    }
+    else if ([languageCode isEqualToString:@"pt_BR"])
+    {
+        ret = kLanguageBrazillianPortuguese;
+    }
+
     return ret;
 }
 
