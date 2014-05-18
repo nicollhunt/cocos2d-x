@@ -528,7 +528,7 @@ LRESULT CCEGLView::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
             {
                 m_bCaptured = true;
                 SetCapture(m_hWnd);
-                int id = 0;
+                long id = 0;
                 handleTouchesBegin(1, &id, &pt.x, &pt.y);
             }
         }
@@ -543,7 +543,7 @@ LRESULT CCEGLView::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
         {
             POINT point = {(short)LOWORD(lParam), (short)HIWORD(lParam)};
             CCPoint pt(point.x, point.y);
-            int id = 0;
+            long id = 0;
             pt.x /= m_fFrameZoomFactor;
             pt.y /= m_fFrameZoomFactor;
             handleTouchesMove(1, &id, &pt.x, &pt.y);
@@ -559,7 +559,7 @@ LRESULT CCEGLView::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
         {
             POINT point = {(short)LOWORD(lParam), (short)HIWORD(lParam)};
             CCPoint pt(point.x, point.y);
-            int id = 0;
+            long id = 0;
             pt.x /= m_fFrameZoomFactor;
             pt.y /= m_fFrameZoomFactor;
             handleTouchesEnd(1, &id, &pt.x, &pt.y);
@@ -592,12 +592,14 @@ LRESULT CCEGLView::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
                             pt.x /= m_fFrameZoomFactor;
                             pt.y /= m_fFrameZoomFactor;
 
+							long id = *reinterpret_cast<int*>(&ti.dwID);
+
                             if (ti.dwFlags & TOUCHEVENTF_DOWN)
-                                handleTouchesBegin(1, reinterpret_cast<int*>(&ti.dwID), &pt.x, &pt.y);
+								handleTouchesBegin(1, &id, &pt.x, &pt.y);
                             else if (ti.dwFlags & TOUCHEVENTF_MOVE)
-                                handleTouchesMove(1, reinterpret_cast<int*>(&ti.dwID), &pt.x, &pt.y);
+								handleTouchesMove(1, &id, &pt.x, &pt.y);
                             else if (ti.dwFlags & TOUCHEVENTF_UP)
-                                handleTouchesEnd(1, reinterpret_cast<int*>(&ti.dwID), &pt.x, &pt.y);
+								handleTouchesEnd(1, &id, &pt.x, &pt.y);
                          }
                      }
                      bHandled = TRUE;

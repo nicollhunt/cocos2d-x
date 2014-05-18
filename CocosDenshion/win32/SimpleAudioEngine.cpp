@@ -79,6 +79,7 @@ void SimpleAudioEngine::playBackgroundMusic(const char* pszFilePath, bool bLoop)
     }
 
     sharedMusic().Open(_FullPath(pszFilePath), _Hash(pszFilePath));
+	sharedMusic().Volume((UINT)(m_fMusicVolume * 1000.0));
     sharedMusic().Play((bLoop) ? -1 : 1);
 }
 
@@ -132,7 +133,8 @@ unsigned int SimpleAudioEngine::playEffect(const char* pszFilePath, bool bLoop)
     EffectList::iterator p = sharedList().find(nRet);
     if (p != sharedList().end())
     {
-        p->second->Play((bLoop) ? -1 : 1);
+		p->second->Volume((UINT)(m_fEffectsVolume * 1000.0));
+		p->second->Play((bLoop) ? -1 : 1);
     }
 
     return nRet;
