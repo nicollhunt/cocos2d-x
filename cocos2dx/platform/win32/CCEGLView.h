@@ -53,6 +53,7 @@ public:
 
 	void toggleFullscreen();
 	void setFullscreen(bool bFullscreen);
+	bool getFullscreen();
 	bool enterFullscreen();
 	bool exitFullscreen();
 	int getFullscreenWidth();

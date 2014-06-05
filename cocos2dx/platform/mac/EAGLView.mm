@@ -39,6 +39,8 @@ THE SOFTWARE.
 #import "CCWindow.h"
 #import "CCEventDispatcher.h"
 #import "CCEGLView.h"
+#import "CCNotificationCenter.h"
+#import "CCEventType.h"
 
 //USING_NS_CC;
 static EAGLView *view;
@@ -302,6 +304,8 @@ static EAGLView *view;
     //[openGLview release]; // Retain -1
 
     [openGLview setNeedsDisplay:YES];
+    
+    cocos2d::CCNotificationCenter::sharedNotificationCenter()->postNotification(isFullScreen_ ? EVENT_FULLSCREEN : EVENT_WINDOWED);
 #else
 #error Full screen is not supported for Mac OS 10.5 or older yet
 #error If you don't want FullScreen support, you can safely remove these 2 lines

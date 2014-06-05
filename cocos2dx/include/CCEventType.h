@@ -16,4 +16,10 @@
 // This message is posted in cocos2dx/platform/android/jni/MessageJni.cpp.
 #define EVENT_COME_TO_BACKGROUND    "event_come_to_background"
 
+// The application has switched to fullscreen mode
+#define EVENT_FULLSCREEN    "event_fullscreen"
+
+// The application has switched to fullscreen mode
+#define EVENT_WINDOWED    "event_windowed"
+
 #endif // __CCEVENT_TYPE_H__

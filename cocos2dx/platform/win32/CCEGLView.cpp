@@ -32,6 +32,8 @@ THE SOFTWARE.
 #include "keypad_dispatcher/CCKeypadDispatcher.h"
 #include "support/CCPointExtension.h"
 #include "CCApplication.h"
+#include "support/CCNotificationCenter.h"
+#include "CCEventType.h"
 
 #include "keyboard_dispatcher/CCKeyboardDispatcher.h"
 #include <unordered_map>
@@ -822,6 +824,13 @@ void CCEGLView::setFullscreen(bool bFullscreen)
 	{
 		exitFullscreen();
 	}
+
+	cocos2d::CCNotificationCenter::sharedNotificationCenter()->postNotification(m_bIsFullscreen ? EVENT_FULLSCREEN : EVENT_WINDOWED);
+}
+
+bool CCEGLView::getFullscreen()
+{
+	return m_bIsFullscreen;
 }
 
 int g_nPrevStyle = 0;
