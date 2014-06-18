@@ -47,7 +47,7 @@ static EAGLView *view;
 
 @implementation EAGLView
 
-@synthesize eventDelegate = eventDelegate_, isFullScreen = isFullScreen_, frameZoomFactor=frameZoomFactor_;
+@synthesize eventDelegate = eventDelegate_, isFullScreen = isFullScreen_, frameZoomFactor=frameZoomFactor_, windowGLView=windowGLView_;
 
 +(id) sharedEGLView
 {
@@ -235,15 +235,16 @@ static EAGLView *view;
 
 	EAGLView *openGLview = [[self class] sharedEGLView];
 
-    [self setFrameZoomFactor:fullscreen ? 1 : 0.5];
-
     if( fullscreen ) {
+	
         originalWinRect_ = [openGLview frame];
 
         // Cache normal window and superview of openGLView
         if(!windowGLView_)
             windowGLView_ = [[openGLview window] retain];
 
+	windowGLView_.isVisible = false;
+	
         [superViewGLView_ release];
         superViewGLView_ = [[openGLview superview] retain];
 
@@ -268,7 +269,6 @@ static EAGLView *view;
 		[fullScreenWindow_ makeMainWindow];
 		//[fullScreenWindow_ setNextResponder:superViewGLView_];
         
-        
     } else {
 
         // Remove glView from fullscreen window
@@ -284,7 +284,11 @@ static EAGLView *view;
         // Set new frame
         [openGLview setFrame:originalWinRect_];
 
+	// Attach glView to fullscreen window
+        [windowGLView_ setContentView:openGLview];
+	
         // Show the window
+	windowGLView_.isVisible = true;
         [windowGLView_ makeKeyAndOrderFront:self];
 		[windowGLView_ makeMainWindow];
     }
@@ -293,15 +297,9 @@ static EAGLView *view;
 	[windowGLView_ makeFirstResponder:openGLview];
 
     isFullScreen_ = fullscreen;
-
-    //[openGLview retain]; // Retain +1
-
-	// is this necessary?
-    // re-configure glView
-	//cocos2d::CCDirector *director = cocos2d::CCDirector::sharedDirector();
-	//director->setOpenGLView(openGLview); //[self setView:openGLview];
-
-    //[openGLview release]; // Retain -1
+   
+    // NDH - Mega hack because I'm tired and it's late
+    frameZoomFactor_ = fullscreen ? 2 : 1;
 
     [openGLview setNeedsDisplay:YES];
     
@@ -341,6 +339,8 @@ static EAGLView *view;
 	xs[0] = x / frameZoomFactor_;
 	ys[0] = y / frameZoomFactor_;
     
+    cocos2d::CCLog("mouseDown %.0f,%.0f", xs[0], ys[0]);
+    
 	cocos2d::CCDirector::sharedDirector()->getOpenGLView()->handleTouchesBegin(1, ids, xs, ys);
 }
 
@@ -374,6 +374,7 @@ static EAGLView *view;
 	NSPoint local_point = [self convertPoint:event_location fromView:nil];
 	
 	float x = local_point.x;
+    
 	float y = [self getHeight] - local_point.y;
 
     long ids[1] = {0};

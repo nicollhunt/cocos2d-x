@@ -663,14 +663,17 @@ LRESULT CCEGLView::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
         }
         break;
 
-	case WM_SYSKEYDOWN:
-		// Watch for Alt+Return to toggle fullscreen mode
-		if (wParam == VK_RETURN && GetAsyncKeyState(VK_MENU))
-		{
-			toggleFullscreen();
-		}
-		return DefWindowProc(m_hWnd, message, wParam, lParam);
-		break;
+//	case WM_SYSKEYDOWN:
+//	case WM_SYSCHAR:
+//		// Watch for Alt+Return to toggle fullscreen mode
+//		if (wParam == VK_RETURN && GetAsyncKeyState(VK_MENU))
+//		{
+//			if (message == WM_SYSKEYDOWN)
+//				toggleFullscreen();
+//		}
+//		else
+//			return DefWindowProc(m_hWnd, message, wParam, lParam);
+//		break;
     case WM_CHAR:
         {
             if (wParam < 0x20)
@@ -776,7 +779,24 @@ void CCEGLView::swapBuffers()
     if (m_hDC != NULL)
     {
 		glFlush();
-        ::SwapBuffers(m_hDC);
+		if (!::SwapBuffers(m_hDC))
+		{
+			LPVOID lpMsgBuf;
+			LPVOID lpDisplayBuf;
+			DWORD dw = GetLastError();
+
+			FormatMessage(
+				FORMAT_MESSAGE_ALLOCATE_BUFFER |
+				FORMAT_MESSAGE_FROM_SYSTEM |
+				FORMAT_MESSAGE_IGNORE_INSERTS,
+				NULL,
+				dw,
+				MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+				(LPTSTR)&lpMsgBuf,
+				0, NULL);
+
+			CCLOG("%s", lpMsgBuf);
+		}
     }
 }
 

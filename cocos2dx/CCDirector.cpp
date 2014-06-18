@@ -203,17 +203,20 @@ CCDirector::~CCDirector(void)
 
 void CCDirector::setGLDefaultValues(void)
 {
+	if (m_pobOpenGLView == NULL)
+		return;
+
     // This method SHOULD be called only after openGLView_ was initialized
     CCAssert(m_pobOpenGLView, "opengl view should not be null");
 
     setAlphaBlending(true);
     // XXX: Fix me, should enable/disable depth test according the depth format as cocos2d-iphone did
     // [self setDepthTest: view_.depthFormat];
-    setDepthTest(true);
+    setDepthTest(false);
     setProjection(m_eProjection);
 
     // set other opengl default values
-    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+//    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 }
 
 // Draw the Scene
