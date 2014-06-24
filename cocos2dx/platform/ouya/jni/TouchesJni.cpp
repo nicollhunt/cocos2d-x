@@ -36,11 +36,13 @@ using namespace cocos2d;
 
 extern "C" {
     void Java_org_cocos2dx_lib_Cocos2dxRenderer_nativeTouchesBegin(JNIEnv * env, jobject thiz, jint id, jfloat x, jfloat y) {
-        cocos2d::CCDirector::sharedDirector()->getOpenGLView()->handleTouchesBegin(1, &id, &x, &y);
+    	long int l_id = id;
+        cocos2d::CCDirector::sharedDirector()->getOpenGLView()->handleTouchesBegin(1, &l_id, &x, &y);
     }
 
     void Java_org_cocos2dx_lib_Cocos2dxRenderer_nativeTouchesEnd(JNIEnv * env, jobject thiz, jint id, jfloat x, jfloat y) {
-        cocos2d::CCDirector::sharedDirector()->getOpenGLView()->handleTouchesEnd(1, &id, &x, &y);
+    	long int l_id = id;
+        cocos2d::CCDirector::sharedDirector()->getOpenGLView()->handleTouchesEnd(1, &l_id, &x, &y);
     }
 
     void Java_org_cocos2dx_lib_Cocos2dxRenderer_nativeTouchesMove(JNIEnv * env, jobject thiz, jintArray ids, jfloatArray xs, jfloatArray ys) {
@@ -53,7 +55,11 @@ extern "C" {
         env->GetFloatArrayRegion(xs, 0, size, x);
         env->GetFloatArrayRegion(ys, 0, size, y);
 
-        cocos2d::CCDirector::sharedDirector()->getOpenGLView()->handleTouchesMove(size, id, x, y);
+        long int l_id[size];
+        for (int i = 0 ; i < size ; i++)
+        	l_id[i] = id[i];
+
+        cocos2d::CCDirector::sharedDirector()->getOpenGLView()->handleTouchesMove(size, l_id, x, y);
     }
 
     void Java_org_cocos2dx_lib_Cocos2dxRenderer_nativeTouchesCancel(JNIEnv * env, jobject thiz, jintArray ids, jfloatArray xs, jfloatArray ys) {
@@ -66,7 +72,11 @@ extern "C" {
         env->GetFloatArrayRegion(xs, 0, size, x);
         env->GetFloatArrayRegion(ys, 0, size, y);
 
-        cocos2d::CCDirector::sharedDirector()->getOpenGLView()->handleTouchesCancel(size, id, x, y);
+        long int l_id[size];
+		for (int i = 0 ; i < size ; i++)
+			l_id[i] = id[i];
+
+        cocos2d::CCDirector::sharedDirector()->getOpenGLView()->handleTouchesCancel(size, l_id, x, y);
     }
 
     jboolean Java_org_cocos2dx_lib_Cocos2dxRenderer_nativeAxisMovement(JNIEnv * env, jobject thiz, jint axisType, jfloat valX, jfloat valY, jint deviceID, jint deviceHash) {

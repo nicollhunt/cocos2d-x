@@ -89,6 +89,8 @@ THE SOFTWARE.
 
 @property (nonatomic, readwrite) float frameZoomFactor;
 
+@property (nonatomic, readwrite, retain) NSWindow *windowGLView;
+
 // initializes the MacGLView with a frame rect and an OpenGL context
 - (id) initWithFrame:(NSRect)frameRect shareContext:(NSOpenGLContext*)context;
 

@@ -60,6 +60,8 @@ CCOuyaController::~CCOuyaController()
 
 void CCOuyaController::onKeyDown(int keyCode, int deviceId)
 {
+	printf("CCOuyaController::onKeyDown %d %d\n", keyCode, deviceId);
+
 	for (Listeners::iterator it = CCOuyaController::listeners.begin();
 		it != CCOuyaController::listeners.end();
 		it++)
