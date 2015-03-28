@@ -292,7 +292,7 @@ CCNode* CCBReader::readNodeGraphFromData(CCData *pData, CCObject *pOwner, const 
     CCDICT_FOREACH(animationManagers, pElement)
     {
         CCNode* pNode = (CCNode*)pElement->getIntKey();
-        CCBAnimationManager* manager = (CCBAnimationManager*)animationManagers->objectForKey((intptr_t)pNode);
+        CCBAnimationManager* manager = (CCBAnimationManager*)animationManagers->objectForKey((int64_t)pNode);
         pNode->setUserObject(manager);
 
         if (jsControlled)
@@ -356,7 +356,7 @@ CCNode* CCBReader::readFileWithCleanUp(bool bCleanUp, CCDictionary* am)
 
     CCNode *pNode = readNodeGraph(NULL);
 
-    mActionManagers->setObject(mActionManager, intptr_t(pNode));
+    mActionManagers->setObject(mActionManager, (int64_t)pNode);
 
     if (bCleanUp)
     {
@@ -484,7 +484,7 @@ int CCBReader::readInt(bool pSigned) {
             num = (int)(-current / 2);
         }
     } else {
-        num = current - 1;
+        num = (int)(current - 1);
     }
     
     this->alignBits();

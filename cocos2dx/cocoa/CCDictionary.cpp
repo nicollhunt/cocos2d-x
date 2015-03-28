@@ -107,7 +107,7 @@ CCObject* CCDictionary::objectForKey(const std::string& key)
     return pRetObject;
 }
 
-CCObject* CCDictionary::objectForKey(int key)
+CCObject* CCDictionary::objectForKey(long key)
 {
     // if dictionary wasn't initialized, return NULL directly.
     if (m_eDictType == kCCDictUnknown) return NULL;
@@ -135,7 +135,7 @@ const CCString* CCDictionary::valueForKey(const std::string& key)
     return pStr;
 }
 
-const CCString* CCDictionary::valueForKey(int key)
+const CCString* CCDictionary::valueForKey(long key)
 {
     CCString* pStr = (CCString*)objectForKey(key);
     if (pStr == NULL)
@@ -171,7 +171,7 @@ void CCDictionary::setObject(CCObject* pObject, const std::string& key)
     }
 }
 
-void CCDictionary::setObject(CCObject* pObject, int key)
+void CCDictionary::setObject(CCObject* pObject, long key)
 {
     CCAssert(pObject != NULL, "Invalid Argument!");
     if (m_eOldDictType == kCCDictUnknown)
@@ -211,7 +211,7 @@ void CCDictionary::removeObjectForKey(const std::string& key)
     removeObjectForElememt(pElement);
 }
 
-void CCDictionary::removeObjectForKey(int key)
+void CCDictionary::removeObjectForKey(long key)
 {
     if (m_eOldDictType == kCCDictUnknown) 
     {
@@ -230,7 +230,7 @@ void CCDictionary::setObjectUnSafe(CCObject* pObject, const std::string& key)
     HASH_ADD_STR(m_pElements, m_szKey, pElement);
 }
 
-void CCDictionary::setObjectUnSafe(CCObject* pObject, const int key)
+void CCDictionary::setObjectUnSafe(CCObject* pObject, const long key)
 {
     pObject->retain();
     CCDictElement* pElement = new CCDictElement(key, pObject);

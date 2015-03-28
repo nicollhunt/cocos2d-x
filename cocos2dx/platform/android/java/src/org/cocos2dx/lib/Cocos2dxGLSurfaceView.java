@@ -160,6 +160,13 @@ public class Cocos2dxGLSurfaceView extends GLSurfaceView {
 		}
 	}
 	
+	final int nVisibilityFlags = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+	            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+	            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+	            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION // hide nav bar
+	            | View.SYSTEM_UI_FLAG_FULLSCREEN
+	            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
+	
 	//
 	// Attempt to put app into fullscreen mode, or as close as system allows...
 	//
@@ -170,26 +177,32 @@ public class Cocos2dxGLSurfaceView extends GLSurfaceView {
 		Log.d("cocos2dx debug info", String.format("android.os.Build.VERSION.SDK_INT = %d", SDK_INT));
 		
 		if(SDK_INT >= 19)
-		{
-			final int nVisibilityFlags = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
- 		            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
- 		            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
- 		            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION // hide nav bar
- 		            | View.SYSTEM_UI_FLAG_FULLSCREEN
- 		            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
-			
-			// Set flags immediately
-			setSystemUiVisibility(nVisibilityFlags);
-			
+		{			
 			// Also set flags if something else changes them, e.g. volume hardware buttons, etc...
 			setOnSystemUiVisibilityChangeListener(new OnSystemUiVisibilityChangeListener() {
 	            @Override
-	            public void onSystemUiVisibilityChange(int visibility) {
-	                if(visibility == 0) {
+	            public void onSystemUiVisibilityChange(int visibility)
+	            {
+	            	Log.d("cocos2dx debug info", String.format("onSystemUiVisibilityChange %d", visibility) );
+	                if(visibility == 0)
+	                {
 	                	mCocos2dxGLSurfaceView.setSystemUiVisibility(nVisibilityFlags);
 	                }
 	            }
 	        });
+		}
+		
+		updateSystemUiVisibility();
+	}
+	
+	public void updateSystemUiVisibility()
+	{
+		int SDK_INT = android.os.Build.VERSION.SDK_INT;
+				
+		if(SDK_INT >= 19)
+		{	
+			// Set flags immediately
+			setSystemUiVisibility(nVisibilityFlags);
 		}
 		else if(SDK_INT >= 14)
 		{
@@ -205,7 +218,7 @@ public class Cocos2dxGLSurfaceView extends GLSurfaceView {
 	@Override
 	public void onResume() {
 		super.onResume();
-		
+				
 		this.queueEvent(new Runnable() {
 			@Override
 			public void run() {
@@ -229,6 +242,8 @@ public class Cocos2dxGLSurfaceView extends GLSurfaceView {
 	@Override
 	public boolean onTouchEvent(final MotionEvent pMotionEvent) {
 				
+		updateSystemUiVisibility();
+
 		// these data are used in ACTION_MOVE and ACTION_CANCEL
 		final int pointerNumber = pMotionEvent.getPointerCount();
 		final int[] ids = new int[pointerNumber];

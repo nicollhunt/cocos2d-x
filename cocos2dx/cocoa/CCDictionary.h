@@ -50,7 +50,7 @@ public:
 
         const char* pStart = pszKey;
         
-        int len = strlen(pszKey);
+        size_t len = strlen(pszKey);
         if (len > MAX_KEY_LEN )
         {
             char* pEnd = (char*)&pszKey[len-1];
@@ -124,16 +124,16 @@ public:
     CCArray* allKeysForObject(CCObject* object);
 
     CCObject* objectForKey(const std::string& key);
-    CCObject* objectForKey(int key);
+    CCObject* objectForKey(long key);
     const CCString* valueForKey(const std::string& key);
-    const CCString* valueForKey(int key);
+    const CCString* valueForKey(long key);
 
 
     void setObject(CCObject* pObject, const std::string& key);
-    void setObject(CCObject* pObject, int key);
+    void setObject(CCObject* pObject, long key);
 
     void removeObjectForKey(const std::string& key);
-    void removeObjectForKey(int key);
+    void removeObjectForKey(long key);
     void removeObjectsForKeys(CCArray* pKeyArray);
     void removeObjectForElememt(CCDictElement* pElement);
     void removeAllObjects();
@@ -161,7 +161,7 @@ public:
 
 private:
     void setObjectUnSafe(CCObject* pObject, const std::string& key);
-    void setObjectUnSafe(CCObject* pObject, const int key);
+    void setObjectUnSafe(CCObject* pObject, const long key);
     
 public:
     CCDictElement* m_pElements;

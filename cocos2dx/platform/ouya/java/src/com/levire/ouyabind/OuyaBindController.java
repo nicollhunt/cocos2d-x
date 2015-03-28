@@ -18,7 +18,7 @@ import android.view.KeyEvent;
 public class OuyaBindController
 {	
 	// Print debug logs?
-    static boolean mDebugLog = false;
+    static boolean mDebugLog = true;
     static String mDebugTag = "OUYAController";
 
     protected static void debugLog(String message) {

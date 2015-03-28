@@ -905,7 +905,8 @@ void CCLabelBMFont::createFontChars()
         if (charSet->find(c) == charSet->end())
         {
             CCLOG("CCLabelBMFont: Attempted to use character not defined in this bitmap: %d", c);
-
+	    CCLOG(" ix=%d font=%s string=%s", i, this->m_sFntFile.c_str(),
+		  this->m_sInitialString.c_str());
             // NDH - Replace invalid characters with a space
 //            continue;
             c = ' ';
@@ -1155,11 +1156,11 @@ void CCLabelBMFont::updateLabel()
 {
     this->setString(m_sInitialString.c_str(), true);
 
-    if (m_fWidth > 0)
+    if (m_fWidth > 0 && m_sInitialString.length() > 0)
     {
         // Step 1: Make multiline
         vector<unsigned short> str_whole = cc_utf16_vec_from_utf16_str(m_sString);
-        unsigned int stringLength = str_whole.size();
+        unsigned long stringLength = str_whole.size();
         vector<unsigned short> multiline_string;
         multiline_string.reserve( stringLength );
         vector<unsigned short> last_word;

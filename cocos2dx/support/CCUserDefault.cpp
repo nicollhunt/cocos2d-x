@@ -451,7 +451,12 @@ void CCUserDefault::flush()
     // save to file
     if (g_sharedDoc)
     {
-        xmlSaveFile(CCUserDefault::sharedUserDefault()->getXMLFilePath().c_str(), g_sharedDoc);
+	// NDH - Made this a bit more robust in case computer crashes during save
+	std::string filename = CCUserDefault::sharedUserDefault()->getXMLFilePath();
+	std::string temp_filename = filename + "_TEMP";
+	xmlSaveFile(temp_filename.c_str(), g_sharedDoc);
+	remove(filename.c_str());
+	rename(temp_filename.c_str(), filename.c_str());
     }
 }
 

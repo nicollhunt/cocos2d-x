@@ -205,9 +205,7 @@ void CCEGLViewProtocol::handleTouchesBegin(int num, long int ids[], float xs[], 
             CCTouch* pTouch = s_pTouches[nUnusedIndex] = new CCTouch();
 			pTouch->setTouchInfo(nUnusedIndex, (x - m_obViewPortRect.origin.x) / m_fScaleX, 
                                      (y - m_obViewPortRect.origin.y) / m_fScaleY);
-            
-            CCLOG("x = %f y = %f", pTouch->getLocationInView().x, pTouch->getLocationInView().y);
-            
+	    
             CCInteger* pInterObj = new CCInteger(nUnusedIndex);
             s_TouchesIntergerDict.setObject(pInterObj, id);
             set.addObject(pTouch);
