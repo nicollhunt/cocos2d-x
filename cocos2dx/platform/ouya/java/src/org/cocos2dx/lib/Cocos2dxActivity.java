@@ -143,6 +143,7 @@ public abstract class Cocos2dxActivity extends Activity implements Cocos2dxHelpe
 		
 		// Initialise OUYA Controller stuff
 		OuyaController.init(this);
+		OuyaController.showCursor(false);
 		
 		// set the keep screen on flag for Xiaomi devices
 		this.mGLSurfaceView.setKeepScreenOn(true);
