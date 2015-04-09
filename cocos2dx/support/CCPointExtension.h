@@ -231,6 +231,9 @@ CCPoint CC_DLL ccpForAngle(const float a);
  */
 float CC_DLL ccpToAngle(const CCPoint& v);
 
+/** Clamp a value between 0.0f and 1.0f.
+ */
+float CC_DLL clamp01f(float value);
 
 /** Clamp a value between from and to.
  @since v0.99.1

@@ -67,6 +67,11 @@ CCPoint ccpLerp(const CCPoint& a, const CCPoint& b, float alpha)
     return ccpAdd(ccpMult(a, 1.f - alpha), ccpMult(b, alpha));
 }
 
+float clamp01f(float value)
+{
+    return clampf(value, 0.0f, 1.0f);
+}
+
 float clampf(float value, float min_inclusive, float max_inclusive)
 {
     if (min_inclusive > max_inclusive) {
