@@ -905,8 +905,10 @@ void CCLabelBMFont::createFontChars()
         if (charSet->find(c) == charSet->end())
         {
             CCLOG("CCLabelBMFont: Attempted to use character not defined in this bitmap: %d", c);
-	    CCLOG(" ix=%d font=%s string=%s", i, this->m_sFntFile.c_str(),
-		  this->m_sInitialString.c_str());
+	    
+	    CCLOG(" ix=%d font=%s string=%lc", i, this->m_sFntFile.c_str(),
+		  c);
+		  //this->m_sInitialString.substr(posStart, posEnd).c_str());
             // NDH - Replace invalid characters with a space
 //            continue;
             c = ' ';
