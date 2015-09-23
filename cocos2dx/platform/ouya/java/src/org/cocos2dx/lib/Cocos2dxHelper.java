@@ -31,6 +31,7 @@ import android.content.pm.ApplicationInfo;
 import android.content.res.AssetManager;
 import android.os.Build;
 import android.os.Environment;
+import android.util.Log;
 
 public class Cocos2dxHelper {
 	// ===========================================================
@@ -97,6 +98,7 @@ public class Cocos2dxHelper {
 	}
 
 	public static String getCocos2dxCacheDirectory() {
+		Log.d("Cocos2d-x", "getCocos2dxCacheDirectory:" + Cocos2dxHelper.sCacheDirectory);
 		return Cocos2dxHelper.sCacheDirectory;
 	}
 	
