@@ -27,6 +27,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.Locale;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.res.AssetManager;
 import android.os.Build;
@@ -39,6 +40,8 @@ public class Cocos2dxHelper {
 	// ===========================================================
 	
 	private static final String TAG = Cocos2dxHelper.class.getSimpleName();
+	
+	private static final String PREFS_NAME = "UserDefaults.xml";
 
 	// ===========================================================
 	// Fields
@@ -109,6 +112,18 @@ public class Cocos2dxHelper {
 	
 	public static String getCocos2dxDocumentsDirectory() {
 		return Cocos2dxHelper.sDocumentsDirectory;
+	}
+
+	public static void setSharedPreference(String propertyName, String value) {
+		SharedPreferences settings = Cocos2dxHelper.sContext.getSharedPreferences(PREFS_NAME, 0);
+		SharedPreferences.Editor editor = settings.edit();
+		editor.putString(propertyName, value);
+		editor.commit();
+	}
+
+	public static String getSharedPreference(String propertyName, String defaultValue) {
+		SharedPreferences settings = Cocos2dxHelper.sContext.getSharedPreferences(PREFS_NAME, 0);
+		return settings.getString(propertyName, defaultValue);
 	}
 
 	public static String getCurrentLanguage() {

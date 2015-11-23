@@ -27,6 +27,10 @@ THE SOFTWARE.
 #include <libxml/parser.h>
 #include <libxml/tree.h>
 
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
+#include "jni/Java_org_cocos2dx_lib_Cocos2dxHelper.h"
+#endif
+
 // root name of xml
 #define USERDEFAULT_ROOT_NAME    "userDefaultRoot"
 
@@ -91,6 +95,10 @@ static inline const char* getValueForKey(const char* pKey)
         ret = (const char*)xmlNodeGetContent(node);
     }
 
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
+    ret = getSharedPreferenceJNI(pKey, ret);
+#endif
+
     return ret;
 }
 
@@ -123,8 +131,12 @@ static void setValueForKey(const char* pKey, const char* pValue)
             xmlNodePtr content = xmlNewText(BAD_CAST pValue);
             xmlAddChild(rootNode, tmpNode);
             xmlAddChild(tmpNode, content);
-        }    
+        }
     }
+
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
+    setSharedPreferenceJNI(pKey, pValue);
+#endif
 }
 
 /**

@@ -37,6 +37,8 @@ extern "C" {
     extern const char * getPackageNameJNI();
     extern const char * getCacheDirectoryJNI();
     extern const char * getDocumentsDirectoryJNI();
+    extern void setSharedPreferenceJNI(const char* pszPropertyName, const char* pszValue);
+    extern const char* getSharedPreferenceJNI(const char* pszPropertyName, const char* pszValue);
     extern const char * getDeviceManufacturerJNI();
     extern const char * getDeviceModelJNI();
     extern void enableAccelerometerJNI();

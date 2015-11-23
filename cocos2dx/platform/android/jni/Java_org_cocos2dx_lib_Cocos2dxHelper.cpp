@@ -147,6 +147,39 @@ extern "C" {
         return 0;
     }
 
+   void setSharedPreferenceJNI(const char* pszPropertyName, const char* pszValue) {
+  		JniMethodInfo t;
+
+  		if (JniHelper::getStaticMethodInfo(t, CLASS_NAME, "setSharedPreference", "(Ljava/lang/String;Ljava/lang/String;)V")) {
+  			jstring stringArg1 = t.env->NewStringUTF(pszPropertyName);
+  			jstring stringArg2 = t.env->NewStringUTF(pszValue);
+  			t.env->CallStaticVoidMethod(t.classID, t.methodID, stringArg1, stringArg2);
+  			t.env->DeleteLocalRef(stringArg1);
+  			t.env->DeleteLocalRef(stringArg2);
+  			t.env->DeleteLocalRef(t.classID);
+  		}
+  	}
+
+    const char* getSharedPreferenceJNI(const char* pszPropertyName, const char* pszDefaultValue) {
+  		JniMethodInfo t;
+
+  		if (JniHelper::getStaticMethodInfo(t, CLASS_NAME, "getSharedPreference", "(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;")) {
+  			jstring stringArg1 = t.env->NewStringUTF(pszPropertyName);
+  			jstring stringArg2 = t.env->NewStringUTF(pszDefaultValue);
+  			jstring str = (jstring)t.env->CallStaticObjectMethod(t.classID, t.methodID, stringArg1, stringArg2);
+  			t.env->DeleteLocalRef(stringArg1);
+  			t.env->DeleteLocalRef(stringArg2);
+  			t.env->DeleteLocalRef(t.classID);
+  			CCString *ret = new CCString(JniHelper::jstring2string(str).c_str());
+  			ret->autorelease();
+  			t.env->DeleteLocalRef(str);
+
+  			return ret->m_sString.c_str();
+  		}
+
+  		return 0;
+    }
+
     const char* getCurrentLanguageJNI() {
         JniMethodInfo t;
 
