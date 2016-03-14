@@ -1,4 +1,4 @@
-#ifndef _MCI_PLAYER_WIN32_H_
+ï»¿#ifndef _MCI_PLAYER_WIN32_H_
 #define _MCI_PLAYER_WIN32_H_
 
 #include<windows.h>
@@ -15,42 +15,42 @@ public:
     void Close();
 
     /**
-    @brief ²¥·ÅÉùÒôÎÄ¼þ
-    @param pFileName ²¥·ÅµÄÉùÒôÎÄ¼þÃû³Æ£¬ÐèÒª°üº¬ÎÄ¼þµÄÂ·¾¶
-    @param nTimes    ²¥·ÅÉùÒôÎÄ¼þµÄÑ­»·´ÎÊý£¬Ä¬ÈÏÖµÎª 1£¬¼´²¥·ÅÒ»´Î
+    @brief ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½
+    @param pFileName ï¿½ï¿½ï¿½Åµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½Æ£ï¿½ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½Â·ï¿½ï¿½
+    @param nTimes    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½Ñ­ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¬ï¿½ï¿½ÖµÎª 1ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½
     */
     void Open(const char* pFileName, UINT uId);
 
     void Play(UINT uTimes = 1);
 
     /**
-    @brief ÔÝÍ£²¥·ÅÉùÒô
+    @brief ï¿½ï¿½Í£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     */
     void Pause();
 
     /**
-    @brief ¼ÌÐø²¥·ÅÉùÒô
+    @brief ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     */
     void Resume();
 
     /**
-    @brief Í£Ö¹²¥·ÅÉùÒô
+    @brief Í£Ö¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     */
     void Stop();
 
     /**
-    @brief ÖØÐÂ²¥·Å
+    @brief ï¿½ï¿½ï¿½Â²ï¿½ï¿½ï¿½
     */
     void Rewind();
 
     /**
-    @brief »ñÈ¡²¥·ÅÆ÷µ±Ç°ÊÇ·ñÕýÔÚ²¥·ÅÖÐ
+    @brief ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç°ï¿½Ç·ï¿½ï¿½ï¿½ï¿½Ú²ï¿½ï¿½ï¿½ï¿½ï¿½
     */
     bool IsPlaying();
 
     /**
-    @brief »ñÈ¡µ±Ç°²¥·ÅµÄÒôÐ§ ID
-    @return µ±Ç°²¥·ÅµÄÒôÐ§ID
+    @brief ï¿½ï¿½È¡ï¿½ï¿½Ç°ï¿½ï¿½ï¿½Åµï¿½ï¿½ï¿½Ð§ ID
+    @return ï¿½ï¿½Ç°ï¿½ï¿½ï¿½Åµï¿½ï¿½ï¿½Ð§ID
     */
     UINT GetSoundID();
 

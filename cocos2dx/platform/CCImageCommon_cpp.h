@@ -248,6 +248,7 @@ my_error_exit (j_common_ptr cinfo)
 
 bool CCImage::_initWithJpgData(void * data, int nSize)
 {
+#if 0
     /* these are standard libjpeg structures for reading(decompression) */
     struct jpeg_decompress_struct cinfo;
     /* We use our private extension JPEG error handler.
@@ -336,6 +337,8 @@ bool CCImage::_initWithJpgData(void * data, int nSize)
 
     CC_SAFE_DELETE_ARRAY(row_pointer[0]);
     return bRet;
+#endif
+	return false;
 }
 
 bool CCImage::_initWithPngData(void * pData, int nDatalen)

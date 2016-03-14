@@ -278,11 +278,5 @@ void SimpleAudioEngine::stopAllEffects()
 {
     static_stopAllEffects();
 }
-    
-bool SimpleAudioEngine::isUsingOpenSL()
-{
-    return false;
-}
-
 
 } // endof namespace CocosDenshion {

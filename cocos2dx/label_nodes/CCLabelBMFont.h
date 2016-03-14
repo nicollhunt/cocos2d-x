@@ -37,7 +37,7 @@ Use any of these editors to generate BMFonts:
 #include "support/data_support/uthash.h"
 #include <map>
 #include <sstream>
-#include <iostream>
+//#include <iostream>
 #include <vector>
 
 NS_CC_BEGIN

@@ -234,11 +234,6 @@ void SimpleAudioEngine::unloadEffect(const char* pszFilePath)
     }    
 }
 
-bool SimpleAudioEngine::isUsingOpenSL()
-{
-	return false;
-}
-
 //////////////////////////////////////////////////////////////////////////
 // volume interface
 //////////////////////////////////////////////////////////////////////////
@@ -283,13 +278,16 @@ const char * _FullPath(const char * szPath)
             s_szRootPath, MAX_PATH, NULL, NULL);
         s_szRootPath[s_dwRootLen] = '\\';
         s_szRootPath[s_dwRootLen + 1] = 0;
+		strcat_s(s_szRootPath, "Resources\\");
+		s_dwRootLen += 20;
         strcpy_s(s_szFullPath, sizeof(s_szFullPath), s_szRootPath);
         ++s_dwRootLen;
     }
 
     if (0 != szPath[0] && ':' != szPath[1])
     {
-        strcpy_s(s_szFullPath + s_dwRootLen, sizeof(s_szFullPath) - s_dwRootLen, szPath);
+		strcpy_s(s_szFullPath, s_szRootPath);
+		strcat_s(s_szFullPath, szPath);
         return s_szFullPath;
     }
     else
