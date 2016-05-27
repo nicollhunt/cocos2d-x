@@ -118,12 +118,13 @@ public class Cocos2dxHelper {
 		SharedPreferences settings = Cocos2dxHelper.sContext.getSharedPreferences(PREFS_NAME, 0);
 		SharedPreferences.Editor editor = settings.edit();
 		editor.putString(propertyName, value);
-		editor.commit();
+		editor.apply();
 	}
 
-	public static String getSharedPreference(String propertyName, String defaultValue) {
+	public static String getSharedPreference(String propertyName) {
 		SharedPreferences settings = Cocos2dxHelper.sContext.getSharedPreferences(PREFS_NAME, 0);
-		return settings.getString(propertyName, defaultValue);
+		String value = settings.getString(propertyName, null);
+		return value;
 	}
 
 	public static String getCurrentLanguage() {

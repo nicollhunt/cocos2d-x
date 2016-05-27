@@ -40,6 +40,7 @@ using namespace std;
 
 NS_CC_BEGIN
 
+#if (CC_TARGET_PLATFORM != CC_PLATFORM_ANDROID)
 static xmlDocPtr g_sharedDoc = NULL;
 
 /**
@@ -63,7 +64,7 @@ static xmlNodePtr getXMLNodeForKey(const char* pKey, xmlNodePtr *rootNode)
         *rootNode = xmlDocGetRootElement(g_sharedDoc);
         if (NULL == *rootNode)
         {
-            CCLOG("read root node error");
+            CCLog("read root node error");
             break;
         }
 
@@ -82,10 +83,17 @@ static xmlNodePtr getXMLNodeForKey(const char* pKey, xmlNodePtr *rootNode)
 
     return curNode;
 }
+#endif
+
 
 static inline const char* getValueForKey(const char* pKey)
 {
     const char* ret = NULL;
+    
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
+    ret = getSharedPreferenceJNI(pKey);
+#else
+
     xmlNodePtr rootNode;
     xmlNodePtr node = getXMLNodeForKey(pKey, &rootNode);
 
@@ -94,9 +102,6 @@ static inline const char* getValueForKey(const char* pKey)
     {
         ret = (const char*)xmlNodeGetContent(node);
     }
-
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
-    ret = getSharedPreferenceJNI(pKey, ret);
 #endif
 
     return ret;
@@ -104,6 +109,9 @@ static inline const char* getValueForKey(const char* pKey)
 
 static void setValueForKey(const char* pKey, const char* pValue)
 {
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
+    setSharedPreferenceJNI(pKey, pValue);
+#else
     xmlNodePtr rootNode;
     xmlNodePtr node;
 
@@ -133,9 +141,6 @@ static void setValueForKey(const char* pKey, const char* pValue)
             xmlAddChild(tmpNode, content);
         }
     }
-
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
-    setSharedPreferenceJNI(pKey, pValue);
 #endif
 }
 
@@ -153,19 +158,30 @@ bool CCUserDefault::m_sbIsFilePathInitialized = false;
  */
 CCUserDefault::~CCUserDefault()
 {
+#if (CC_TARGET_PLATFORM != CC_PLATFORM_ANDROID)
     flush();
     if (g_sharedDoc)
     {
         xmlFreeDoc(g_sharedDoc);
         g_sharedDoc = NULL;
     }
+#endif
+
 
     m_spUserDefault = NULL;
 }
 
 CCUserDefault::CCUserDefault()
 {
-    g_sharedDoc = xmlReadFile(getXMLFilePath().c_str(), "utf-8", XML_PARSE_RECOVER);
+#if (CC_TARGET_PLATFORM != CC_PLATFORM_ANDROID)
+
+    const char *filename = getXMLFilePath().c_str();
+    
+    unsigned long nSize;
+    unsigned char* pBuffer = CCFileUtils::sharedFileUtils()->getFileData(filename, "rb", &nSize);
+    
+    g_sharedDoc = xmlReadFile(filename, "utf-8", XML_PARSE_RECOVER);
+#endif
 }
 
 void CCUserDefault::purgeSharedUserDefault()
@@ -187,7 +203,10 @@ bool CCUserDefault::getBoolForKey(const char* pKey, bool defaultValue)
     if (value)
     {
         ret = (! strcmp(value, "true"));
-        xmlFree((void*)value);
+#if (CC_TARGET_PLATFORM != CC_PLATFORM_ANDROID)
+	xmlFree((void*)value);
+#endif
+
     }
 
     return ret;
@@ -206,7 +225,10 @@ int CCUserDefault::getIntegerForKey(const char* pKey, int defaultValue)
     if (value)
     {
         ret = atoi(value);
-        xmlFree((void*)value);
+#if (CC_TARGET_PLATFORM != CC_PLATFORM_ANDROID)
+	xmlFree((void*)value);
+#endif
+
     }
 
     return ret;
@@ -237,7 +259,9 @@ double CCUserDefault::getDoubleForKey(const char* pKey, double defaultValue)
     if (value)
     {
         ret = atof(value);
-        xmlFree((void*)value);
+#if (CC_TARGET_PLATFORM != CC_PLATFORM_ANDROID)
+	xmlFree((void*)value);
+#endif
     }
 
     return ret;
@@ -256,7 +280,9 @@ string CCUserDefault::getStringForKey(const char* pKey, const std::string & defa
     if (value)
     {
         ret = string(value);
+#if (CC_TARGET_PLATFORM != CC_PLATFORM_ANDROID)
         xmlFree((void*)value);
+#endif
     }
 
     return ret;
@@ -326,6 +352,7 @@ void CCUserDefault::setStringForKey(const char* pKey, const std::string & value)
 
 CCUserDefault* CCUserDefault::sharedUserDefault()
 {
+#if (CC_TARGET_PLATFORM != CC_PLATFORM_ANDROID)
     initXMLFilePath();
 
     // only create xml file one time
@@ -334,6 +361,7 @@ CCUserDefault* CCUserDefault::sharedUserDefault()
     {
         return NULL;
     }
+#endif
 
     if (! m_spUserDefault)
     {
@@ -343,6 +371,7 @@ CCUserDefault* CCUserDefault::sharedUserDefault()
     return m_spUserDefault;
 }
 
+#if (CC_TARGET_PLATFORM != CC_PLATFORM_ANDROID)
 bool CCUserDefault::isXMLFileExist()
 {
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID || \
@@ -423,7 +452,7 @@ bool CCUserDefault::createXMLFile()
         doc = xmlNewDoc(BAD_CAST"1.0");
         if (doc == NULL)
         {
-            CCLOG("can not create xml doc");
+            CCLog("can not create xml doc");
             break;
         }
 
@@ -431,7 +460,7 @@ bool CCUserDefault::createXMLFile()
         xmlNodePtr rootNode = xmlNewNode(NULL, BAD_CAST USERDEFAULT_ROOT_NAME);
         if (rootNode == NULL)
         {
-            CCLOG("can not create root node");
+            CCLog("can not create root node");
             break;
         }
 
@@ -453,7 +482,7 @@ bool CCUserDefault::createXMLFile()
     return bRet;
 }
 
-const string& CCUserDefault::getXMLFilePath()
+const string& CCUserDefault::getXMLFilePath()ccmenu
 {
     return m_sFilePath;
 }
@@ -471,5 +500,14 @@ void CCUserDefault::flush()
 	rename(temp_filename.c_str(), filename.c_str());
     }
 }
+#else
+const string& CCUserDefault::getXMLFilePath()
+{
+    return "UNUSED";
+}
+void CCUserDefault::flush()
+{
+}
+#endif
 
 NS_CC_END
