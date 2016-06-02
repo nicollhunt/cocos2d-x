@@ -482,7 +482,7 @@ bool CCUserDefault::createXMLFile()
     return bRet;
 }
 
-const string& CCUserDefault::getXMLFilePath()ccmenu
+const string& CCUserDefault::getXMLFilePath()
 {
     return m_sFilePath;
 }
