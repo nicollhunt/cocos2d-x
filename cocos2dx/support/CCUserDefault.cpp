@@ -91,7 +91,8 @@ static inline const char* getValueForKey(const char* pKey)
     const char* ret = NULL;
     
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
-    ret = getSharedPreferenceJNI(pKey);
+    if (hasSharedPreferenceJNI(pKey))
+        ret = getSharedPreferenceJNI(pKey);
 #else
 
     xmlNodePtr rootNode;
@@ -435,7 +436,7 @@ void CCUserDefault::initXMLFilePath()
 {
     if (! m_sbIsFilePathInitialized)
     {
-        m_sFilePath += CCFileUtils::sharedFileUtils()->getDocumentPath() + XML_FILE_NAME;
+        m_sFilePath += CCFileUtils::sharedFileUtils()->getWriteablePath() + XML_FILE_NAME;
         m_sbIsFilePathInitialized = true;
     }
 }
@@ -503,7 +504,7 @@ void CCUserDefault::flush()
 #else
 const string& CCUserDefault::getXMLFilePath()
 {
-    return "UNUSED";
+    return NULL;
 }
 void CCUserDefault::flush()
 {

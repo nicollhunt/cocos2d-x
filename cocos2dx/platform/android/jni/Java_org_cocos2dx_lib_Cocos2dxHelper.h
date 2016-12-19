@@ -38,6 +38,7 @@ extern "C" {
     extern const char * getCacheDirectoryJNI();
     extern const char * getDocumentsDirectoryJNI();
     extern void setSharedPreferenceJNI(const char* pszPropertyName, const char* pszValue);
+    extern bool hasSharedPreferenceJNI(const char* pszPropertyName);
     extern const char* getSharedPreferenceJNI(const char* pszPropertyName);
     extern const char * getDeviceManufacturerJNI();
     extern const char * getDeviceModelJNI();

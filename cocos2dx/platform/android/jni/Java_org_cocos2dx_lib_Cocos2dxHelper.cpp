@@ -160,6 +160,19 @@ extern "C" {
   		}
   	}
 
+    bool hasSharedPreferenceJNI(const char* pszPropertyName) {
+  		JniMethodInfo t;
+  		if (JniHelper::getStaticMethodInfo(t, CLASS_NAME, "hasSharedPreference", "(Ljava/lang/String;)Z")) {
+  			jstring stringArg1 = t.env->NewStringUTF(pszPropertyName);
+  			bool ret = t.env->CallStaticBooleanMethod(t.classID, t.methodID, stringArg1);
+  			t.env->DeleteLocalRef(stringArg1);
+  			t.env->DeleteLocalRef(t.classID);
+			return ret;
+  		}
+
+  		return false;
+    }
+
     const char* getSharedPreferenceJNI(const char* pszPropertyName) {
   		JniMethodInfo t;
   		if (JniHelper::getStaticMethodInfo(t, CLASS_NAME, "getSharedPreference", "(Ljava/lang/String;)Ljava/lang/String;")) {
@@ -174,10 +187,6 @@ extern "C" {
 				t.env->DeleteLocalRef(str);
 				retStr->autorelease();
 				ret = retStr->m_sString.c_str();
-  			}
-  			else
-  			{
-				ret = "";
   			}
 
 			return ret;

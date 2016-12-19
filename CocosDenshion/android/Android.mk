@@ -25,5 +25,6 @@ endif
 
 LOCAL_CFLAGS += -Wno-psabi
 LOCAL_EXPORT_CFLAGS += -Wno-psabi
+LOCAL_DISABLE_FORMAT_STRING_CHECKS := true
 
 include $(BUILD_STATIC_LIBRARY)
