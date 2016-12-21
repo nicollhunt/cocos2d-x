@@ -33,7 +33,11 @@ int CCTime::gettimeofdayCocos2d(struct cc_timeval *tp, void *tzp)
     CC_UNUSED_PARAM(tzp);
     if (tp)
     {
-        gettimeofday((struct timeval *)tp,  0);
+	// Fix for iOS where cc_timeval and timeval structures differ
+	timeval tv;
+        gettimeofday(&tv,  0);
+	tp->tv_sec = tv.tv_sec;
+	tp->tv_usec = tv.tv_usec;
     }
     return 0;
 }
