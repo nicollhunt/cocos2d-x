@@ -311,12 +311,6 @@ bool CCFileUtils::isPopupNotify()
     return s_bPopupNotify;
 }
 
-void CCFileUtils::setWritablePathAppName(const char *pszAppName)
-{
-    m_obWritablePathAppName = pszAppName;
-}
-
-
 std::string CCFileUtils::getWriteablePath()
 {
     // save to document folder
@@ -324,9 +318,9 @@ std::string CCFileUtils::getWriteablePath()
     NSString *documentsDirectory = [paths objectAtIndex:0];
     std::string strRet = [documentsDirectory UTF8String];
     strRet.append("/");
-    if (m_obWritablePathAppName.length() > 0)
+    if (m_obAppName.length() > 0)
     {
-        strRet += m_obWritablePathAppName;
+        strRet += m_obAppName;
         strRet.append("/");
         
         // Create directory if it doesn't exist

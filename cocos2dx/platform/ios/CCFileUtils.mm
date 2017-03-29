@@ -182,12 +182,6 @@ const char* CCFileUtils::getResourceDirectory()
     return m_obDirectory.c_str();
 }
 
-void CCFileUtils::setWritablePathAppName(const char *pszAppName)
-{
-    // Unused on this platform...
-}
-
-
 const char* CCFileUtils::fullPathFromRelativePath(const char *pszRelativePath)
 {
     CCAssert(pszRelativePath != NULL, "CCFileUtils: Invalid path");
@@ -332,6 +326,23 @@ std::string CCFileUtils::getDocumentPath()
     NSString *documentsDirectory = [paths objectAtIndex:0];
     std::string strRet = [documentsDirectory UTF8String];
     strRet.append("/");
+    
+    if (m_obAppName.length() > 0)
+    {
+	strRet.append(m_obAppName);
+	strRet.append("/");
+	
+	// Ensure directory exists
+	NSError *error = nil;
+	[[NSFileManager defaultManager] createDirectoryAtPath:[NSString stringWithUTF8String:strRet.c_str()]
+				  withIntermediateDirectories:YES
+						   attributes:nil
+							error:&error];
+	if (error != nil) {
+	    NSLog(@"error creating directory: %@", error);
+	}
+    }
+    
     return strRet;
 }
 
