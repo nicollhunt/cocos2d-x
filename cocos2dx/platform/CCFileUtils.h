@@ -90,8 +90,19 @@ public:
     /*
     @brief  Directory name to use when writing to writeable path
     */
-    void setWritablePathAppName(const char *pszAppName);
-    
+    void setAppName(const char *pszAppName)
+    {
+	m_obAppName = pszAppName;
+    }
+
+    /*
+     @brief  Directory name to use when writing to writeable path
+     */
+    const char *getAppName(const char *pszAppName)
+    {
+	return m_obAppName.c_str();
+    }
+
     /**
     @brief   Get the writeable path
     @return  The path that can write/read file
@@ -116,7 +127,7 @@ protected:
     }
     
     std::string m_obDirectory;
-    std::string m_obWritablePathAppName;
+    std::string m_obAppName;
 
 };
 
