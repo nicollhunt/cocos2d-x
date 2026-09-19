@@ -359,7 +359,24 @@ void CCDirector::setProjection(ccDirectorProjection kProjection)
             kmGLMatrixMode(KM_GL_PROJECTION);
             kmGLLoadIdentity();
             kmMat4 orthoMatrix;
-            kmMat4OrthographicProjection(&orthoMatrix, 0, size.width, 0, size.height, -1024, 1024 );
+
+            // Extend the orthographic projection (and the GL viewport) beyond
+            // the design-resolution window, so nodes positioned outside it
+            // (e.g. art drawn over letterbox bars) are rendered instead of
+            // clipped. When there is no letterboxing (design == frame) the
+            // bounds are identical to (0, 0, size.width, size.height).
+            const CCRect& tViewPortRect = m_pobOpenGLView->getViewPortRect();
+            float fScaleX = m_pobOpenGLView->getScaleX();
+            float fScaleY = m_pobOpenGLView->getScaleY();
+            float fLeft = -tViewPortRect.origin.x / fScaleX;
+            float fBottom = -tViewPortRect.origin.y / fScaleY;
+            CCSize tFrameSize = m_pobOpenGLView->getFrameSize();
+            float fWidth = tFrameSize.width / fScaleX;
+            float fHeight = tFrameSize.height / fScaleY;
+
+            m_pobOpenGLView->setViewPortInPoints(fLeft, fBottom, fWidth, fHeight);
+
+            kmMat4OrthographicProjection(&orthoMatrix, fLeft, fLeft + fWidth, fBottom, fBottom + fHeight, -1024, 1024 );
             kmGLMultMatrix(&orthoMatrix);
             kmGLMatrixMode(KM_GL_MODELVIEW);
             kmGLLoadIdentity();
