@@ -164,8 +164,10 @@ static int traversetable (global_State *g, Table *h) {
     markobject(g, h->metatable);
   mode = gfasttm(g, h->metatable, TM_MODE);
   if (mode && ttisstring(mode)) {  /* is there a weak mode? */
-    weakkey = (strchr(svalue(mode), 'k') != NULL);
-    weakvalue = (strchr(svalue(mode), 'v') != NULL);
+    const char *modestr = svalue(mode);
+    size_t modelen = rawtsvalue(mode)->tsv.len;
+    weakkey = (memchr(modestr, 'k', modelen) != NULL);
+    weakvalue = (memchr(modestr, 'v', modelen) != NULL);
     if (weakkey || weakvalue) {  /* is really weak? */
       h->marked &= ~(KEYWEAK | VALUEWEAK);  /* clear bits */
       h->marked |= cast_byte((weakkey << KEYWEAKBIT) |

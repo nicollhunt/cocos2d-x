@@ -85,3 +85,6 @@ tools/jenkins_scripts/mac/android/userconf.ini
 
 # Game lives here as a standalone nested repo, not a submodule
 fistofawesome/
+
+# Third-party arm64 source builds (see build-android-arm64.sh)
+cocos2dx/platform/third_party/android/source/build-*

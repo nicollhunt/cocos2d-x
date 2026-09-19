@@ -86,6 +86,10 @@ extern "C"
             if (! ret)
             {
                  LOGD("Failed to find class of %s", className);
+                 if (pEnv->ExceptionCheck() == JNI_TRUE)
+                 {
+                     pEnv->ExceptionClear();
+                 }
                 break;
             }
         } while (0);
@@ -107,6 +111,11 @@ extern "C"
             }
 
             jclass classID = getClassID_(className, pEnv);
+
+            if (! classID)
+            {
+                break;
+            }
 
             methodID = pEnv->GetStaticMethodID(classID, methodName, paramCode);
             if (! methodID)
@@ -139,6 +148,11 @@ extern "C"
             }
 
             jclass classID = getClassID_(className, pEnv);
+
+            if (! classID)
+            {
+                break;
+            }
 
             methodID = pEnv->GetMethodID(classID, methodName, paramCode);
             if (! methodID)
