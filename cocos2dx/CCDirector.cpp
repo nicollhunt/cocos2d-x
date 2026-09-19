@@ -343,6 +343,25 @@ void CCDirector::setNextDeltaTimeZero(bool bNextDeltaTimeZero)
     m_bNextDeltaTimeZero = bNextDeltaTimeZero;
 }
 
+// Bounds of the coordinate space mapped by the projection (see setProjection):
+// the design-resolution window extended over the full framebuffer by any
+// letterbox bars. convertToGL / convertToUI must normalise against these same
+// bounds so touch coordinates (which arrive spanning the full framebuffer,
+// already viewport-corrected by CCEGLViewProtocol::handleTouches*) map back to
+// design coordinates correctly.
+static void sGetProjectionBounds(CCEGLView *pView, float &fLeft, float &fBottom, float &fWidth, float &fHeight)
+{
+    const CCRect& tViewPortRect = pView->getViewPortRect();
+    float fScaleX = pView->getScaleX();
+    float fScaleY = pView->getScaleY();
+    CCSize tFrameSize = pView->getFrameSize();
+
+    fLeft = -tViewPortRect.origin.x / fScaleX;
+    fBottom = -tViewPortRect.origin.y / fScaleY;
+    fWidth = tFrameSize.width / fScaleX;
+    fHeight = tFrameSize.height / fScaleY;
+}
+
 void CCDirector::setProjection(ccDirectorProjection kProjection)
 {
     CCSize size = m_obWinSizeInPoints;
@@ -365,14 +384,8 @@ void CCDirector::setProjection(ccDirectorProjection kProjection)
             // (e.g. art drawn over letterbox bars) are rendered instead of
             // clipped. When there is no letterboxing (design == frame) the
             // bounds are identical to (0, 0, size.width, size.height).
-            const CCRect& tViewPortRect = m_pobOpenGLView->getViewPortRect();
-            float fScaleX = m_pobOpenGLView->getScaleX();
-            float fScaleY = m_pobOpenGLView->getScaleY();
-            float fLeft = -tViewPortRect.origin.x / fScaleX;
-            float fBottom = -tViewPortRect.origin.y / fScaleY;
-            CCSize tFrameSize = m_pobOpenGLView->getFrameSize();
-            float fWidth = tFrameSize.width / fScaleX;
-            float fHeight = tFrameSize.height / fScaleY;
+            float fLeft, fBottom, fWidth, fHeight;
+            sGetProjectionBounds(m_pobOpenGLView, fLeft, fBottom, fWidth, fHeight);
 
             m_pobOpenGLView->setViewPortInPoints(fLeft, fBottom, fWidth, fHeight);
 
@@ -492,9 +505,10 @@ CCPoint CCDirector::convertToGL(const CCPoint& uiPoint)
 	
 	// Calculate z=0 using -> transform*[0, 0, 0, 1]/w
 	kmScalar zClip = transform.mat[14]/transform.mat[15];
-	
-    CCSize glSize = m_pobOpenGLView->getDesignResolutionSize();
-	kmVec3 clipCoord = {2.0f*uiPoint.x/glSize.width - 1.0f, 1.0f - 2.0f*uiPoint.y/glSize.height, zClip};
+
+    float fLeft, fBottom, fWidth, fHeight;
+    sGetProjectionBounds(m_pobOpenGLView, fLeft, fBottom, fWidth, fHeight);
+	kmVec3 clipCoord = {2.0f*(uiPoint.x - fLeft)/fWidth - 1.0f, 1.0f - 2.0f*(uiPoint.y - fBottom)/fHeight, zClip};
 	
 	kmVec3 glCoord;
 	kmVec3TransformCoord(&glCoord, &clipCoord, &transformInv);
@@ -512,8 +526,9 @@ CCPoint CCDirector::convertToUI(const CCPoint& glPoint)
 	kmVec3 glCoord = {glPoint.x, glPoint.y, 0.0};
 	kmVec3TransformCoord(&clipCoord, &glCoord, &transform);
 	
-	CCSize glSize = m_pobOpenGLView->getDesignResolutionSize();
-	return ccp(glSize.width*(clipCoord.x*0.5 + 0.5), glSize.height*(-clipCoord.y*0.5 + 0.5));
+	float fLeft, fBottom, fWidth, fHeight;
+    sGetProjectionBounds(m_pobOpenGLView, fLeft, fBottom, fWidth, fHeight);
+	return ccp(fLeft + fWidth*(clipCoord.x*0.5 + 0.5), fBottom + fHeight*(-clipCoord.y*0.5 + 0.5));
 }
 
 CCSize CCDirector::getWinSize(void)
