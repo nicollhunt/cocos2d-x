@@ -36,8 +36,12 @@ static int os_pushresult (lua_State *L, int i, const char *filename) {
 
 
 static int os_execute (lua_State *L) {
+#if defined(__ENVIRONMENT_IPHONE_OS_VERSION_MIN_REQUIRED__)
+  return luaL_error(L, "os.execute is not supported on this platform");
+#else
   lua_pushinteger(L, system(luaL_optstring(L, 1, NULL)));
   return 1;
+#endif
 }
 
 

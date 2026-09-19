@@ -26,7 +26,7 @@
 #import "CCAccelerometerDelegate.h"
 #import <UIKit/UIKit.h>
 
-@interface AccelerometerDispatcher : NSObject<UIAccelerometerDelegate>
+@interface AccelerometerDispatcher : NSObject
 {
     cocos2d::CCAccelerometerDelegate *delegate_;
     cocos2d::CCAcceleration *acceleration_;

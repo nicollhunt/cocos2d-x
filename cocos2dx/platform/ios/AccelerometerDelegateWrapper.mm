@@ -23,6 +23,15 @@
  ****************************************************************************/
 
 #import "AccelerometerDelegateWrapper.h"
+#import <CoreMotion/CoreMotion.h>
+
+@interface AccelerometerDispatcher ()
+{
+    CMMotionManager *_motionManager;
+    NSOperationQueue *_motionQueue;
+}
+
+@end
 
 @implementation AccelerometerDispatcher
 
@@ -57,32 +66,55 @@ static AccelerometerDispatcher* s_pAccelerometerDispatcher;
 - (void) addDelegate: (cocos2d::CCAccelerometerDelegate *) delegate
 {
     delegate_ = delegate;
-    
+
     if (delegate_)
     {
-        [[UIAccelerometer sharedAccelerometer] setDelegate:self];
+        _motionQueue = [[NSOperationQueue alloc] init];
+        _motionQueue.maxConcurrentOperationCount = 1;
+        _motionQueue.name = @"com.cocos2dx.accelerometer";
+
+        _motionManager = [[CMMotionManager alloc] init];
+        if (_motionManager.accelerometerAvailable)
+        {
+            if (_motionManager.accelerometerUpdateInterval <= 0)
+            {
+                _motionManager.accelerometerUpdateInterval = 1.0 / 60.0;
+            }
+            [_motionManager startAccelerometerUpdatesToQueue:_motionQueue withHandler:^(CMAccelerometerData *accelerometerData, NSError *error) {
+                [self accelerometer:accelerometerData didAccelerate:accelerometerData];
+            }];
+        }
+        else
+        {
+            delegate_ = 0;
+        }
     }
-    else 
+    else
     {
-        [[UIAccelerometer sharedAccelerometer] setDelegate:nil];
+        [_motionManager stopAccelerometerUpdates];
+        _motionManager = nil;
+        _motionQueue = nil;
     }
 }
 
 -(void) setAccelerometerInterval:(float)interval
 {
-    [[UIAccelerometer sharedAccelerometer] setUpdateInterval:interval];
+    if (_motionManager)
+    {
+        _motionManager.accelerometerUpdateInterval = interval;
+    }
 }
 
-- (void)accelerometer:(UIAccelerometer *)accelerometer didAccelerate:(UIAcceleration *)acceleration
-{   
+- (void)accelerometer:(CMAccelerometerData *)accelerometer didAccelerate:(CMAccelerometerData *)acceleration
+{
     if (! delegate_)
     {
         return;
     }
-    
-    acceleration_->x = acceleration.x;
-    acceleration_->y = acceleration.y;
-    acceleration_->z = acceleration.z;
+
+    acceleration_->x = acceleration.acceleration.x;
+    acceleration_->y = acceleration.acceleration.y;
+    acceleration_->z = acceleration.acceleration.z;
     acceleration_->timestamp = acceleration.timestamp;
     
     double tmp = acceleration_->x;
