@@ -24,6 +24,7 @@
 
 
 #import "CDAudioManager.h"
+#import <UIKit/UIKit.h>
 
 NSString * const kCDN_AudioManagerInitialised = @"kCDN_AudioManagerInitialised";
 
@@ -213,6 +214,14 @@ NSString * const kCDN_AudioManagerInitialised = @"kCDN_AudioManagerInitialised";
 
 -(void)audioPlayerEndInterruption:(AVAudioPlayer *)player {
     CDLOGINFO(@"Denshion::CDLongAudioSource - audio player resumed");
+    if ([UIApplication sharedApplication].applicationState == UIApplicationStateBackground) {
+        NSLog(@"CDX-BG: suppressed music resume after interruption - app is backgrounded");
+        return;
+    }
+    if (self->paused) {
+        NSLog(@"CDX-BG: suppressed music resume after interruption - source was paused by game");
+        return;
+    }
     if (self.backgroundMusic) {
         //Check if background music can play as rules may have changed during 
         //the interruption. This is to address a specific issue in 4.x when
@@ -758,10 +767,17 @@ static BOOL configured = FALSE;
     }    
 } 
 
--(void)audioSessionResumed 
-{ 
+-(void)audioSessionResumed
+{
     if (_interrupted) {
-        CDLOGINFO(@"Denshion::CDAudioManager - Audio session resumed"); 
+        CDLOGINFO(@"Denshion::CDAudioManager - Audio session resumed");
+        if ([UIApplication sharedApplication].applicationState == UIApplicationStateBackground) {
+            NSLog(@"CDX-BG: interruption ended while backgrounded - reactivating session only, OpenAL restore deferred until app is active");
+            if (![self audioSessionSetActive:YES]) {
+                NSLog(@"CDX-BG: audio session reactivation failed while backgrounded (expected without the audio background mode)");
+            }
+            return;
+        }
         _interrupted = NO;
         
         BOOL activationResult = NO;
