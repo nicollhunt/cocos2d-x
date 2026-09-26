@@ -120,6 +120,12 @@ bool SimpleAudioEngine::isBackgroundMusicPlaying()
     return sharedMusic().IsPlaying();
 }
 
+double SimpleAudioEngine::getBackgroundMusicCurrentTime()
+{
+    // MCI cannot report the playback position - callers must fall back
+    return -1.0;
+}
+
 //////////////////////////////////////////////////////////////////////////
 // effect function
 //////////////////////////////////////////////////////////////////////////

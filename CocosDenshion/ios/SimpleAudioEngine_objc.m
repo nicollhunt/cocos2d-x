@@ -115,6 +115,10 @@ static CDBufferManager *bufferManager = nil;
 
 -(BOOL) isBackgroundMusicPlaying {
     return [am isBackgroundMusicPlaying];
+}
+
+-(double) backgroundMusicCurrentTime {
+    return [am backgroundMusicCurrentTime];
 }    
 
 -(BOOL) willPlayBackgroundMusic {

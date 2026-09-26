@@ -70,6 +70,11 @@ static bool static_isBackgroundMusicPlaying()
     return [[SimpleAudioEngine sharedEngine] isBackgroundMusicPlaying];
 }
 
+static double static_getBackgroundMusicCurrentTime()
+{
+    return [[SimpleAudioEngine sharedEngine] backgroundMusicCurrentTime];
+}
+
 static float static_getBackgroundMusicVolume()
 {
     return [[SimpleAudioEngine sharedEngine] backgroundMusicVolume];
@@ -210,6 +215,11 @@ bool SimpleAudioEngine::willPlayBackgroundMusic()
 bool SimpleAudioEngine::isBackgroundMusicPlaying()
 {
     return static_isBackgroundMusicPlaying();
+}
+
+double SimpleAudioEngine::getBackgroundMusicCurrentTime()
+{
+    return static_getBackgroundMusicCurrentTime();
 }
 
 float SimpleAudioEngine::getBackgroundMusicVolume()

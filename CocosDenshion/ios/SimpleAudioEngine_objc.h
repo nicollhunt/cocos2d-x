@@ -70,6 +70,8 @@
 -(void) rewindBackgroundMusic;
 /** returns whether or not the background music is playing */
 -(BOOL) isBackgroundMusicPlaying;
+/** returns the playback position of the background music in seconds (-1 if none loaded) */
+-(double) backgroundMusicCurrentTime;
 
 /** plays an audio effect with a file path*/
 -(ALuint) playEffect:(NSString*) filePath loop:(BOOL) loop;

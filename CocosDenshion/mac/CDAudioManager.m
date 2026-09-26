@@ -467,7 +467,14 @@ static BOOL configured = FALSE;
 
 -(BOOL) isBackgroundMusicPlaying {
     return [self.backgroundMusic isPlaying];
-}    
+}
+
+-(double) backgroundMusicCurrentTime {
+    if (backgroundMusic != nil && backgroundMusic.audioSourcePlayer != nil) {
+        return [backgroundMusic.audioSourcePlayer currentTime];
+    }
+    return -1.0;
+}
 
 //NB: originally I tried using a route change listener and intended to store the current route,
 //however, on a 3gs running 3.1.2 no route change is generated when the user switches the 

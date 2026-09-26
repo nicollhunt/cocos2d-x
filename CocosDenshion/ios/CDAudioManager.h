@@ -219,6 +219,8 @@ typedef enum {
 -(void) resumeBackgroundMusic;
 /** Returns whether or not the background music is playing */
 -(BOOL) isBackgroundMusicPlaying;
+/** Returns the playback position of the background music in seconds (-1 if none loaded) */
+-(double) backgroundMusicCurrentTime;
 
 -(void) setBackgroundMusicCompletionListener:(id) listener selector:(SEL) selector;
 
