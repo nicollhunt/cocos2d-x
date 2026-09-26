@@ -598,6 +598,14 @@ static BOOL configured = FALSE;
 -(void) rewindBackgroundMusic
 {
     [self.backgroundMusic rewind];
+}
+
+-(double) backgroundMusicCurrentTime
+{
+    if (backgroundMusic != nil && backgroundMusic.audioSourcePlayer != nil) {
+        return [backgroundMusic.audioSourcePlayer currentTime];
+    }
+    return -1.0;
 }    
 
 -(void) setBackgroundMusicCompletionListener:(id) listener selector:(SEL) selector {

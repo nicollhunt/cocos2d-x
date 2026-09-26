@@ -217,6 +217,24 @@ extern "C"
         return ret;
     }
     
+    double getBackgroundMusicCurrentTimeJNI()
+    {
+        // int getBackgroundMusicCurrentTime() - playback position in milliseconds
+        
+        JniMethodInfo methodInfo;
+        jint ret = -1;
+        
+        if (! getStaticMethodInfo(methodInfo, "getBackgroundMusicCurrentTime", "()I"))
+        {
+            return -1.0;
+        }
+        
+        ret = methodInfo.env->CallStaticIntMethod(methodInfo.classID, methodInfo.methodID);
+        methodInfo.env->DeleteLocalRef(methodInfo.classID);
+        
+        return (ret < 0) ? -1.0 : ret / 1000.0;
+    }
+    
     float getBackgroundMusicVolumeJNI()
     {
         // float getBackgroundMusicVolume()

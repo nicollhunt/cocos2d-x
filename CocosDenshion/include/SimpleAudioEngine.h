@@ -128,6 +128,13 @@ public:
     */
     bool isBackgroundMusicPlaying();
 
+    /**
+    @brief The playback position of the background music, in seconds.
+    @return Position in seconds, or -1.0 if no music is loaded/playing or the
+            platform cannot query the position.
+    */
+    double getBackgroundMusicCurrentTime();
+
     // properties
     /**
     @brief The volume of the background music max value is 1.0,the min value is 0.0

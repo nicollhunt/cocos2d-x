@@ -12,6 +12,7 @@ extern "C"
     extern void resumeBackgroundMusicJNI();
     extern void rewindBackgroundMusicJNI();
     extern bool isBackgroundMusicPlayingJNI();
+    extern double getBackgroundMusicCurrentTimeJNI();
     extern float getBackgroundMusicVolumeJNI();
     extern void setBackgroundMusicVolumeJNI(float volume);
     extern unsigned int playEffectJNI(const char* path, bool bLoop);

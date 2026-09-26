@@ -238,6 +238,11 @@ bool SimpleAudioEngine::isBackgroundMusicPlaying()
     return isBackgroundMusicPlayingJNI();
 }
 
+double SimpleAudioEngine::getBackgroundMusicCurrentTime()
+{
+    return getBackgroundMusicCurrentTimeJNI();
+}
+
 float SimpleAudioEngine::getBackgroundMusicVolume()
 {
     return getBackgroundMusicVolumeJNI();
