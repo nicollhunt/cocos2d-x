@@ -69,8 +69,32 @@ CCTexture2D::CCTexture2D()
 , m_bHasPremultipliedAlpha(false)
 , m_bHasMipmaps(false)
 , m_bPVRHaveAlphaPremultiplied(true)
+, m_fResolutionScale(1.0f)
 , m_pShaderProgram(NULL)
 {
+}
+
+float CCTexture2D::getResolutionScale()
+{
+    return m_fResolutionScale;
+}
+
+void CCTexture2D::setResolutionScale(float fScale)
+{
+    CCAssert(fScale > 0.0f, "CCTexture2D: resolution scale must be positive");
+    // Content size is always (pixel content size / scale)
+    float fRatio = fScale / m_fResolutionScale;
+    m_tContentSize = CCSizeMake(m_tContentSize.width / fRatio, m_tContentSize.height / fRatio);
+    m_fResolutionScale = fScale;
+}
+
+void CCTexture2D::releaseGLTexture()
+{
+    if (m_uName)
+    {
+        ccGLDeleteTexture(m_uName);
+        m_uName = 0;
+    }
 }
 
 CCTexture2D::~CCTexture2D()
@@ -228,7 +252,7 @@ bool CCTexture2D::initWithData(const void *data, CCTexture2DPixelFormat pixelFor
 
     }
 
-    m_tContentSize = contentSize;
+    m_tContentSize = CCSizeMake(contentSize.width / m_fResolutionScale, contentSize.height / m_fResolutionScale);
     m_uPixelsWide = pixelsWide;
     m_uPixelsHigh = pixelsHigh;
     m_ePixelFormat = pixelFormat;

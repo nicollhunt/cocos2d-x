@@ -386,6 +386,169 @@ void CCTextureCache::addImageAsyncCallBack(float dt)
     }
 }
 
+// Reads a file that may legitimately not exist, without CCFileUtils popping up an alert for it
+static unsigned char* getOptionalFileData(const std::string& path, unsigned long* pSize)
+{
+    CCFileUtils* pFileUtils = CCFileUtils::sharedFileUtils();
+    bool bPopup = pFileUtils->isPopupNotify();
+    pFileUtils->setPopupNotify(false);
+    unsigned char* pBuffer = pFileUtils->getFileData(path.c_str(), "rb", pSize);
+    pFileUtils->setPopupNotify(bPopup);
+    return pBuffer;
+}
+
+static CCImage* decodeImageFile(const std::string& path, CCImage::EImageFormat format, bool bOptional = false)
+{
+    unsigned long nSize = 0;
+    unsigned char* pBuffer = bOptional ? getOptionalFileData(path, &nSize)
+                                       : CCFileUtils::sharedFileUtils()->getFileData(path.c_str(), "rb", &nSize);
+    if (pBuffer == NULL)
+    {
+        return NULL;
+    }
+
+    CCImage* pImage = new CCImage();
+    bool bRet = pImage->initWithImageData((void*)pBuffer, nSize, format);
+    CC_SAFE_DELETE_ARRAY(pBuffer);
+    if (!bRet)
+    {
+        CC_SAFE_RELEASE(pImage);
+        return NULL;
+    }
+    return pImage;
+}
+
+// "a/b.png" + "dlss" -> "a/b-dlss.png"
+static std::string variantPathFor(const std::string& fullpath, const std::string& suffix)
+{
+    size_t dot = fullpath.find_last_of('.');
+    if (suffix.empty() || dot == std::string::npos)
+    {
+        return "";
+    }
+    return fullpath.substr(0, dot) + "-" + suffix + fullpath.substr(dot);
+}
+
+static CCImage::EImageFormat imageFormatForPath(const std::string& path)
+{
+    std::string lowerCase(path);
+    for (unsigned int i = 0; i < lowerCase.length(); ++i)
+    {
+        lowerCase[i] = tolower(lowerCase[i]);
+    }
+
+    if (std::string::npos != lowerCase.find(".png"))
+    {
+        return CCImage::kFmtPng;
+    }
+    if (std::string::npos != lowerCase.find(".jpg") || std::string::npos != lowerCase.find(".jpeg"))
+    {
+        return CCImage::kFmtJpg;
+    }
+    if (std::string::npos != lowerCase.find(".tif") || std::string::npos != lowerCase.find(".tiff"))
+    {
+        return CCImage::kFmtTiff;
+    }
+    return CCImage::kFmtUnKnown;
+}
+
+bool CCTextureCache::initTextureFromImageFile(CCTexture2D *texture, const std::string& fullpath, CCImage::EImageFormat format)
+{
+    CCImage* pImage = decodeImageFile(fullpath, format);
+    if (pImage == NULL)
+    {
+        return false;
+    }
+
+    std::string loadedPath = fullpath;
+    float fScale = 1.0f;
+
+    std::string variantPath = variantPathFor(fullpath, m_sVariantSuffix);
+    CCImage* pVariantImage = variantPath.empty() ? NULL : decodeImageFile(variantPath, format, true);
+    if (pVariantImage != NULL)
+    {
+        unsigned int baseW = pImage->getWidth(), baseH = pImage->getHeight();
+        unsigned int varW = pVariantImage->getWidth(), varH = pVariantImage->getHeight();
+        if (baseW > 0 && baseH > 0 && varW * baseH == varH * baseW)
+        {
+            fScale = (float)varW / (float)baseW;
+            loadedPath = variantPath;
+            pImage->release();
+            pImage = pVariantImage;
+        }
+        else
+        {
+            CCLOG("cocos2d: texture variant %s doesn't match the layout of %s, ignoring", variantPath.c_str(), fullpath.c_str());
+            pVariantImage->release();
+        }
+    }
+
+    texture->setResolutionScale(fScale);
+    bool bRet = texture->initWithImage(pImage);
+    CC_SAFE_RELEASE(pImage);
+
+    if (bRet)
+    {
+        if (fScale != 1.0f)
+        {
+            // Downscaled high-res art looks better filtered than nearest-neighbour
+            texture->setAntiAliasTexParameters();
+        }
+#if CC_ENABLE_CACHE_TEXTURE_DATA
+        // cache the texture file name
+        VolatileTexture::addImageTexture(texture, loadedPath.c_str(), format);
+#endif
+    }
+    return bRet;
+}
+
+void CCTextureCache::setVariantSuffix(const char *pszSuffix)
+{
+    m_sVariantSuffix = pszSuffix ? pszSuffix : "";
+}
+
+const char* CCTextureCache::getVariantSuffix()
+{
+    return m_sVariantSuffix.c_str();
+}
+
+void CCTextureCache::reloadVariantTextures()
+{
+    CCDictElement* pElement = NULL;
+    CCDICT_FOREACH(m_pTextures, pElement)
+    {
+        std::string fullpath = pElement->getStrKey();
+        CCImage::EImageFormat format = imageFormatForPath(fullpath);
+        if (format == CCImage::kFmtUnKnown)
+        {
+            continue;
+        }
+
+        CCTexture2D* texture = (CCTexture2D*)pElement->getObject();
+
+        // Only touch textures that are, or are about to be, a variant
+        bool bVariantExists = false;
+        std::string variantPath = variantPathFor(fullpath, m_sVariantSuffix);
+        if (!variantPath.empty())
+        {
+            unsigned long nSize = 0;
+            unsigned char* pBuffer = getOptionalFileData(variantPath, &nSize);
+            bVariantExists = (pBuffer != NULL);
+            CC_SAFE_DELETE_ARRAY(pBuffer);
+        }
+        if (!bVariantExists && texture->getResolutionScale() == 1.0f)
+        {
+            continue;
+        }
+
+        texture->releaseGLTexture();
+        if (!initTextureFromImageFile(texture, fullpath, format))
+        {
+            CCLOG("cocos2d: CCTextureCache: couldn't reload %s for variant '%s'", fullpath.c_str(), m_sVariantSuffix.c_str());
+        }
+    }
+}
+
 CCTexture2D * CCTextureCache::addImage(const char * path)
 {
     CCAssert(path != NULL, "TextureCache: fileimage MUST not be NULL");
@@ -421,45 +584,20 @@ CCTexture2D * CCTextureCache::addImage(const char * path)
             }
             else
             {
-                CCImage::EImageFormat eImageFormat = CCImage::kFmtUnKnown;
-                if (std::string::npos != lowerCase.find(".png"))
-                {
-                    eImageFormat = CCImage::kFmtPng;
-                }
-                else if (std::string::npos != lowerCase.find(".jpg") || std::string::npos != lowerCase.find(".jpeg"))
-                {
-                    eImageFormat = CCImage::kFmtJpg;
-                }
-                else if (std::string::npos != lowerCase.find(".tif") || std::string::npos != lowerCase.find(".tiff"))
-                {
-                    eImageFormat = CCImage::kFmtTiff;
-                }
-                
-                pImage = new CCImage();
-                CC_BREAK_IF(NULL == pImage);
-
-                unsigned long nSize = 0;
-                unsigned char* pBuffer = CCFileUtils::sharedFileUtils()->getFileData(fullpath.c_str(), "rb", &nSize);
-                bool bRet = pImage->initWithImageData((void*)pBuffer, nSize, eImageFormat);
-                CC_SAFE_DELETE_ARRAY(pBuffer);
-                CC_BREAK_IF(!bRet);
+                CCImage::EImageFormat eImageFormat = imageFormatForPath(path);
 
                 texture = new CCTexture2D();
                 
                 if( texture &&
-                    texture->initWithImage(pImage) )
+                    initTextureFromImageFile(texture, fullpath, eImageFormat) )
                 {
-#if CC_ENABLE_CACHE_TEXTURE_DATA
-                    // cache the texture file name
-                    VolatileTexture::addImageTexture(texture, fullpath.c_str(), eImageFormat);
-#endif
-
                     m_pTextures->setObject(texture, pathKey.c_str());
                     texture->release();
                 }
                 else
                 {
                     CCLOG("cocos2d: Couldn't add image:%s in CCTextureCache", path);
+                    CC_SAFE_RELEASE_NULL(texture);
                 }
             }
         } while (0);

@@ -386,6 +386,16 @@ void CCSprite::setTextureCoords(CCRect rect)
         return;
     }
 
+    // Alternate-resolution textures keep the base texture's layout at N times the size
+    float resolutionScale = tex->getResolutionScale();
+    if (resolutionScale != 1.0f)
+    {
+        rect.origin.x *= resolutionScale;
+        rect.origin.y *= resolutionScale;
+        rect.size.width *= resolutionScale;
+        rect.size.height *= resolutionScale;
+    }
+
     float atlasWidth = (float)tex->getPixelsWide();
     float atlasHeight = (float)tex->getPixelsHigh();
 

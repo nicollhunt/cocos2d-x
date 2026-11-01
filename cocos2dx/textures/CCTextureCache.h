@@ -58,6 +58,13 @@ protected:
     CCDictionary* m_pTextures;
     //pthread_mutex_t                *m_pDictLock;
 
+    std::string m_sVariantSuffix;
+
+    /** Decodes fullpath (or its variant, when one is active and present) into an already
+     allocated texture. Variant images must have the same aspect ratio as the base image;
+     the texture's resolution scale is set to the size ratio. */
+    bool initTextureFromImageFile(CCTexture2D *texture, const std::string& fullpath, CCImage::EImageFormat format);
+
 
 private:
     /// todo: void addImageWithAsyncObject(CCAsyncObject* async);
@@ -166,6 +173,20 @@ public:
     *  object and it will return it. Otherwise it will return a reference of a previously loaded image
     */
     CCTexture2D* addPVRImage(const char* filename);
+
+    /** Selects an alternate set of textures. With suffix "dlss", addImage("a/b.png") loads
+     "a/b-dlss.png" if that file exists (falling back to "a/b.png"). The variant must be the same
+     layout as the base image at N times the size: sprite frames keep their original rects and
+     sizes, and the texture's resolution scale (see CCTexture2D::getResolutionScale) maps them
+     onto the larger image. Pass NULL or "" for the base textures.
+     Textures already cached are not changed until reloadVariantTextures() is called. */
+    void setVariantSuffix(const char *pszSuffix);
+    const char* getVariantSuffix();
+
+    /** Re-initialises every cached image-file texture in place to match the current variant
+     suffix. Sprites, sprite frames and batch nodes holding the textures pick the change up
+     immediately. Must be called with a valid GL context. */
+    void reloadVariantTextures();
 
     /** Reload all textures
     It's only useful when the value of CC_ENABLE_CACHE_TEXTURE_DATA is 1
