@@ -269,6 +269,16 @@ private:
 
     bool m_bHasMipmaps;
 
+    /** Ratio of this texture's pixel size to the size the sprite frames / rects that reference it
+     are authored for. 1 for ordinary textures; N for an alternate-resolution variant of a texture
+     (see CCTextureCache::setVariantSuffix). Content size is reported divided by this value, and
+     CCSprite multiplies texture rects by it, so a variant is a drop-in replacement. */
+    CC_PROPERTY(float, m_fResolutionScale, ResolutionScale)
+
+    /** Releases the GL texture so the texture can be re-initialised in place (e.g. by
+     CCTextureCache::reloadVariantTextures) while everything keeps its pointer to it. */
+    void releaseGLTexture();
+
     /** shader program used by drawAtPoint and drawInRect */
     CC_PROPERTY(CCGLProgram*, m_pShaderProgram, ShaderProgram);
 };
