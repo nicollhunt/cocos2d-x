@@ -30,11 +30,11 @@ THE SOFTWARE.
 #include "cocoa/CCObject.h"
 #include "cocoa/CCDictionary.h"
 #include "textures/CCTexture2D.h"
+#include "platform/CCImage.h"
 #include <string>
 
 
 #if CC_ENABLE_CACHE_TEXTURE_DATA
-    #include "platform/CCImage.h"
     #include <list>
 #endif
 
